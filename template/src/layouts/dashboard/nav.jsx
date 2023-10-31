@@ -17,11 +17,12 @@ import { useResponsive } from 'src/hooks/use-responsive';
 
 import { account } from 'src/_mock/account';
 
-import Logo from 'src/components/logo';
+// import Logo from 'src/components/logo';
 import Scrollbar from 'src/components/scrollbar';
 
 import { NAV } from './config-layout';
 import navConfig from './config-navigation';
+import atilaLogo from '../../assets/Atila logo.png';
 
 // ----------------------------------------------------------------------
 
@@ -110,7 +111,10 @@ export default function Nav({ openNav, onCloseNav }) {
         },
       }}
     >
-      <Logo sx={{ mt: 3, ml: 4 }} />
+      {/* <Logo sx={{ mt: 3, ml: 4 }} /> */}
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <img src={atilaLogo} alt="Atila Logo" style={{ width: '200px' }} />
+      </Box>
 
       {renderAccount}
 
