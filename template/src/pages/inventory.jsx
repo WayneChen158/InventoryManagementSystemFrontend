@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 
-import { UserView } from 'src/sections/user/view';
+import { InventoryView } from 'src/sections/inventory/view/index';
 
 // ----------------------------------------------------------------------
 
@@ -8,10 +8,10 @@ export default function InventoryPage() {
   return (
     <>
       <Helmet>
-        <title> User | Minimal UI </title>
+        <title> Inventory </title>
       </Helmet>
 
-      <UserView />
+      <InventoryView />
     </>
   );
 }
