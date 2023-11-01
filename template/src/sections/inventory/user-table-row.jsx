@@ -90,6 +90,11 @@ export default function UserTableRow({
           <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
           Delete
         </MenuItem>
+
+        <MenuItem onClick={handleCloseMenu}>
+          <Iconify icon="carbon:request-quote"  sx={{ mr: 2 }} />
+          Request
+        </MenuItem>
       </Popover>
     </>
   );
