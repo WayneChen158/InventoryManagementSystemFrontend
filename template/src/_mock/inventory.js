@@ -37,3 +37,5 @@ export const inventoryData = rows.slice(1).map((row, index) => {
   });
   return jsonRow;
 });
+
+///
