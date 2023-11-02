@@ -1,3 +1,4 @@
+import Iconify from 'src/components/iconify';
 import SvgColor from 'src/components/svg-color';
 
 // ----------------------------------------------------------------------
@@ -21,6 +22,11 @@ const navConfig = [
     title: 'Inventory',
     path: '/inventory',
     icon: icon('ic_user'), // This icon should be changed
+  },
+  {
+    title: 'Manufacture',
+    path: '/manufacture',
+    icon: <Iconify icon="openmoji:lab-coat" width="25px" />, // This icon should be changed
   },
   {
     title: 'product',
