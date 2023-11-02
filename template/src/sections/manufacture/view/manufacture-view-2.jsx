@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import Card from '@mui/material/Card';
 // import Stack from '@mui/material/Stack';
@@ -20,6 +20,7 @@ import UserTableRow from '../user-table-row';
 import UserTableHead from '../user-table-head';
 import TableEmptyRows from '../table-empty-rows';
 import { emptyRows, applyFilter, getComparator } from '../utils';
+import { config } from '../../../config';
 
 // ----------------------------------------------------------------------
 
@@ -35,6 +36,29 @@ export default function ManufacturePageTwo() {
   const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const [manufacturingList, setManufacturingList] = useState([]);
+
+  
+  useEffect(() => {
+    fetch(`http://${config.server_host}:${config.server_port}/api/manufactureRecords`, {
+      method: 'GET',
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((resdata) => {
+        setManufacturingList(resdata);
+        console.log(resdata);
+      })
+      .catch((error) => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
+  }, []);
+  
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
