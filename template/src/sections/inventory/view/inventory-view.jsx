@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useRef, useState, useEffect} from 'react';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -12,6 +12,8 @@ import TablePagination from '@mui/material/TablePagination';
 
 import { users } from 'src/_mock/user';
 // import { inventoryData } from 'src/_mock/inventory';
+
+import { getRawMaterialsURL } from 'src/utils/url-provider';
 
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
@@ -40,8 +42,10 @@ export default function InventoryPage() {
 
   const [inventoryData, setInventoryData] = useState([]); 
 
+  const rawMaterialsURL = useRef(getRawMaterialsURL());
+  
   useEffect(() => {
-    fetch('http://localhost:8080/api/rawMaterials')
+    fetch(rawMaterialsURL.current)
     .then(res => res.json())
     .then(data => {
       console.log("Raw Material Fetch Invoked!")
