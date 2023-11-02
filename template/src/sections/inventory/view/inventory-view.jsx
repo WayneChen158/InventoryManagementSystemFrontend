@@ -141,6 +141,7 @@ export default function InventoryPage() {
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
                   { id: 'name', label: 'Item Name' },
+                  { id: 'catalog', label: 'Catalog Number' },
                   { id: 'vendor', label: 'Vendor' },
                   { id: 'type', label: 'Type' },
                   { id: 'owner', label: 'Owner' },
@@ -156,12 +157,13 @@ export default function InventoryPage() {
                     <UserTableRow
                       key={row.materialId}
                       name={row.description}
+                      catalog={row.catalogNumber}
                       vendor={row.manufacturer}
-                      type={row.group_name === '1' ? 'Chemical' : 'Oligo'}
+                      type={row.groupName === 1 ? 'Chemical' : 'Oligo'}
                       owner='YC'
-                      location='A1'
-                      amountInStock={row.amount_in_stock}
-                      LowInStock={row.amount_in_stock > row.threshold ? 'Enough' : 'Low'}
+                      location='Unknown'
+                      amountInStock={row.amountInStock}
+                      LowInStock={row.amountInStock > row.threshold ? 'Enough' : 'Low'}
                       selected={selected.indexOf(row.id) !== -1}
                       handleClick={(event) => handleClick(event, row.id)}
                     />
