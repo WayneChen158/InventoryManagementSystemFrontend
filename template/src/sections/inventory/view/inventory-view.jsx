@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -11,7 +11,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
 import { users } from 'src/_mock/user';
-import { inventoryData } from 'src/_mock/inventory';
+// import { inventoryData } from 'src/_mock/inventory';
 
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
@@ -37,6 +37,18 @@ export default function InventoryPage() {
   const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const [inventoryData, setInventoryData] = useState([]); 
+
+  useEffect(() => {
+    fetch('http://localhost:8080/api/rawMaterials')
+    .then(res => res.json())
+    .then(data => {
+      console.log("Raw Material Fetch Invoked!")
+      console.log(data)
+      setInventoryData(data)
+    })
+  }, []);
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -138,7 +150,7 @@ export default function InventoryPage() {
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
                     <UserTableRow
-                      key={row.id}
+                      key={row.materialId}
                       name={row.description}
                       vendor={row.manufacturer}
                       type={row.group_name === '1' ? 'Chemical' : 'Oligo'}
@@ -150,7 +162,6 @@ export default function InventoryPage() {
                       handleClick={(event) => handleClick(event, row.id)}
                     />
                   ))}
-
                 <TableEmptyRows
                   height={77}
                   emptyRows={emptyRows(page, rowsPerPage, users.length)}
