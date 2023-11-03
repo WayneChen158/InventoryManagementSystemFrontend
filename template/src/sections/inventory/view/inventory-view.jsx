@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-import { users } from 'src/_mock/user';
+// import { users } from 'src/_mock/user';
 // import { inventoryData } from 'src/_mock/inventory';
 
 import { getRawMaterialsURL } from 'src/utils/url-provider';
@@ -170,7 +170,7 @@ export default function InventoryPage() {
                   ))}
                 <TableEmptyRows
                   height={77}
-                  emptyRows={emptyRows(page, rowsPerPage, users.length)}
+                  emptyRows={emptyRows(page, rowsPerPage, inventoryData.length)}
                 />
 
                 {notFound && <TableNoData query={filterName} />}
