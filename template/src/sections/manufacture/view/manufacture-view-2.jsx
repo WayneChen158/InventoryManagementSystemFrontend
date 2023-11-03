@@ -52,7 +52,6 @@ export default function ManufacturePageTwo() {
       })
       .then((resdata) => {
         setManufacturingList(resdata);
-        console.log(resdata);
       })
       .catch((error) => {
         console.error('There was a problem with the fetch operation:', error);
@@ -110,7 +109,7 @@ export default function ManufacturePageTwo() {
   };
 
   const dataFiltered = applyFilter({
-    inputData: inventoryData,
+    inputData: manufacturingList,
     comparator: getComparator(order, orderBy),
     filterName,
   });
@@ -133,13 +132,11 @@ export default function ManufacturePageTwo() {
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
-                  { id: 'name', label: 'Item Name' },
-                  { id: 'vendor', label: 'Vendor' },
-                  { id: 'type', label: 'Type' },
+                  { id: 'id', label: 'ID' },
+                  { id: 'name', label: 'Component Name' },
+                  { id: 'date', label: 'Date' },
                   { id: 'owner', label: 'Owner' },
-                  { id: 'location', label:'Location'},
-                  { id: 'amountInStock', label: 'Amount In Stock', align: 'center' },
-                  { id: 'lowInStock', label: 'Low In Stock' },
+                  { id: 'scale', label: 'Scale' },
                 ]}
               />
               <TableBody>
@@ -147,15 +144,9 @@ export default function ManufacturePageTwo() {
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
                     <UserTableRow
-                      key={row.id}
-                      name={row.description}
-                      vendor={row.manufacturer}
-                      type={row.group_name === '1' ? 'Chemical' : 'Oligo'}
-                      owner='YC'
-                      location='A1'
-                      amountInStock={row.amount_in_stock}
-                      LowInStock={row.amount_in_stock > row.threshold ? 'Enough' : 'Low'}
-                      selected={selected.indexOf(row.id) !== -1}
+                      key={row.manufactureRecordId}
+                      row={row}
+                      selected={selected.indexOf(row.manufactureRecordId) !== -1}
                       handleClick={(event) => handleClick(event, row.id)}
                     />
                   ))}
