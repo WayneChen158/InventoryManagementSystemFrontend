@@ -52,7 +52,7 @@ export function applyFilter({ inputData, comparator, filterName }) {
 
   if (filterName) {
     inputData = inputData.filter(
-      (user) => user.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+      (item) => item.description.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 
