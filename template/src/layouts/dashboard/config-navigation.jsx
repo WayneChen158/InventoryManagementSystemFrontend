@@ -26,7 +26,7 @@ const navConfig = [
   {
     title: 'Manufacture',
     path: '/manufacture',
-    icon: <Iconify icon="openmoji:lab-coat" width="25px" />, // This icon should be changed
+    icon: <Iconify icon="openmoji:lab-coat" width={25}/>,
   },
   {
     title: 'product',

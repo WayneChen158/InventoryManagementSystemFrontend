@@ -18,7 +18,13 @@ import Iconify from 'src/components/iconify';
 
 export default function UserTableRow({
   selected,
-  row,
+  name,
+  vendor,
+  type,
+  owner,
+  location,
+  amountInStock,
+  LowInStock,
   handleClick,
 }) {
   const [open, setOpen] = useState(null);
@@ -40,15 +46,23 @@ export default function UserTableRow({
 
         <TableCell component="th" scope="row" padding="none">
             <Typography variant="subtitle2" wrap = "true" width='1/4'>
-              {row.componentName}
+              {name}
             </Typography>
         </TableCell>
 
-        <TableCell>{row.manufactureDate}</TableCell>
+        <TableCell>{vendor}</TableCell>
 
-        <TableCell>{row.owner}</TableCell>
+        <TableCell>{type}</TableCell>
 
-        <TableCell align="center">{row.scale}</TableCell>
+        <TableCell align="center">{owner}</TableCell>
+
+        <TableCell align="center">{location}</TableCell>
+
+        <TableCell align="center">{amountInStock}</TableCell>
+
+        <TableCell>
+          <Label color={LowInStock === 'Low' ? 'error' : 'info'}>{LowInStock}</Label>
+        </TableCell>
 
         <TableCell align="right">
           <IconButton onClick={handleOpenMenu}>
@@ -87,7 +101,13 @@ export default function UserTableRow({
 }
 
 UserTableRow.propTypes = {
+  vendor: PropTypes.any,
   handleClick: PropTypes.func,
-  row: PropTypes.any,
+  name: PropTypes.any,
+  owner: PropTypes.any,
+  type: PropTypes.any,
+  location: PropTypes.any,
+  amountInStock: PropTypes.any,
+  LowInStock: PropTypes.any,
   selected: PropTypes.any,
 };
