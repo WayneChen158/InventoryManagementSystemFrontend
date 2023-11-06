@@ -1,7 +1,9 @@
 import * as React from 'react';
+import { useState, useEffect } from 'react';
 
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
 import TabList from '@mui/lab/TabList';
 import Stack from '@mui/material/Stack';
 import TabPanel from '@mui/lab/TabPanel';
@@ -15,6 +17,7 @@ import Iconify from 'src/components/iconify';
 import ManufacturePageOne from './manufacture-view-1';
 import ManufacturePageTwo from './manufacture-view-2';
 import ManufacturePageThree from './manufacture-view-3';
+import NewTaskForm from '../components/NewTaskForm';
 
 // ----------------------------------------------------------------------
 
@@ -24,6 +27,15 @@ export default function ManufacturePage() {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const [openModal, setOpenModal] = useState(false);
+  
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
   
   return (
     <Container>
@@ -31,9 +43,19 @@ export default function ManufacturePage() {
         <Typography variant="h4">Manufacture</Typography>
 
         {/* {button onClick need to be implemented} */}
-        <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+        <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenModal}>
           New Task
         </Button> 
+
+        <Modal
+            open={openModal}
+            onClose={handleCloseModal}
+            container={document.getElementById('root')}
+          >
+            <Box style={{ display: 'flex', margin: 'auto', justifyContent: 'center', width: '70%', height: '100%'}}>
+              <NewTaskForm />
+            </Box>
+          </Modal>
       </Stack>
 
         <Box sx={{ width: '100%', typography: 'body1' }}>
