@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -8,12 +8,35 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import { Card, Box, Button, TextField, Select, MenuItem, InputLabel, Stack, Grid } from '@mui/material';
 
+import { config } from '../../../config';
+
 export default function NewTaskForm() {
   const [type, setType] = useState('component');
   const [component, setComponent] = useState('');
   const [product, setProduct] = useState('');
   const [scale, setScale] = useState(0);
   const [isChecking, setIsChecking] = useState(false);
+
+  const [productLst, setProductLst] = useState([])
+
+  useEffect(() => {
+    fetch(`http://${config.server_host}:${config.server_port}/api/products`, {
+      method: 'GET',
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((resdata) => {
+        setProductLst(resdata);
+        console.log(resdata);
+      })
+      .catch((error) => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
+  }, []);
 
   const handleTypeChange = (event) => {
     setType(event.target.value);
@@ -70,20 +93,20 @@ export default function NewTaskForm() {
                 {type === 'component' && (
                     <>
                     <FormControl style={{padding: '10px 0 0 0'}}>
-                    <InputLabel>Choose Product</InputLabel>
-                    <Select value={product} onChange={handleProductChange}>
-                        <MenuItem value="product1">Product 1</MenuItem>
-                        <MenuItem value="product2">Product 2</MenuItem>
-                        {/* Add more product options here */}
-                    </Select>
+                        <InputLabel>Choose Product</InputLabel>
+                        <Select value={product} onChange={handleProductChange}>
+                            <MenuItem value="product1">Product 1</MenuItem>
+                            <MenuItem value="product2">Product 2</MenuItem>
+                            {/* Add more product options here */}
+                        </Select>
                     </FormControl>
                     <FormControl style={{padding: '10px 0 0 0'}}>
-                    <InputLabel>Choose Component</InputLabel>
-                    <Select value={component} onChange={handleComponentChange}>
-                        <MenuItem value="component1">Component 1</MenuItem>
-                        <MenuItem value="component2">Component 2</MenuItem>
-                        {/* Add more component options here */}
-                    </Select>
+                        <InputLabel>Choose Component</InputLabel>
+                        <Select value={component} onChange={handleComponentChange}>
+                            <MenuItem value="component1">Component 1</MenuItem>
+                            <MenuItem value="component2">Component 2</MenuItem>
+                            {/* Add more component options here */}
+                        </Select>
                     </FormControl>
                     </>
                 )}
