@@ -303,7 +303,7 @@ export default function NewTaskForm() {
                 </TableHead>
                 <TableBody>
                 {itemLst.map((row) => (
-                    <TableRow key = {row.itemName}>
+                    <TableRow key = {row.id}>
                         <TableCell>{row.itemName}</TableCell>
                         <TableCell>{row.volPerRxn}</TableCell>
                         <TableCell>{row.vol}</TableCell>
