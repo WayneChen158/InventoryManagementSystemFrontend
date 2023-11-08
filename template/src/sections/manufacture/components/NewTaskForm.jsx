@@ -12,12 +12,13 @@ import { config } from '../../../config';
 
 export default function NewTaskForm() {
   const [type, setType] = useState('component');
-  const [component, setComponent] = useState('');
-  const [product, setProduct] = useState('');
+  const [componentId, setComponentId] = useState(0);
+  const [productId, setProductId] = useState(0);
   const [scale, setScale] = useState(0);
   const [isChecking, setIsChecking] = useState(false);
 
-  const [productLst, setProductLst] = useState([])
+  const [productLst, setProductLst] = useState([]);
+  const [componentLst, setComponentLst] = useState([]);
 
   useEffect(() => {
     fetch(`http://${config.server_host}:${config.server_port}/api/products`, {
@@ -31,23 +32,57 @@ export default function NewTaskForm() {
       })
       .then((resdata) => {
         setProductLst(resdata);
-        console.log(resdata);
       })
       .catch((error) => {
         console.error('There was a problem with the fetch operation:', error);
       });
   }, []);
 
+  useEffect(() => {
+    if (productId === 0) {
+      fetch(`http://${config.server_host}:${config.server_port}/api/components`, {
+        method: 'GET',
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then((resdata) => {
+            setComponentLst(resdata);
+        })
+        .catch((error) => {
+          console.error('There was a problem with the fetch operation:', error);
+        });
+    } else {
+      fetch(`http://${config.server_host}:${config.server_port}/api/products/components/${productId}`, {
+        method: 'GET',
+      }).then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((resdata) => {
+        setComponentLst(resdata);
+      })
+      .catch((error) => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
+  }
+}, [productId]);
+
   const handleTypeChange = (event) => {
     setType(event.target.value);
   };
 
   const handleComponentChange = (event) => {
-    setComponent(event.target.value);
+    setComponentId(event.target.value);
   };
 
   const handleProductChange = (event) => {
-    setProduct(event.target.value);
+    setProductId(event.target.value);
   };
 
   const handleScaleChange = (event) => {
@@ -67,8 +102,8 @@ export default function NewTaskForm() {
     // Replace with your form submission logic
     console.log('Form submitted');
     console.log('Type:', type);
-    console.log('Component:', component);
-    console.log('Product:', product);
+    console.log('Component:', componentId);
+    console.log('Product:', productId);
   };
 
   return (
@@ -94,18 +129,20 @@ export default function NewTaskForm() {
                     <>
                     <FormControl style={{padding: '10px 0 0 0'}}>
                         <InputLabel>Choose Product</InputLabel>
-                        <Select value={product} onChange={handleProductChange}>
-                            <MenuItem value="product1">Product 1</MenuItem>
-                            <MenuItem value="product2">Product 2</MenuItem>
-                            {/* Add more product options here */}
+                        <Select value={productId} onChange={handleProductChange}>
+                            <MenuItem key = {0} value={0}>None</MenuItem>
+                            {productLst.map((product) => (
+                                <MenuItem key={product.productId} value={product.productId}>{product.productName}</MenuItem>
+                            ))}
                         </Select>
                     </FormControl>
                     <FormControl style={{padding: '10px 0 0 0'}}>
                         <InputLabel>Choose Component</InputLabel>
-                        <Select value={component} onChange={handleComponentChange}>
-                            <MenuItem value="component1">Component 1</MenuItem>
-                            <MenuItem value="component2">Component 2</MenuItem>
-                            {/* Add more component options here */}
+                        <Select value={componentId} onChange={handleComponentChange}>
+                            <MenuItem key = {0} value={0}>None</MenuItem>
+                            {componentLst.map((component) => (
+                                <MenuItem key={component.componentId} value={component.componentId}>{component.componentName}</MenuItem>
+                            ))}
                         </Select>
                     </FormControl>
                     </>
@@ -114,10 +151,11 @@ export default function NewTaskForm() {
                 {type === 'product' && (
                     <FormControl>
                         <InputLabel>Choose Product</InputLabel>
-                        <Select value={product} onChange={handleProductChange}>
-                        <MenuItem value="product1">Product 1</MenuItem>
-                        <MenuItem value="product2">Product 2</MenuItem>
-                        {/* Add more product options here */}
+                        <Select value={productId} onChange={handleProductChange}>
+                            <MenuItem key = {0} value={0}>None</MenuItem>
+                            {productLst.map((product) => (
+                                <MenuItem key={product.productId} value={product.productId}>{product.productName}</MenuItem>
+                            ))}
                         </Select>
                     </FormControl>
                 )}
