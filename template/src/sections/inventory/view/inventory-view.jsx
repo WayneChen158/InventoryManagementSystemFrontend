@@ -143,7 +143,7 @@ export default function InventoryPage() {
           onClose={handleCloseModal}
         >
           <Box style={{ display: 'flex', margin: 'auto', justifyContent: 'center', width: '70%', height: '100%'}}>
-            <NewItemForm />
+            <NewItemForm handleCloseModal={handleCloseModal}/>
           </Box>
         </Modal> 
       </Stack>

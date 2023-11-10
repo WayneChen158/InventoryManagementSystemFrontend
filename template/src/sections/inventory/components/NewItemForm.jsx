@@ -3,8 +3,10 @@ import { useRef, useState } from 'react';
 import { Box, Card, FormControl, Grid, InputLabel, MenuItem, Stack, Select, TextField, Button } from '@mui/material';
 import { getRawMaterialsURL } from 'src/utils/url-provider';
 
-export default function NewItemForm() {
+export default function NewItemForm(props) {
 
+    const { handleCloseModal } = props;
+    
     const [itemName, setItemName] = useState('');
     const [catlogNumber, setCatalogNumber] = useState('');
     const [vendor, setVendor] = useState('');
@@ -71,11 +73,14 @@ export default function NewItemForm() {
             alertAmount,
         };
 
+        
         fetch(rawMaterialsURL.current, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(rawMaterialData)
-        })
+        });
+
+        handleCloseModal();
     }
 
     return(
