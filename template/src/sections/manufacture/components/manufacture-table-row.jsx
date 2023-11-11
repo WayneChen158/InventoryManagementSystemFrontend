@@ -17,6 +17,7 @@ import IconButton from '@mui/material/IconButton';
 import Iconify from 'src/components/iconify';
 
 import RecipeCard from './popupRecipeCard';
+import ScaleCheckBox from './ScaleCheckBox';
 
 // ----------------------------------------------------------------------
 
@@ -46,6 +47,14 @@ export default function UserTableRow({
   };
   const handleCloseModal = () => {
     setOpenModal(false);
+  };
+
+  const [openCheckModal, setOpenCheckModal] = useState(false);
+  const handleOpenCheckModal = () => {
+    setOpenCheckModal(true);
+  };
+  const handleCloseCheckModal = () => {
+    setOpenCheckModal(false);
   };
 
   return (
@@ -99,6 +108,11 @@ export default function UserTableRow({
           sx: { width: 140 },
         }}
       >
+        <MenuItem onClick={handleOpenCheckModal}>
+          <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
+          Done
+        </MenuItem>
+
         <MenuItem onClick={handleCloseMenu}>
           <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
           Edit
@@ -110,6 +124,21 @@ export default function UserTableRow({
         </MenuItem>
 
       </Popover>
+
+      <Modal
+          open={openCheckModal}
+          onClose={handleCloseCheckModal}
+          container={document.getElementById('root')}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          <Box style={{ display: 'flex', margin: 'auto', justifyContent: 'center', width: '50%', height: '50%'}}>
+            <ScaleCheckBox 
+              handleCloseMenu = {handleCloseMenu} 
+              handleCloseCheckModal={handleCloseCheckModal}
+              scale={record && record.scale}
+            />
+          </Box>
+        </Modal>
     </>
   );
 }
