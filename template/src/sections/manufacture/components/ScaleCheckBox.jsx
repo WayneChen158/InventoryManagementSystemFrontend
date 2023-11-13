@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 
 import {  Box, Card, Stack,  Modal, Button, TextField, Typography } from '@mui/material';
 
-export default function ScaleCheckBox({ handleCloseMenu, handleCloseCheckModal, scale }) {
-    handleCloseMenu();
+import { config } from '../../../config';
+
+export default function ScaleCheckBox({ handleCloseCheckModal, scale, manufactureRecordId }) {
 
     const [updateScale, setUpdateScale] = useState(scale);
 
@@ -25,7 +26,16 @@ export default function ScaleCheckBox({ handleCloseMenu, handleCloseCheckModal, 
     };
 
     const handleSubmit = () => {
-        console.log('submit');
+        fetch(`http://${config.server_host}:${config.server_port}/api/components/manufacture/${manufactureRecordId}?updateScale=${updateScale}`, {
+            method: 'PUT',
+        }).then((response) => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+        }).catch((error) => {
+        console.error('There was a problem with the fetch operation:', error);
+        });
         handleClose();
         handleCloseCheckModal();
     }
@@ -33,13 +43,13 @@ export default function ScaleCheckBox({ handleCloseMenu, handleCloseCheckModal, 
     return (
         <Card style={{ display: 'flex', justifyContent: 'center', width: '100%', height: '100%'}}>
             <Stack>
-                <Typography>
-                    <h2>Check your final Scale</h2>
-                </Typography>
-                <Box style={{padding: '10px 0 0 0'}}>
+            <Typography component="h2" sx={{ fontWeight: 'bold',fontSize: '25px' , padding: '10px 0 20px 0',}}>
+                Check your final Scale
+            </Typography>
+                <Box style={{padding: '10px 0 20px 0'}}>
                     <TextField
                         required
-                        label="Scale"
+                        label="Scale (tubes/kits)"
                         type="number"
                         value={updateScale}
                         onChange={handleScaleChange}
@@ -65,8 +75,8 @@ export default function ScaleCheckBox({ handleCloseMenu, handleCloseCheckModal, 
                         alignItems: 'center', 
                         justifyContent: 'center'
                     }}>
-                        <Typography>
-                            <h5>Are you sure you have manufactured {updateScale} tubes/kits in stock?</h5>
+                        <Typography component='h5'>
+                            Are you sure you have manufactured {updateScale} tubes/kits in stock?
                         </Typography>
                         <Button onClick={handleSubmit}>YES!</Button>
                         <Button onClick={handleClose}>NO</Button>
@@ -78,7 +88,7 @@ export default function ScaleCheckBox({ handleCloseMenu, handleCloseCheckModal, 
 }
 
 ScaleCheckBox.propTypes = {
-  handleCloseMenu: PropTypes.func.isRequired,
   handleCloseCheckModal: PropTypes.func.isRequired,
   scale: PropTypes.number.isRequired,
+  manufactureRecordId: PropTypes.number.isRequired,
 };
