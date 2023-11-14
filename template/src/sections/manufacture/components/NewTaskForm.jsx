@@ -13,6 +13,7 @@ import { Card, Box, Button, TextField, Select,
 
 import { config } from '../../../config';
 import RecipeTableRow from './RecipeTableRow';
+import ProductRecipeTableRow from './ProductRecipeTableRow';
 import AddComponentForm from './AddComponentForm';
 
 export default function NewTaskForm({ handleCloseModal }) {
@@ -375,26 +376,14 @@ export default function NewTaskForm({ handleCloseModal }) {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                        {itemLst.map((row) => (
-                            <TableRow key={row.componentId}>
-                                <TableCell>{row.componentName}</TableCell>
-                                <TableCell>{row.lotNumber || 'N/A'}</TableCell>
-                                <TableCell>{row.manufactureDate ? new Date(row.manufactureDate).toLocaleDateString() : 'N/A'}</TableCell>
-                                <TableCell>{row.amountInStock}</TableCell>
-                                <TableCell>
-                                    {/* Conditional rendering of button */}
-                                    {(row.amountInStock <= scale || row.amountInStock === 0) && (
-                                        <Button 
-                                            variant="contained" 
-                                            color="primary"
-                                            // onClick event handler can be added here
-                                        >
-                                            Add
-                                        </Button>
-                                    )}
-                                </TableCell>
-                            </TableRow>
-                        ))}
+                            {itemLst.map((row) => (
+                                <ProductRecipeTableRow 
+                                    key={row.componentId}
+                                    row={row}
+                                    onAddSubComponent={handleAddComponentClick}
+                                    scale={scale}
+                                />
+                            ))}
                         </TableBody>
                 </Table>}
                 </TableContainer>

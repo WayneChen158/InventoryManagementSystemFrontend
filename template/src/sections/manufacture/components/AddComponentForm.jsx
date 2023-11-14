@@ -54,10 +54,6 @@ export default function AddComponentForm ({
         setScale(event.target.value);
       };
 
-  const handleRequestRawMaterial = () => {
-    console.log("add raw material")
-  }
-
   const handleSubmit = () => {
         // if(componentId !== 0) {
         //     fetch(`http://${config.server_host}:${config.server_port}/api/components/manufacture/${componentId}?scale=${scale}`, {

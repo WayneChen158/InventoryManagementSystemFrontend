@@ -1,15 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { TableRow, TableCell, Button, Modal, Box } from '@mui/material';
 
-import Label from '../../../components/label';
-
-export default function RecipeTableRow ({ row, onAddSubComponent }) {
+export default function ProductRecipeTableRow ({ row, onAddSubComponent, scale }) {
 
   const handleClick = () => {
     if (row.type === 'component') {
-        onAddSubComponent(row.id, row.itemName, row.vol);
+        onAddSubComponent(row.componentId, row.componentName, scale);
     } else {
         console.log("Raw material request sent");
     }
@@ -17,15 +15,13 @@ export default function RecipeTableRow ({ row, onAddSubComponent }) {
 
   return (
     <TableRow>
-        <TableCell>{row.itemName}</TableCell>
-        <TableCell>{row.volPerRxn}</TableCell>
-        <TableCell>{row.vol}</TableCell>
-        <TableCell>
-            <Label color={row.hasEnoughInStock ? 'success' : 'error'}>{row.hasEnoughInStock ? 'YES' : 'NO'}</Label>
-        </TableCell>
+        <TableCell>{row.componentName}</TableCell>
+        <TableCell>{row.lotNumber || 'N/A'}</TableCell>
+        <TableCell>{row.manufactureDate ? new Date(row.manufactureDate).toLocaleDateString() : 'N/A'}</TableCell>
+        <TableCell>{row.amountInStock}</TableCell>
         <TableCell>
             {/* Conditional rendering of button */}
-            {(!row.hasEnoughInStock) && (
+            {(row.amountInStock < scale || row.amountInStock === 0) && (
                 <Button 
                     variant="contained" 
                     color="primary"
@@ -34,13 +30,14 @@ export default function RecipeTableRow ({ row, onAddSubComponent }) {
                     Add
                 </Button>
             )}
-
         </TableCell>
     </TableRow>
   );
 };
 
-RecipeTableRow.propTypes = {
+ProductRecipeTableRow.propTypes = {
     row: PropTypes.any.isRequired,
-    onAddSubComponent: PropTypes.func.isRequired
+    onAddSubComponent: PropTypes.func.isRequired,
+    scale: PropTypes.any.isRequired,
   };
+ 
