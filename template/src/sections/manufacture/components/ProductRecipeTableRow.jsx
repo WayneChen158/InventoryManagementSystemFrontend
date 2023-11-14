@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { TableRow, TableCell, Button, Modal, Box } from '@mui/material';
+import { TableRow, TableCell, Button } from '@mui/material';
 
-export default function ProductRecipeTableRow ({ row, onAddSubComponent, scale }) {
+export default function ProductRecipeTableRow ({ row, onAddSubComponent, scale, isSubmitted }) {
 
   const handleClick = () => {
     if (row.type === 'component') {
@@ -26,6 +26,7 @@ export default function ProductRecipeTableRow ({ row, onAddSubComponent, scale }
                     variant="contained" 
                     color="primary"
                     onClick={handleClick}
+                    disabled={isSubmitted}
                 >
                     Add
                 </Button>
@@ -39,5 +40,6 @@ ProductRecipeTableRow.propTypes = {
     row: PropTypes.any.isRequired,
     onAddSubComponent: PropTypes.func.isRequired,
     scale: PropTypes.any.isRequired,
+    isSubmitted: PropTypes.any,
   };
  

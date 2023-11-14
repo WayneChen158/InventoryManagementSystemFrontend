@@ -30,6 +30,7 @@ export default function NewTaskForm({ handleCloseModal }) {
   const [itemLst, setItemLst] = useState([]);
 
   const [componentsStack, setComponentsStack] = useState([]);
+  const [submittedComponents, setSubmittedComponents] = useState(new Set());
 
   useEffect(() => {
     fetch(`http://${config.server_host}:${config.server_port}/api/products`, {
@@ -123,16 +124,16 @@ export default function NewTaskForm({ handleCloseModal }) {
     
         if (type === 'component') {
             // For components, check if any item in itemLst has hasEnoughInStock as false
-            const anyItemNotInStock = itemLst.some((item) => !item.hasEnoughInStock);
+            const anyItemNotInStock = itemLst.some((item) => !item.hasEnoughInStock && !(submittedComponents.has(item.id) && item.type === 'component'));
             allPassCondition = !(anyItemNotInStock || itemLst.length === 0 || scale <= 0);
         } else if (type === 'product') {
             // For products, check if any item in itemLst has amountInStock less than scale
-            const anyItemNotSufficient = itemLst.some((item) => item.amountInStock < scale);
+            const anyItemNotSufficient = itemLst.some((item) => item.amountInStock < scale && !submittedComponents.has(item.componentId));
             allPassCondition = !(anyItemNotSufficient || itemLst.length === 0 || scale <= 0);
         }
     
         setAllPass(allPassCondition);
-    }, [itemLst, scale, type]);
+    }, [itemLst, submittedComponents, scale, type]);
 
 
     const handleTypeChange = (event) => {
@@ -168,9 +169,13 @@ export default function NewTaskForm({ handleCloseModal }) {
         setComponentsStack(prevStack => prevStack.slice(0, prevStack.length - 1));
     };
 
-    const handleRequestRawMaterial = () => {
-        console.log("Request current material");
-    }
+    const handleComponentSubmit = (iComponentId) => {
+        setSubmittedComponents((prevSubmitted) => {
+          const newSubmitted = new Set(prevSubmitted);
+          newSubmitted.add(iComponentId);
+          return newSubmitted;
+        });
+      };
 
     const handleCheckInventory = () => {
         setIsChecking(true);
@@ -360,6 +365,7 @@ export default function NewTaskForm({ handleCloseModal }) {
                             <RecipeTableRow 
                                 key = {`${row.id}_${row.type}_${index}`}
                                 row = {row}
+                                isSubmitted={submittedComponents.has(row.id) && row.type === 'component'}
                                 onAddSubComponent={handleAddComponentClick}
                             />
                         ))}
@@ -382,6 +388,7 @@ export default function NewTaskForm({ handleCloseModal }) {
                                     row={row}
                                     onAddSubComponent={handleAddComponentClick}
                                     scale={scale}
+                                    isSubmitted={submittedComponents.has(row.componentId)}
                                 />
                             ))}
                         </TableBody>
@@ -399,6 +406,8 @@ export default function NewTaskForm({ handleCloseModal }) {
             isOpen={index === componentsStack.length - 1} // Only the last modal in the stack is open
             onClose={handleCloseAddComponentForm}
             onAddSubComponent={handleAddComponentClick}
+            onSubmit={handleComponentSubmit}
+            submittedComponents = {submittedComponents}
         />
         ))}
         </Grid>

@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-import { TableRow, TableCell, Button, Modal, Box } from '@mui/material';
+import { TableRow, TableCell, Button } from '@mui/material';
 
 import Label from '../../../components/label';
 
-export default function RecipeTableRow ({ row, onAddSubComponent }) {
+export default function RecipeTableRow ({ row, isSubmitted, onAddSubComponent }) {
 
   const handleClick = () => {
     if (row.type === 'component') {
@@ -30,6 +30,7 @@ export default function RecipeTableRow ({ row, onAddSubComponent }) {
                     variant="contained" 
                     color="primary"
                     onClick={handleClick}
+                    disabled={isSubmitted}
                 >
                     Add
                 </Button>
@@ -42,5 +43,6 @@ export default function RecipeTableRow ({ row, onAddSubComponent }) {
 
 RecipeTableRow.propTypes = {
     row: PropTypes.any.isRequired,
+    isSubmitted: PropTypes.any,
     onAddSubComponent: PropTypes.func.isRequired
   };

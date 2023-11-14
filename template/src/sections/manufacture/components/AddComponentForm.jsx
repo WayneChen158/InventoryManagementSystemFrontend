@@ -15,6 +15,8 @@ export default function AddComponentForm ({
     isOpen,
     onClose,
     onAddSubComponent,
+    onSubmit,
+    submittedComponents
 }) {
 
   const [scale, setScale] = useState(requiredScale);
@@ -43,12 +45,12 @@ export default function AddComponentForm ({
 
   useEffect(() => {
         // For components, check if any item in itemLst has hasEnoughInStock as false
-        const anyItemNotInStock = itemLst.some((item) => !item.hasEnoughInStock);
+        const anyItemNotInStock = itemLst.some((item) => !item.hasEnoughInStock && !submittedComponents.has(item.id));
         const allPassCondition = !(anyItemNotInStock || itemLst.length === 0 || scale <= 0);
     
         setAllPass(allPassCondition);
 
-    }, [itemLst, scale]);
+    }, [itemLst, scale, submittedComponents]);
 
   const handleScaleChange = (event) => {
         setScale(event.target.value);
@@ -68,6 +70,7 @@ export default function AddComponentForm ({
         //     });
         // }
         console.log("submit test")
+        onSubmit(componentId);
         onClose();
     };
     
@@ -98,34 +101,35 @@ export default function AddComponentForm ({
                 margin="normal"
             />
             <Button variant="contained" color="primary" onClick={handleSubmit} disabled={!allPass}>
-                Add to Inventory
+                Add This Manufacture Task
             </Button>
 
 
-                <Paper sx={{ width: '100%', overflow: 'auto' }}>
-                    <TableContainer sx={{ maxHeight: '70vh', overflowY: 'auto' }}>
-                        <Table stickyHeader aria-label="sticky table">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Item Name</TableCell>
-                                    <TableCell>Vol Per Rxn</TableCell>
-                                    <TableCell>Required Amount</TableCell>
-                                    <TableCell>Amount In Stock</TableCell>
-                                    <TableCell>Actions</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                            {itemLst.map((row, index) => (
-                                    <RecipeTableRow 
-                                        key = {`${row.id}_${row.type}_${index}`}
-                                        row = {row}
-                                        onAddSubComponent={onAddSubComponent}
-                                    />
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </Paper>
+            <Paper sx={{ width: '100%', overflow: 'auto' }}>
+                <TableContainer sx={{ maxHeight: '70vh', overflowY: 'auto' }}>
+                    <Table stickyHeader aria-label="sticky table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Item Name</TableCell>
+                                <TableCell>Vol Per Rxn</TableCell>
+                                <TableCell>Required Amount</TableCell>
+                                <TableCell>Amount In Stock</TableCell>
+                                <TableCell>Actions</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                        {itemLst.map((row, index) => (
+                                <RecipeTableRow 
+                                    key = {`${row.id}_${row.type}_${index}`}
+                                    row = {row}
+                                    onAddSubComponent={onAddSubComponent}
+                                    isSubmitted={submittedComponents.has(row.id)}
+                                />
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Paper>
 
             </Paper>
         </Box>
@@ -140,4 +144,6 @@ AddComponentForm.propTypes = {
     isOpen: PropTypes.any.isRequired,
     onClose: PropTypes.any.isRequired,
     onAddSubComponent: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+    submittedComponents: PropTypes.any,
   };
