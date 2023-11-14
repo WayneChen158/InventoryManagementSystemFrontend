@@ -12,7 +12,8 @@ import { Card, Box, Button, TextField, Select,
     TableRow, TableCell, TableBody, Table, Paper, TableContainer } from '@mui/material';
 
 import { config } from '../../../config';
-import Label from '../../../components/label';
+import RecipeTableRow from './RecipeTableRow';
+import AddComponentForm from './AddComponentForm';
 
 export default function NewTaskForm({ handleCloseModal }) {
   const [type, setType] = useState('component');
@@ -26,6 +27,8 @@ export default function NewTaskForm({ handleCloseModal }) {
   const [productLst, setProductLst] = useState([]);
   const [componentLst, setComponentLst] = useState([]);
   const [itemLst, setItemLst] = useState([]);
+
+  const [componentsStack, setComponentsStack] = useState([]);
 
   useEffect(() => {
     fetch(`http://${config.server_host}:${config.server_port}/api/products`, {
@@ -92,7 +95,6 @@ export default function NewTaskForm({ handleCloseModal }) {
             })
             .then((resdata) => {
                 setItemLst(resdata);
-                console.log(resdata);
             })
             .catch((error) => {
             console.error('There was a problem with the fetch operation:', error);
@@ -109,7 +111,6 @@ export default function NewTaskForm({ handleCloseModal }) {
                 })
                 .then((resdata) => {
                     setItemLst(resdata);
-                    console.log(resdata);
                 })
                 .catch((error) => {
                 console.error('There was a problem with the fetch operation:', error);
@@ -152,8 +153,18 @@ export default function NewTaskForm({ handleCloseModal }) {
         }
     };
 
-    const handleAddComponent = () => {
-        console.log("Adding component");
+    // Function to handle the 'Add' action from RecipeTableRow
+    const handleAddComponentClick = (iComponentId, itemName, requiredScale) => {
+        // This will set the component details which will be used to open the AddComponentForm
+        setComponentsStack(prevStack => [
+            ...prevStack,
+            { iComponentId, itemName, requiredScale }
+          ]);
+    };
+
+    // Function to close the AddComponentForm modal
+    const handleCloseAddComponentForm = () => {
+        setComponentsStack(prevStack => prevStack.slice(0, prevStack.length - 1));
     };
 
     const handleRequestRawMaterial = () => {
@@ -344,27 +355,12 @@ export default function NewTaskForm({ handleCloseModal }) {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                        {itemLst.map((row) => (
-                            <TableRow key = {row.id}>
-                                <TableCell>{row.itemName}</TableCell>
-                                <TableCell>{row.volPerRxn}</TableCell>
-                                <TableCell>{row.vol}</TableCell>
-                                <TableCell>
-                                    <Label color={row.hasEnoughInStock ? 'success' : 'error'}>{row.hasEnoughInStock ? 'YES' : 'NO'}</Label>
-                                </TableCell>
-                                <TableCell>
-                                    {/* Conditional rendering of button */}
-                                    {(!row.hasEnoughInStock) && (
-                                        <Button 
-                                            variant="contained" 
-                                            color="primary"
-                                            onClick={row.type === "component" ? handleAddComponent : handleRequestRawMaterial}
-                                        >
-                                            Add
-                                        </Button>
-                                    )}
-                                </TableCell>
-                            </TableRow>
+                        {itemLst.map((row, index) => (
+                            <RecipeTableRow 
+                                key = {`${row.id}_${row.type}_${index}`}
+                                row = {row}
+                                onAddSubComponent={handleAddComponentClick}
+                            />
                         ))}
                         </TableBody>
                     </Table>}
@@ -405,6 +401,17 @@ export default function NewTaskForm({ handleCloseModal }) {
             </Paper>
         </Grid>
         )}
+        {componentsStack.map((component, index) => (
+        <AddComponentForm
+            key={`${component.componentId}_${index}`}
+            componentId={component.iComponentId}
+            componentName={component.itemName}
+            requiredScale={component.requiredScale}
+            isOpen={index === componentsStack.length - 1} // Only the last modal in the stack is open
+            onClose={handleCloseAddComponentForm}
+            onAddSubComponent={handleAddComponentClick}
+        />
+        ))}
         </Grid>
     );
 }
