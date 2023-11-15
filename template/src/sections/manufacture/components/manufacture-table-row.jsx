@@ -17,6 +17,7 @@ import IconButton from '@mui/material/IconButton';
 import Iconify from 'src/components/iconify';
 
 import RecipeCard from './popupRecipeCard';
+import ScaleCheckBox from './ScaleCheckBox';
 
 // ----------------------------------------------------------------------
 
@@ -25,15 +26,25 @@ export default function UserTableRow({
   record,
   handleClick,
 }) {
-  const [open, setOpen] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const handleOpenMenu = (event) => {
-    setOpen(event.currentTarget);
+    setAnchorEl(event.currentTarget);
   };
-
+  
   const handleCloseMenu = () => {
-    setOpen(null);
+    setAnchorEl(null);
   };
+  
+  // const [open, setOpen] = useState(null);
+
+  // const handleOpenMenu = (event) => {
+  //   setOpen(event.currentTarget);
+  // };
+
+  // const handleCloseMenu = () => {
+  //   setOpen(null);
+  // };
 
   const formatDate = (dateString) => {
     const formattedDate = format(new Date(dateString), 'yyyy-MM-dd');
@@ -46,6 +57,15 @@ export default function UserTableRow({
   };
   const handleCloseModal = () => {
     setOpenModal(false);
+  };
+
+  const [openCheckModal, setOpenCheckModal] = useState(false);
+  const handleOpenCheckModal = () => {
+    handleCloseMenu();
+    setOpenCheckModal(true);
+  };
+  const handleCloseCheckModal = () => {
+    setOpenCheckModal(false);
   };
 
   return (
@@ -90,15 +110,17 @@ export default function UserTableRow({
       </TableRow>
 
       <Popover
-        open={!!open}
-        anchorEl={open}
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
         onClose={handleCloseMenu}
         anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        PaperProps={{
-          sx: { width: 140 },
-        }}
       >
+        <MenuItem onClick={handleOpenCheckModal} sx={{ color: 'success.main' }}>
+          <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
+          Done
+        </MenuItem>
+
         <MenuItem onClick={handleCloseMenu}>
           <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
           Edit
@@ -110,6 +132,21 @@ export default function UserTableRow({
         </MenuItem>
 
       </Popover>
+
+      <Modal
+          open={openCheckModal}
+          onClose={handleCloseCheckModal}
+          container={document.getElementById('root')}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          <Box style={{ display: 'flex', margin: 'auto', justifyContent: 'center', width: '50%', height: '40%'}}>
+            <ScaleCheckBox 
+              handleCloseCheckModal={handleCloseCheckModal}
+              scale={record && record.scale}
+              manufactureRecordId = {record.manufactureRecordId}
+            />
+          </Box>
+        </Modal>
     </>
   );
 }
