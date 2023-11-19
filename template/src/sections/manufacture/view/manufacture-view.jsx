@@ -24,6 +24,13 @@ import ManufacturePageThree from './manufacture-view-3';
 export default function ManufacturePage() {
   const [value, setValue] = useState('1');
 
+  const [triggerFetch, setTriggerFetch] = useState(0);
+
+  const refreshData = () => {
+    console.log(`triggered from ${triggerFetch}`)
+    setTriggerFetch(prev => prev + 1); // Toggle the state to trigger useEffect
+  };
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -53,7 +60,10 @@ export default function ManufacturePage() {
             container={document.getElementById('root')}
           >
             <Box style={{ display: 'flex', margin: 'auto', justifyContent: 'center', width: '70%', height: '100%'}}>
-              <NewTaskForm handleCloseModal={handleCloseModal}/>
+              <NewTaskForm 
+                handleCloseModal={handleCloseModal}
+                handleRefreshData={refreshData}
+              />
             </Box>
           </Modal>
       </Stack>
@@ -68,7 +78,7 @@ export default function ManufacturePage() {
             </TabList>
           </Box>
           <TabPanel value="1"><ManufacturePageOne /></TabPanel>
-          <TabPanel value="2"><ManufacturePageTwo /></TabPanel>
+          <TabPanel value="2"><ManufacturePageTwo triggerFetch={triggerFetch} refreshData={refreshData}/></TabPanel>
           <TabPanel value="3"><ManufacturePageThree /></TabPanel>
         </TabContext>
       </Box>

@@ -1,22 +1,17 @@
 import { useState } from 'react';
 
 import Card from '@mui/material/Card';
-// import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
-// import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
-// import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
 import { users } from 'src/_mock/user';
 import { inventoryData } from 'src/_mock/inventory';
 
-// import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 
-import TableNoData from '../table-no-data';
 import UserTableRow from '../user-table-row';
 import UserTableHead from '../user-table-head';
 import TableEmptyRows from '../table-empty-rows';
@@ -32,8 +27,6 @@ export default function ManufacturePageOne() {
   const [selected, setSelected] = useState([]);
 
   const [orderBy, setOrderBy] = useState('name');
-
-  const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -84,10 +77,7 @@ export default function ManufacturePageOne() {
   const dataFiltered = applyFilter({
     inputData: inventoryData,
     comparator: getComparator(order, orderBy),
-    filterName,
   });
-
-  const notFound = !dataFiltered.length && !!filterName;
 
   return (
     <Container>
@@ -136,7 +126,6 @@ export default function ManufacturePageOne() {
                   emptyRows={emptyRows(page, rowsPerPage, users.length)}
                 />
 
-                {notFound && <TableNoData query={filterName} />}
               </TableBody>
             </Table>
           </TableContainer>

@@ -1,22 +1,21 @@
-import * as React from 'react';
-import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useState, useEffect } from 'react';
 
 import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
-import { Card, Box, Button, TextField, Select,
-    MenuItem, InputLabel, Stack, Grid, TableHead, 
-    TableRow, TableCell, TableBody, Table, Paper, TableContainer } from '@mui/material';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import { Box, Card, Grid, Stack, Paper, Table, Select,
+    Button, TableRow, MenuItem, TextField, TableHead, 
+    TableCell, TableBody, InputLabel, TableContainer } from '@mui/material';
 
 import { config } from '../../../config';
 import RecipeTableRow from './RecipeTableRow';
-import ProductRecipeTableRow from './ProductRecipeTableRow';
 import AddComponentForm from './AddComponentForm';
+import ProductRecipeTableRow from './ProductRecipeTableRow';
 
-export default function NewTaskForm({ handleCloseModal }) {
+export default function NewTaskForm({ handleCloseModal, handleRefreshData }) {
   const [type, setType] = useState('component');
   const [componentId, setComponentId] = useState(0);
   const [productId, setProductId] = useState(0);
@@ -193,8 +192,22 @@ export default function NewTaskForm({ handleCloseModal }) {
             }).catch((error) => {
             console.error('There was a problem with the fetch operation:', error);
             });
+        } else {
+            fetch(`http://${config.server_host}:${config.server_port}/api/products/manufacture/${productId}?scale=${scale}`, {
+                method: 'POST',
+            }).then((response) => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+            }).catch((error) => {
+            console.error('There was a problem with the fetch operation:', error);
+            });
         }
         handleCloseModal();
+        setTimeout(() => {
+            handleRefreshData();
+          }, config.timeout);
     };
 
     return (
@@ -408,6 +421,7 @@ export default function NewTaskForm({ handleCloseModal }) {
             onAddSubComponent={handleAddComponentClick}
             onSubmit={handleComponentSubmit}
             submittedComponents = {submittedComponents}
+            handleRefreshData={handleRefreshData}
         />
         ))}
         </Grid>
@@ -416,4 +430,5 @@ export default function NewTaskForm({ handleCloseModal }) {
 
 NewTaskForm.propTypes = {
     handleCloseModal: PropTypes.func.isRequired,
+    handleRefreshData: PropTypes.func,
   };

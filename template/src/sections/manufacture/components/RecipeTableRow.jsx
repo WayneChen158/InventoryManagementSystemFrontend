@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { TableRow, TableCell, Button } from '@mui/material';
+import { Button, TableRow, TableCell } from '@mui/material';
 
 import Label from '../../../components/label';
 
