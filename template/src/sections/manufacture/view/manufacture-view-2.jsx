@@ -1,12 +1,10 @@
+import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 
 import Card from '@mui/material/Card';
-// import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
-// import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
-// import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
@@ -15,7 +13,6 @@ import { users } from 'src/_mock/user';
 import Scrollbar from 'src/components/scrollbar';
 
 import { config } from '../../../config';
-// import TableNoData from '../table-no-data';
 import UserTableHead from '../user-table-head';
 import TableEmptyRows from '../table-empty-rows';
 import { emptyRows, applyFilter, getComparator } from '../utils';
@@ -23,7 +20,7 @@ import ManufactureTableRow from '../components/manufacture-table-row';
 
 // ----------------------------------------------------------------------
 
-export default function ManufacturePageTwo() {
+export default function ManufacturePageTwo({triggerFetch, refreshData}) {
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -36,7 +33,6 @@ export default function ManufacturePageTwo() {
 
   const [manufacturingList, setManufacturingList] = useState([]);
 
-  
   useEffect(() => {
     fetch(`http://${config.server_host}:${config.server_port}/api/manufacture/manufactureRecords?status=1`, {
       method: 'GET',
@@ -53,8 +49,7 @@ export default function ManufacturePageTwo() {
       .catch((error) => {
         console.error('There was a problem with the fetch operation:', error);
       });
-  }, [manufacturingList]);
-  
+  }, [triggerFetch]);
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -138,6 +133,7 @@ export default function ManufacturePageTwo() {
                       selected={selected.indexOf(row.manufactureRecordId) !== -1}
                       handleClick={(event) => handleClick(event, row.manufactureRecordId)}
                       status={1}
+                      handleOperation={refreshData}
                     />
                   ))}
 
@@ -164,3 +160,8 @@ export default function ManufacturePageTwo() {
     </Container>
   );
 }
+
+ManufacturePageTwo.propTypes = {
+  triggerFetch: PropTypes.any,
+  refreshData: PropTypes.func,
+};

@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useState, useEffect } from 'react';
 
-import { Paper, Typography, TextField, 
-    Button, Table, TableBody, TableCell, 
-    TableContainer, TableHead, TableRow, Box, Modal } from '@mui/material';
+import { Box, Modal, Paper, 
+    Table, Button, TableRow, TextField, TableHead, TableCell, 
+    TableBody, Typography, TableContainer } from '@mui/material';
 
 import { config } from '../../../config';
 import RecipeTableRow from './RecipeTableRow';
@@ -16,7 +16,8 @@ export default function AddComponentForm ({
     onClose,
     onAddSubComponent,
     onSubmit,
-    submittedComponents
+    submittedComponents,
+    handleRefreshData
 }) {
 
   const [scale, setScale] = useState(requiredScale);
@@ -72,6 +73,9 @@ export default function AddComponentForm ({
         console.log("submit test")
         onSubmit(componentId);
         onClose();
+        setTimeout(() => {
+            handleRefreshData();
+          }, config.timeout);
     };
     
   return (
@@ -146,4 +150,5 @@ AddComponentForm.propTypes = {
     onAddSubComponent: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     submittedComponents: PropTypes.any,
+    handleRefreshData: PropTypes.func,
   };

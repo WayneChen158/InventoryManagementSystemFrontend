@@ -10,15 +10,13 @@ import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
 import MenuItem from '@mui/material/MenuItem';
 import TableCell from '@mui/material/TableCell';
-// import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-// import Label from 'src/components/label';
 
 import Iconify from 'src/components/iconify';
 
+import { config } from '../../../config';
 import RecipeCard from './popupRecipeCard';
 import ScaleCheckBox from './ScaleCheckBox';
-import { config } from '../../../config';
 
 // ----------------------------------------------------------------------
 
@@ -27,6 +25,7 @@ export default function UserTableRow({
   record,
   status,
   handleClick,
+  handleOperation,
 }) {
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -70,7 +69,11 @@ export default function UserTableRow({
     }).catch((error) => {
         console.error('There was a problem with the fetch operation:', error);
     });
+    
     setAnchorEl(null);
+    setTimeout(() => {
+      handleOperation();
+    }, config.timeout);
   }
 
   return (
@@ -149,6 +152,7 @@ export default function UserTableRow({
               handleCloseCheckModal={handleCloseCheckModal}
               scale={record && record.scale}
               manufactureRecordId = {record.manufactureRecordId}
+              handleOperation={handleOperation}
             />
           </Box>
         </Modal>
@@ -161,4 +165,5 @@ UserTableRow.propTypes = {
   record: PropTypes.any,
   status: PropTypes.any,
   selected: PropTypes.any,
+  handleOperation: PropTypes.any,
 };
