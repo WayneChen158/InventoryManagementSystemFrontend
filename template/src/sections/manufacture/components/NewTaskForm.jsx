@@ -193,6 +193,17 @@ export default function NewTaskForm({ handleCloseModal }) {
             }).catch((error) => {
             console.error('There was a problem with the fetch operation:', error);
             });
+        } else {
+            fetch(`http://${config.server_host}:${config.server_port}/api/products/manufacture/${productId}?scale=${scale}`, {
+                method: 'POST',
+            }).then((response) => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+            }).catch((error) => {
+            console.error('There was a problem with the fetch operation:', error);
+            });
         }
         handleCloseModal();
     };

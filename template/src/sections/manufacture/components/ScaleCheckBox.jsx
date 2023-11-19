@@ -26,15 +26,14 @@ export default function ScaleCheckBox({ handleCloseCheckModal, scale, manufactur
     };
 
     const handleSubmit = () => {
-        fetch(`http://${config.server_host}:${config.server_port}/api/components/manufacture/${manufactureRecordId}?updateScale=${updateScale}`, {
+        fetch(`http://${config.server_host}:${config.server_port}/api/manufacture/${manufactureRecordId}?updateScale=${updateScale}`, {
             method: 'PUT',
         }).then((response) => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-        return response.json();
         }).catch((error) => {
-        console.error('There was a problem with the fetch operation:', error);
+            console.error('There was a problem with the fetch operation:', error);
         });
         handleClose();
         handleCloseCheckModal();

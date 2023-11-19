@@ -18,12 +18,14 @@ import Iconify from 'src/components/iconify';
 
 import RecipeCard from './popupRecipeCard';
 import ScaleCheckBox from './ScaleCheckBox';
+import { config } from '../../../config';
 
 // ----------------------------------------------------------------------
 
 export default function UserTableRow({
   selected,
   record,
+  status,
   handleClick,
 }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -35,16 +37,6 @@ export default function UserTableRow({
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
-  
-  // const [open, setOpen] = useState(null);
-
-  // const handleOpenMenu = (event) => {
-  //   setOpen(event.currentTarget);
-  // };
-
-  // const handleCloseMenu = () => {
-  //   setOpen(null);
-  // };
 
   const formatDate = (dateString) => {
     const formattedDate = format(new Date(dateString), 'yyyy-MM-dd');
@@ -67,6 +59,19 @@ export default function UserTableRow({
   const handleCloseCheckModal = () => {
     setOpenCheckModal(false);
   };
+
+  const handleCancelTask = () => {
+    fetch(`http://${config.server_host}:${config.server_port}/api/manufacture/cancel/${record.manufactureRecordId}`, {
+        method: 'PUT',
+    }).then((response) => {
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    }).catch((error) => {
+        console.error('There was a problem with the fetch operation:', error);
+    });
+    setAnchorEl(null);
+  }
 
   return (
     <>
@@ -102,14 +107,14 @@ export default function UserTableRow({
           </Modal>
         </TableCell>
 
-        <TableCell align="right">
+        {status === 1 && <TableCell align="right">
           <IconButton onClick={handleOpenMenu}>
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
-        </TableCell>
+        </TableCell>}
       </TableRow>
 
-      <Popover
+      {status === 1 && <Popover
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
         onClose={handleCloseMenu}
@@ -126,12 +131,12 @@ export default function UserTableRow({
           Edit
         </MenuItem>
 
-        <MenuItem onClick={handleCloseMenu} sx={{ color: 'error.main' }}>
+        <MenuItem onClick={handleCancelTask} sx={{ color: 'error.main' }}>
           <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
           Delete
         </MenuItem>
 
-      </Popover>
+      </Popover>}
 
       <Modal
           open={openCheckModal}
@@ -154,5 +159,6 @@ export default function UserTableRow({
 UserTableRow.propTypes = {
   handleClick: PropTypes.func,
   record: PropTypes.any,
+  status: PropTypes.any,
   selected: PropTypes.any,
 };

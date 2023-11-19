@@ -38,7 +38,7 @@ export default function ManufacturePageTwo() {
 
   
   useEffect(() => {
-    fetch(`http://${config.server_host}:${config.server_port}/api/manufactureRecords?status=1`, {
+    fetch(`http://${config.server_host}:${config.server_port}/api/manufacture/manufactureRecords?status=1`, {
       method: 'GET',
     })
       .then((response) => {
@@ -53,7 +53,7 @@ export default function ManufacturePageTwo() {
       .catch((error) => {
         console.error('There was a problem with the fetch operation:', error);
       });
-  }, []);
+  }, [manufacturingList]);
   
 
   const handleSort = (event, id) => {
@@ -66,7 +66,7 @@ export default function ManufacturePageTwo() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = manufacturingList.map((n) => n.id);
+      const newSelecteds = manufacturingList.map((n) => n.manufactureRecordId);
       setSelected(newSelecteds);
       return;
     }
@@ -122,7 +122,7 @@ export default function ManufacturePageTwo() {
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
                   { id: 'id', label: 'ID' },
-                  { id: 'name', label: 'Component Name' },
+                  { id: 'name', label: 'Description' },
                   { id: 'date', label: 'Date' },
                   { id: 'owner', label: 'Owner' },
                   { id: 'scale', label: 'Scale' },
@@ -137,6 +137,7 @@ export default function ManufacturePageTwo() {
                       record={row}
                       selected={selected.indexOf(row.manufactureRecordId) !== -1}
                       handleClick={(event) => handleClick(event, row.manufactureRecordId)}
+                      status={1}
                     />
                   ))}
 

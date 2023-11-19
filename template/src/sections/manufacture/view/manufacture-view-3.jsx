@@ -15,7 +15,6 @@ import { users } from 'src/_mock/user';
 import Scrollbar from 'src/components/scrollbar';
 
 import { config } from '../../../config';
-// import TableNoData from '../table-no-data';
 import UserTableHead from '../user-table-head';
 import TableEmptyRows from '../table-empty-rows';
 import { emptyRows, applyFilter, getComparator } from '../utils';
@@ -23,7 +22,7 @@ import ManufactureTableRow from '../components/manufacture-table-row';
 
 // ----------------------------------------------------------------------
 
-export default function ManufacturePageTwo() {
+export default function ManufacturePageThree() {
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -38,7 +37,7 @@ export default function ManufacturePageTwo() {
 
   
   useEffect(() => {
-    fetch(`http://${config.server_host}:${config.server_port}/api/manufactureRecords?status=2`, {
+    fetch(`http://${config.server_host}:${config.server_port}/api/manufacture/manufactureRecords?status=2`, {
       method: 'GET',
     })
       .then((response) => {
@@ -66,7 +65,7 @@ export default function ManufacturePageTwo() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = manufacturingList.map((n) => n.id);
+      const newSelecteds = manufacturingList.map((n) => n.manufactureRecordId);
       setSelected(newSelecteds);
       return;
     }
@@ -122,7 +121,7 @@ export default function ManufacturePageTwo() {
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
                   { id: 'id', label: 'ID' },
-                  { id: 'name', label: 'Component Name' },
+                  { id: 'name', label: 'Description' },
                   { id: 'date', label: 'Date' },
                   { id: 'owner', label: 'Owner' },
                   { id: 'scale', label: 'Scale' },

@@ -57,18 +57,18 @@ export default function AddComponentForm ({
       };
 
   const handleSubmit = () => {
-        // if(componentId !== 0) {
-        //     fetch(`http://${config.server_host}:${config.server_port}/api/components/manufacture/${componentId}?scale=${scale}`, {
-        //         method: 'POST',
-        //     }).then((response) => {
-        //     if (!response.ok) {
-        //         throw new Error('Network response was not ok');
-        //     }
-        //     return response.json();
-        //     }).catch((error) => {
-        //     console.error('There was a problem with the fetch operation:', error);
-        //     });
-        // }
+        if(componentId !== 0) {
+            fetch(`http://${config.server_host}:${config.server_port}/api/components/manufacture/${componentId}?scale=${scale}`, {
+                method: 'POST',
+            }).then((response) => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+            }).catch((error) => {
+            console.error('There was a problem with the fetch operation:', error);
+            });
+        }
         console.log("submit test")
         onSubmit(componentId);
         onClose();
