@@ -29,6 +29,11 @@ const navConfig = [
     icon: <Iconify icon="openmoji:lab-coat" width={25}/>,
   },
   {
+    title: 'Stock',
+    path: '/stock',
+    icon: icon('ic_cart'),
+  },
+  {
     title: 'product',
     path: '/products',
     icon: icon('ic_cart'),
