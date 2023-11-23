@@ -13,6 +13,8 @@ import TablePagination from '@mui/material/TablePagination';
 // import { users } from 'src/_mock/user';
 // import { inventoryData } from 'src/_mock/inventory';
 
+import { Box, Modal } from '@mui/material';
+
 import { getRawMaterialsURL } from 'src/utils/url-provider';
 
 import Iconify from 'src/components/iconify';
@@ -24,6 +26,7 @@ import UserTableHead from '../user-table-head';
 import TableEmptyRows from '../table-empty-rows';
 import UserTableToolbar from '../user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
+import NewItemForm from '../components/NewItemForm';
 
 // ----------------------------------------------------------------------
 
@@ -40,9 +43,19 @@ export default function InventoryPage() {
 
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const [inventoryData, setInventoryData] = useState([]); 
+  const [inventoryData, setInventoryData] = useState([]);
+  
+  const [openModal, setOpenModal] = useState(false);
 
   const rawMaterialsURL = useRef(getRawMaterialsURL());
+  
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
   
   useEffect(() => {
     fetch(rawMaterialsURL.current)
@@ -117,9 +130,22 @@ export default function InventoryPage() {
         <Typography variant="h4">Inventory</Typography>
 
         {/* {button onClick need to be implemented} */}
-        <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+        <Button 
+          variant="contained" 
+          startIcon={<Iconify icon="eva:plus-fill" />}
+          onClick={handleOpenModal}
+        >
           New Item
-        </Button> 
+        </Button>
+
+        <Modal
+          open={openModal}
+          onClose={handleCloseModal}
+        >
+          <Box style={{ display: 'flex', margin: 'auto', justifyContent: 'center', width: '70%', height: '100%'}}>
+            <NewItemForm handleCloseModal={handleCloseModal}/>
+          </Box>
+        </Modal> 
       </Stack>
 
       <Card>
