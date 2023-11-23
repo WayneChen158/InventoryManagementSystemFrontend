@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
@@ -7,13 +7,15 @@ import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-import { users } from 'src/_mock/user';
+import { getProductsInStockURL } from 'src/utils/url-provider';
 
 import Scrollbar from 'src/components/scrollbar';
 
-import { config } from '../../../config';
-import UserTableHead from '../user-table-head';
+import TableNoData from '../table-no-data';
+import StockTableHead from '../stock-table-head';
+import ProductTableRow from '../product-table-row';
 import TableEmptyRows from '../table-empty-rows';
+import StockTableToolbar from '../stock-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 
 // ----------------------------------------------------------------------
@@ -27,14 +29,16 @@ export default function ProductPage() {
 
   const [orderBy, setOrderBy] = useState('date');
 
+  const [filterName, setFilterName] = useState('');
+
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const [productList, setProductList] = useState([]);
 
+  const productsInStockURL = useRef(getProductsInStockURL());
+
   useEffect(() => {
-    fetch(`http://${config.server_host}:${config.server_port}/api/products`, {
-      method: 'GET',
-    })
+    fetch(productsInStockURL.current, { method: 'GET' })
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -93,20 +97,33 @@ export default function ProductPage() {
     setRowsPerPage(parseInt(event.target.value, 10));
   };
 
+  const handleFilterByName = (event) => {
+    setPage(0);
+    setFilterName(event.target.value);
+  };
+
   const dataFiltered = applyFilter({
     inputData: productList,
     comparator: getComparator(order, orderBy),
+    filterName
   });
+
+  const notFound = !dataFiltered.length && !!filterName;
 
   return (
     <Container>
 
       <Card>
+        <StockTableToolbar
+          numSelected={selected.length}
+          filterName={filterName}
+          onFilterName={handleFilterByName}
+        />
 
         <Scrollbar>
           <TableContainer sx={{ overflow: 'unset' }}>
             <Table sx={{ minWidth: 800 }}>
-              <UserTableHead
+              <StockTableHead
                 order={order}
                 orderBy={orderBy}
                 rowCount={productList.length}
@@ -114,19 +131,33 @@ export default function ProductPage() {
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
-                  { id: 'id', label: 'ID' },
-                  { id: 'name', label: 'Description' },
+                  { id: 'name', label: 'Product Name' },
                   { id: 'date', label: 'Date' },
-                  { id: 'owner', label: 'Owner' },
-                  { id: 'scale', label: 'Scale' },
+                  { id: 'lotNumber', label: 'Lot#' },
+                  { id: 'inStock', label: 'In Stock' },
                 ]}
               />
               <TableBody>
 
-                <TableEmptyRows
-                  height={77}
-                  emptyRows={emptyRows(page, rowsPerPage, users.length)}
-                />
+                {dataFiltered
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row) => (
+                      <ProductTableRow
+                        key={row.productRecordId}
+                        name={row.productName}
+                        date={row.manufactureDate}
+                        lotNumber={row.lotNumber}
+                        amountInStock={row.amountInStock}
+                        selected={selected.indexOf(row.id) !== -1}
+                        handleClick={(event) => handleClick(event, row.id)}
+                      />
+                    ))}
+                  <TableEmptyRows
+                    height={77}
+                    emptyRows={emptyRows(page, rowsPerPage, productList.length)}
+                  />
+
+                  {notFound && <TableNoData query={filterName} />}
 
               </TableBody>
             </Table>

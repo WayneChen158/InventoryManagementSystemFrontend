@@ -15,10 +15,10 @@ import { getConsumablesURL } from 'src/utils/url-provider';
 import Scrollbar from 'src/components/scrollbar';
 
 import TableNoData from '../table-no-data';
-import UserTableRow from '../user-table-row';
-import UserTableHead from '../user-table-head';
+import StockTableRow from '../stock-table-row';
+import StockTableHead from '../stock-table-head';
 import TableEmptyRows from '../table-empty-rows';
-import UserTableToolbar from '../user-table-toolbar';
+import StockTableToolbar from '../stock-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 
 // ----------------------------------------------------------------------
@@ -111,7 +111,7 @@ export default function ConsumablePage() {
     <Container>
 
       <Card>
-        <UserTableToolbar
+        <StockTableToolbar
           numSelected={selected.length}
           filterName={filterName}
           onFilterName={handleFilterByName}
@@ -120,7 +120,7 @@ export default function ConsumablePage() {
         <Scrollbar>
           <TableContainer sx={{ overflow: 'unset' }}>
             <Table sx={{ minWidth: 800 }}>
-              <UserTableHead
+              <StockTableHead
                 order={order}
                 orderBy={orderBy}
                 rowCount={inventoryData.length}
@@ -142,7 +142,7 @@ export default function ConsumablePage() {
                 {dataFiltered
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
-                    <UserTableRow
+                    <StockTableRow
                       key={row.materialId}
                       name={row.description}
                       catalog={row.catalogNumber}

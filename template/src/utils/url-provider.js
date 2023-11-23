@@ -1,9 +1,18 @@
+import { func } from 'prop-types';
 import { config } from '../config';
 
 export function getRawMaterialsURL() {
-    return 'http://localhost:8080/api/rawMaterials';
+    return `http://${config.server_host}:${config.server_port}/api/rawMaterials`;
   };
 
 export function getConsumablesURL() {
   return `http://${config.server_host}:${config.server_port}/api/consumables`
+}
+
+export function getProductsInStockURL() {
+  return `http://${config.server_host}:${config.server_port}/api/products/inStock`
+}
+
+export function getComponentsInStockURL() {
+  return `http://${config.server_host}:${config.server_port}/api/components/inStock`
 }

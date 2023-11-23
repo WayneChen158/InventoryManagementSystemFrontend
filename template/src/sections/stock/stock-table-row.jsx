@@ -16,7 +16,7 @@ import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function UserTableRow({
+export default function StockTableRow({
   selected,
   name,
   catalog,
@@ -103,7 +103,7 @@ export default function UserTableRow({
   );
 }
 
-UserTableRow.propTypes = {
+StockTableRow.propTypes = {
   vendor: PropTypes.any,
   handleClick: PropTypes.func,
   name: PropTypes.any,

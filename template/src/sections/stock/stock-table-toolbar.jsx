@@ -15,7 +15,7 @@ import FilterCheckBox from './components/Checkmark';
 // ----------------------------------------------------------------------
 
 //  lowStock, onLowStockChange, selectedFilters, onSelectedFiltersChange 
-export default function UserTableToolbar({ 
+export default function StockTableToolbar({ 
   numSelected, filterName, onFilterName
 }) {
 
@@ -113,7 +113,7 @@ export default function UserTableToolbar({
   );
 }
 
-UserTableToolbar.propTypes = {
+StockTableToolbar.propTypes = {
   numSelected: PropTypes.number,
   filterName: PropTypes.string,
   onFilterName: PropTypes.func,
