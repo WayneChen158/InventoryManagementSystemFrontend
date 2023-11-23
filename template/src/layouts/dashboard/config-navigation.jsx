@@ -24,6 +24,11 @@ const navConfig = [
     icon: icon('ic_user'), // This icon should be changed
   },
   {
+    title: 'Request',
+    path: '/request',
+    icon: icon('ic_user'), // This icon should be changed
+  },
+  {
     title: 'Manufacture',
     path: '/manufacture',
     icon: <Iconify icon="openmoji:lab-coat" width={25}/>,
