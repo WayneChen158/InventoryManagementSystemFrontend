@@ -2,6 +2,12 @@ import * as React from 'react';
 import { useRef, useState } from 'react';
 import { Box, Card, FormControl, Grid, InputLabel, MenuItem, Stack, Select, TextField, Button } from '@mui/material';
 import { getRawMaterialsURL } from 'src/utils/url-provider';
+import PropTypes from 'prop-types';
+
+
+NewItemForm.propTypes = {
+    handleCloseModal: PropTypes.func.isRequired,
+};
 
 export default function NewItemForm(props) {
 
