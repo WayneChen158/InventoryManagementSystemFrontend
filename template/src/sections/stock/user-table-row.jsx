@@ -19,6 +19,7 @@ import Iconify from 'src/components/iconify';
 export default function UserTableRow({
   selected,
   name,
+  catalog,
   vendor,
   type,
   owner,
@@ -44,15 +45,17 @@ export default function UserTableRow({
           <Checkbox disableRipple checked={selected} onChange={handleClick} />
         </TableCell>
 
-        <TableCell component="th" scope="row" padding="none">
+        <TableCell align="center" component="th" scope="row" padding="none">
             <Typography variant="subtitle2" wrap = "true" width='1/4'>
               {name}
             </Typography>
         </TableCell>
 
-        <TableCell>{vendor}</TableCell>
+        <TableCell align="center">{catalog}</TableCell>
+        
+        <TableCell align="center">{vendor}</TableCell>
 
-        <TableCell>{type}</TableCell>
+        <TableCell align="center">{type}</TableCell>
 
         <TableCell align="center">{owner}</TableCell>
 
@@ -104,6 +107,7 @@ UserTableRow.propTypes = {
   vendor: PropTypes.any,
   handleClick: PropTypes.func,
   name: PropTypes.any,
+  catalog: PropTypes.any,
   owner: PropTypes.any,
   type: PropTypes.any,
   location: PropTypes.any,

@@ -15,7 +15,6 @@ import { config } from '../../../config';
 import UserTableHead from '../user-table-head';
 import TableEmptyRows from '../table-empty-rows';
 import { emptyRows, applyFilter, getComparator } from '../utils';
-import ManufactureTableRow from '../components/manufacture-table-row';
 
 // ----------------------------------------------------------------------
 

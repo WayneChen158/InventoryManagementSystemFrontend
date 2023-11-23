@@ -58,7 +58,6 @@ export default function UserTableHead({
           </TableCell>
         ))}
         <TableCell />
-        <TableCell />
       </TableRow>
     </TableHead>
   );
