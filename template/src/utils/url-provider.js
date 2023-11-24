@@ -3,5 +3,5 @@ export function getRawMaterialsURL() {
   }
 
   export function getRequestsURL() {
-    return 'http://localhost:8080/api/rawMaterials';
+    return 'http://localhost:8080/api/requests';
   }
