@@ -24,9 +24,9 @@ import TableNoData from '../table-no-data';
 import UserTableRow from '../user-table-row';
 import UserTableHead from '../user-table-head';
 import TableEmptyRows from '../table-empty-rows';
+import NewItemForm from '../components/NewItemForm';
 import UserTableToolbar from '../user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
-import NewItemForm from '../components/NewItemForm';
 
 // ----------------------------------------------------------------------
 
@@ -190,8 +190,8 @@ export default function InventoryPage() {
                       location='Unknown'
                       amountInStock={row.amountInStock}
                       LowInStock={row.amountInStock > row.threshold ? 'Enough' : 'Low'}
-                      selected={selected.indexOf(row.id) !== -1}
-                      handleClick={(event) => handleClick(event, row.id)}
+                      selected={selected.indexOf(row.materialId) !== -1}
+                      handleClick={(event) => handleClick(event, row.materialId)}
                     />
                   ))}
                 <TableEmptyRows

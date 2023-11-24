@@ -1,5 +1,6 @@
-import { TableCell, TableRow } from '@mui/material';
 import PropTypes from 'prop-types';
+
+import { TableRow, TableCell } from '@mui/material';
 
 export default function RequestTableEmptyRows({
     emptyRows,

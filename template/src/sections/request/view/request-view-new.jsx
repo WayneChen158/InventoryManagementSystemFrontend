@@ -1,11 +1,15 @@
-import { Card, Container, Table, TableBody, TableContainer, TablePagination } from "@mui/material";
-import Scrollbar from "src/components/scrollbar";
-import RequestTableHead from "../request-table-head";
-import RequestTableEmptyRows from "../request-table-empty-rows";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
+
+import { Card, Table, Container, TableBody, TableContainer, TablePagination } from "@mui/material";
+
 import { getRequestsURL } from "src/utils/url-provider";
-import { applyFilter, getComparator } from "../utils";
+
+import Scrollbar from "src/components/scrollbar";
+
 import RequestTableRow from "../request-table-row";
+import RequestTableHead from "../request-table-head";
+import { applyFilter, getComparator } from "../utils";
+import RequestTableEmptyRows from "../request-table-empty-rows";
 
 export default function RequestPurchasePageNew() {
     const [page, setPage] = useState(0);
@@ -46,6 +50,24 @@ export default function RequestPurchasePageNew() {
         setPage(0);
         setRowsPerPage(parseInt(event.target.value, 10));
     };
+
+    const handleClick = (event, name) => {
+        const selectedIndex = selected.indexOf(name);
+        let newSelected = [];
+        if (selectedIndex === -1) {
+          newSelected = newSelected.concat(selected, name);
+        } else if (selectedIndex === 0) {
+          newSelected = newSelected.concat(selected.slice(1));
+        } else if (selectedIndex === selected.length - 1) {
+          newSelected = newSelected.concat(selected.slice(0, -1));
+        } else if (selectedIndex > 0) {
+          newSelected = newSelected.concat(
+            selected.slice(0, selectedIndex),
+            selected.slice(selectedIndex + 1)
+          );
+        }
+        setSelected(newSelected);
+      };
 
     const dateParser = (mysqlDateStr) => {
         if (mysqlDateStr === null) {
@@ -89,7 +111,7 @@ export default function RequestPurchasePageNew() {
                                     .map((row) => (
                                         <RequestTableRow 
                                             key={row.requestId}
-                                            selected={selected.indexOf(row.id) !== -1}
+                                            selected={selected.indexOf(row.requestId) !== -1}
                                             itemDescription={row.itemDescription}
                                             project={row.project}
                                             purpose={row.purpose === 1 ? 'R&D' : 'MFR'}
@@ -97,7 +119,7 @@ export default function RequestPurchasePageNew() {
                                             pricePerUnit={row.pricePerUnit}
                                             requestBy={row.requestBy}
                                             requestDate={dateParser(row.requestDate)}
-                                            handleClick={(event) => handleClick(event, row.id)}
+                                            handleClick={(event) => handleClick(event, row.requestId)}
                                         />
                                     ))}
                                 <RequestTableEmptyRows 
