@@ -147,7 +147,7 @@ export default function RequestPurchasePageNew() {
                                             selected={selected.indexOf(row.requestId) !== -1}
                                             itemDescription={row.itemDescription}
                                             project={row.project}
-                                            purpose={row.purpose === 1 ? 'R&D' : 'MFR'}
+                                            purpose={row.purpose === 1 ? 'R&D' : 'MFG'}
                                             requestAmount={row.requestAmount}
                                             pricePerUnit={row.pricePerUnit}
                                             requestBy={row.requestBy}
