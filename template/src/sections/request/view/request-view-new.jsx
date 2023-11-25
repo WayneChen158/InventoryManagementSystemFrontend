@@ -8,8 +8,8 @@ import Scrollbar from "src/components/scrollbar";
 
 import RequestTableRow from "../request-table-row";
 import RequestTableHead from "../request-table-head";
-import { applyFilter, getComparator } from "../utils";
 import RequestTableEmptyRows from "../request-table-empty-rows";
+import { emptyRows, applyFilter, getComparator } from "../utils";
 
 export default function RequestPurchasePageNew() {
     const [page, setPage] = useState(0);
@@ -37,9 +37,23 @@ export default function RequestPurchasePageNew() {
             setRequestData(data);
         })
     }, []);
+
+    const handleSort = (event, id) => {
+        const isAsc = orderBy === id && order === 'asc';
+        if (id !== '') {
+            setOrder(isAsc ? 'desc' : 'asc');
+            setOrderBy(id);
+        }
+    }
     
-    const handleSelectAllClick = () => {
-        console.log("Checked");
+    const handleSelectAllClick = (event) => {
+        // console.log("Checked");
+        if (event.target.checked) {
+            const newSelecteds = requestData.map((request) => request.requestId);
+            setSelected(newSelecteds);
+            return;
+        }
+        setSelected([]);
     };
 
     const handleChangePage = (event, newPage) => {
@@ -84,13 +98,13 @@ export default function RequestPurchasePageNew() {
     });
 
     const tableHeader = [
-        { id: 'description', label: 'Item Description'},
+        { id: 'itemDescription', label: 'Item Description'},
         { id: 'project', label: 'Project'},
         { id: 'purpose', label: 'Purpose'},
-        { id: 'request-amount', label: 'Requested Amount'},
-        { id: 'price-per-unit', label: 'Unit Price'},
-        { id: 'request-by', label: 'Request By'},
-        { id: 'request-date', label: 'Request Date'},
+        { id: 'requestAmount', label: 'Requested Amount'},
+        { id: 'pricePerUnit', label: 'Unit Price'},
+        { id: 'requestBy', label: 'Request By'},
+        { id: 'requestDate', label: 'Request Date'},
     ];
 
     return (
@@ -101,8 +115,11 @@ export default function RequestPurchasePageNew() {
                         <Table sx={{ minWidth: 800 }}>
                             <RequestTableHead
                                 order={order}
-                                orderBy={orderBy} 
+                                orderBy={orderBy}
+                                rowCount={requestData.length}
+                                numSelected={selected.length} 
                                 onSelectAllClick={handleSelectAllClick}
+                                onRequestSort={handleSort}
                                 headLabel={tableHeader}
                             />
                             <TableBody>
@@ -124,7 +141,7 @@ export default function RequestPurchasePageNew() {
                                     ))}
                                 <RequestTableEmptyRows 
                                     height={77}
-                                    emptyRows={5}
+                                    emptyRows={emptyRows(page, rowsPerPage, requestData.length)}
                                 />
                             </TableBody>
                         </Table>

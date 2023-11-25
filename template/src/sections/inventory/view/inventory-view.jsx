@@ -166,10 +166,10 @@ export default function InventoryPage() {
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
-                  { id: 'name', label: 'Item Name' },
-                  { id: 'catalog', label: 'Catalog Number' },
-                  { id: 'vendor', label: 'Vendor' },
-                  { id: 'type', label: 'Type' },
+                  { id: 'description', label: 'Item Name' },
+                  { id: 'catalogNumber', label: 'Catalog Number' },
+                  { id: 'manufacturer', label: 'Vendor' },
+                  { id: 'groupName', label: 'Type' },
                   { id: 'owner', label: 'Owner' },
                   { id: 'location', label:'Location'},
                   { id: 'amountInStock', label: 'Amount In Stock', align: 'center' },
