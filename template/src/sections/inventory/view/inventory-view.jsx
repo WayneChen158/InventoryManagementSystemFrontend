@@ -24,9 +24,9 @@ import TableNoData from '../table-no-data';
 import UserTableRow from '../user-table-row';
 import UserTableHead from '../user-table-head';
 import TableEmptyRows from '../table-empty-rows';
+import NewItemForm from '../components/NewItemForm';
 import UserTableToolbar from '../user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
-import NewItemForm from '../components/NewItemForm';
 
 // ----------------------------------------------------------------------
 
@@ -166,10 +166,10 @@ export default function InventoryPage() {
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
-                  { id: 'name', label: 'Item Name' },
-                  { id: 'catalog', label: 'Catalog Number' },
-                  { id: 'vendor', label: 'Vendor' },
-                  { id: 'type', label: 'Type' },
+                  { id: 'description', label: 'Item Name' },
+                  { id: 'catalogNumber', label: 'Catalog Number' },
+                  { id: 'manufacturer', label: 'Vendor' },
+                  { id: 'groupName', label: 'Type' },
                   { id: 'owner', label: 'Owner' },
                   { id: 'location', label:'Location'},
                   { id: 'amountInStock', label: 'Amount In Stock', align: 'center' },
@@ -190,8 +190,8 @@ export default function InventoryPage() {
                       location='Unknown'
                       amountInStock={row.amountInStock}
                       LowInStock={row.amountInStock > row.threshold ? 'Enough' : 'Low'}
-                      selected={selected.indexOf(row.id) !== -1}
-                      handleClick={(event) => handleClick(event, row.id)}
+                      selected={selected.indexOf(row.materialId) !== -1}
+                      handleClick={(event) => handleClick(event, row.materialId)}
                     />
                   ))}
                 <TableEmptyRows

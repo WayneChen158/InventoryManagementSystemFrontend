@@ -15,6 +15,23 @@ export function emptyRows(page, rowsPerPage, arrayLength) {
 }
 
 function descendingComparator(a, b, orderBy) {
+  if (orderBy === 'lowInStock') {
+    if (a.amountInStock === null || a.threshold === null) {
+      return 1;
+    }
+    if (b.amountInStock === null || b.threshold === null) {
+      return -1;
+    }
+    const aDiff = a.amountInStock - a.threshold;
+    const bDiff = b.amountInStock - b.threshold;
+    if (aDiff > bDiff) {
+      return 1;
+    }
+    if (aDiff < bDiff) {
+      return -1;
+    }
+    return 0;
+  }
   if (a[orderBy] === null) {
     return 1;
   }

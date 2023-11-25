@@ -21,7 +21,12 @@ const navConfig = [
   {
     title: 'Inventory',
     path: '/inventory',
-    icon: icon('ic_user'), // This icon should be changed
+    icon: <Iconify icon="tabler:building-warehouse" width={25}/>,
+  },
+  {
+    title: 'Request',
+    path: '/request',
+    icon: <Iconify icon="mdi:offer" width={25}/>,
   },
   {
     title: 'Manufacture',
