@@ -6,8 +6,11 @@ import { getRequestsURL } from "src/utils/url-provider";
 
 import Scrollbar from "src/components/scrollbar";
 
+import TableNoData from "src/sections/user/table-no-data";
+
 import RequestTableRow from "../request-table-row";
 import RequestTableHead from "../request-table-head";
+import RequestTableToolbar from "../request-table-toolbar";
 import RequestTableEmptyRows from "../request-table-empty-rows";
 import { emptyRows, applyFilter, getComparator } from "../utils";
 
@@ -83,6 +86,11 @@ export default function RequestPurchasePageNew() {
         setSelected(newSelected);
       };
 
+    const handleFilterByName = (event) => {
+        setPage(0);
+        setFilterName(event.target.value);
+    }
+
     const dateParser = (mysqlDateStr) => {
         if (mysqlDateStr === null) {
             return 'Unknown';
@@ -107,9 +115,17 @@ export default function RequestPurchasePageNew() {
         { id: 'requestDate', label: 'Request Date'},
     ];
 
+    const notFound = !dataFiltered.length && !!filterName;
+
     return (
         <Container>
             <Card>
+                <RequestTableToolbar 
+                    numSelected={selected.length}
+                    filterName={filterName}
+                    onFilterName={handleFilterByName}
+                />
+
                 <Scrollbar>
                     <TableContainer sx={{ overflow: 'unset' }}>
                         <Table sx={{ minWidth: 800 }}>
@@ -143,6 +159,8 @@ export default function RequestPurchasePageNew() {
                                     height={77}
                                     emptyRows={emptyRows(page, rowsPerPage, requestData.length)}
                                 />
+
+                                {notFound && <TableNoData query={filterName} />}
                             </TableBody>
                         </Table>
                     </TableContainer>
