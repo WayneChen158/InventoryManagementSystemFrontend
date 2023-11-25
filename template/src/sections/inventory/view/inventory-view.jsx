@@ -13,6 +13,8 @@ import TablePagination from '@mui/material/TablePagination';
 // import { users } from 'src/_mock/user';
 // import { inventoryData } from 'src/_mock/inventory';
 
+import { Box, Modal } from '@mui/material';
+
 import { getRawMaterialsURL } from 'src/utils/url-provider';
 
 import Iconify from 'src/components/iconify';
@@ -22,6 +24,7 @@ import TableNoData from '../table-no-data';
 import UserTableRow from '../user-table-row';
 import UserTableHead from '../user-table-head';
 import TableEmptyRows from '../table-empty-rows';
+import NewItemForm from '../components/NewItemForm';
 import UserTableToolbar from '../user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 
@@ -40,9 +43,19 @@ export default function InventoryPage() {
 
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const [inventoryData, setInventoryData] = useState([]); 
+  const [inventoryData, setInventoryData] = useState([]);
+  
+  const [openModal, setOpenModal] = useState(false);
 
   const rawMaterialsURL = useRef(getRawMaterialsURL());
+  
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
   
   useEffect(() => {
     fetch(rawMaterialsURL.current)
@@ -117,9 +130,22 @@ export default function InventoryPage() {
         <Typography variant="h4">Inventory</Typography>
 
         {/* {button onClick need to be implemented} */}
-        <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+        <Button 
+          variant="contained" 
+          startIcon={<Iconify icon="eva:plus-fill" />}
+          onClick={handleOpenModal}
+        >
           New Item
-        </Button> 
+        </Button>
+
+        <Modal
+          open={openModal}
+          onClose={handleCloseModal}
+        >
+          <Box style={{ display: 'flex', margin: 'auto', justifyContent: 'center', width: '70%', height: '100%'}}>
+            <NewItemForm handleCloseModal={handleCloseModal}/>
+          </Box>
+        </Modal> 
       </Stack>
 
       <Card>
@@ -140,10 +166,10 @@ export default function InventoryPage() {
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
-                  { id: 'name', label: 'Item Name' },
-                  { id: 'catalog', label: 'Catalog Number' },
-                  { id: 'vendor', label: 'Vendor' },
-                  { id: 'type', label: 'Type' },
+                  { id: 'description', label: 'Item Name' },
+                  { id: 'catalogNumber', label: 'Catalog Number' },
+                  { id: 'manufacturer', label: 'Vendor' },
+                  { id: 'groupName', label: 'Type' },
                   { id: 'owner', label: 'Owner' },
                   { id: 'location', label:'Location'},
                   { id: 'amountInStock', label: 'Amount In Stock', align: 'center' },
@@ -164,8 +190,8 @@ export default function InventoryPage() {
                       location='Unknown'
                       amountInStock={row.amountInStock}
                       LowInStock={row.amountInStock > row.threshold ? 'Enough' : 'Low'}
-                      selected={selected.indexOf(row.id) !== -1}
-                      handleClick={(event) => handleClick(event, row.id)}
+                      selected={selected.indexOf(row.materialId) !== -1}
+                      handleClick={(event) => handleClick(event, row.materialId)}
                     />
                   ))}
                 <TableEmptyRows

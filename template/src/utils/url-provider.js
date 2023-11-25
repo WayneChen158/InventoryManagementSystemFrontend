@@ -6,13 +6,17 @@ export function getRawMaterialsURL() {
   };
 
 export function getConsumablesURL() {
-  return `http://${config.server_host}:${config.server_port}/api/consumables`
+  return `http://${config.server_host}:${config.server_port}/api/consumables`;
 }
 
 export function getProductsInStockURL() {
-  return `http://${config.server_host}:${config.server_port}/api/products/inStock`
+  return `http://${config.server_host}:${config.server_port}/api/products/inStock`;
 }
 
 export function getComponentsInStockURL() {
-  return `http://${config.server_host}:${config.server_port}/api/components/inStock`
+  return `http://${config.server_host}:${config.server_port}/api/components/inStock`;
+}
+
+export function getRequestsURL() {
+    return `http://${config.server_host}:${config.server_port}/api/requests`;
 }
