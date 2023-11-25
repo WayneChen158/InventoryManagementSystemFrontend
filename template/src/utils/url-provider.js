@@ -1,4 +1,3 @@
-import { func } from 'prop-types';
 import { config } from '../config';
 
 export function getRawMaterialsURL() {
