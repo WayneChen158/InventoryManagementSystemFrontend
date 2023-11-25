@@ -9,6 +9,7 @@ export const UserPage = lazy(() => import('src/pages/user'));
 export const InventoryPage = lazy(() => import('src/pages/inventory'));
 export const RequestPage = lazy(() => import('src/pages/request'))
 export const ManufacturePage = lazy(() => import('src/pages/manufacture'));
+export const StockPage = lazy(() => import('src/pages/stock'));
 export const LoginPage = lazy(() => import('src/pages/login'));
 export const ProductsPage = lazy(() => import('src/pages/products'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
@@ -31,6 +32,7 @@ export default function Router() {
         { path: 'inventory', element: <InventoryPage /> },
         { path: 'request', element: <RequestPage /> },
         { path: 'manufacture', element: <ManufacturePage /> },
+        { path: 'stock', element: <StockPage /> },
         { path: 'products', element: <ProductsPage /> },
         { path: 'blog', element: <BlogPage /> },
       ],
