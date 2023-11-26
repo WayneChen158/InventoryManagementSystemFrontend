@@ -1,4 +1,3 @@
-import { func } from 'prop-types';
 import { config } from '../config';
 
 export function getRawMaterialsURL() {
@@ -19,4 +18,8 @@ export function getComponentsInStockURL() {
 
 export function getRequestsURL() {
     return `http://${config.server_host}:${config.server_port}/api/requests`;
+}
+
+export function addRequestURL() {
+  return `http://${config.server_host}:${config.server_port}/api/requests/add`;
 }
