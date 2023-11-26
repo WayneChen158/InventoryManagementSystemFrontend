@@ -1,7 +1,9 @@
-import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { useRef, useState } from 'react';
 
 import { Box, Card, Grid, Stack, Button, Select, MenuItem, TextField, InputLabel, FormControl, InputAdornment } from '@mui/material';
+
+import { addRequestURL } from 'src/utils/url-provider';
 
 export default function NewRequestForm({handleCloseModal}) {
     
@@ -20,6 +22,8 @@ export default function NewRequestForm({handleCloseModal}) {
     const [pricePerUnit, setPricePerUnit] = useState(0.0);
 
     const [requestBy, setRequestBy] = useState('');
+
+    const addNewRequestURL = useRef(addRequestURL());
 
     const handleItemDescriptionChange = (event) => {
         setItemDescription(event.target.value);
@@ -53,18 +57,40 @@ export default function NewRequestForm({handleCloseModal}) {
         setRequestBy(event.target.value);
     }
 
-    // TODO
+    const convertDateFormat = (timestamp) => {
+        const date = new Date(timestamp);
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${month}-${day}-${year}`;
+    }
+ 
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        console.log(itemDescription);
-        console.log(catalogNumber);
-        console.log(itemURL);
-        console.log(requestCategory);
-        console.log(project);
-        console.log(requestAmount);
-        console.log(pricePerUnit);
-        console.log(requestBy);
+        const purpose = requestCategory;
+        const timestamp = Date.now();
+        const requestDate = convertDateFormat(timestamp);
+
+        const requestData = {
+            itemDescription,
+            catalogNumber,
+            itemURL,
+            requestCategory,
+            project,
+            purpose,
+            requestAmount,
+            pricePerUnit,
+            requestBy,
+            requestDate,
+        }
+        console.log(requestData);
+
+        fetch(addNewRequestURL.current, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(requestData)
+        });
 
         handleCloseModal();
     }
