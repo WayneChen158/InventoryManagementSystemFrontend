@@ -131,10 +131,10 @@ export default function ComponentPage() {
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
-                  { id: 'name', label: 'Component Name' },
-                  { id: 'date', label: 'Date' },
+                  { id: 'componentName', label: 'Component Name' },
+                  { id: 'manufactureDate', label: 'Date' },
                   { id: 'lotNumber', label: 'Lot#' },
-                  { id: 'inStock', label: 'In Stock' },
+                  { id: 'amountInStock', label: 'In Stock' },
                 ]}
               />
               <TableBody>
