@@ -16,7 +16,7 @@ import StockTableHead from '../stock-table-head';
 import ProductTableRow from '../product-table-row';
 import TableEmptyRows from '../table-empty-rows';
 import StockTableToolbar from '../stock-table-toolbar';
-import { emptyRows, applyFilter, getComparator } from '../utils';
+import { emptyRows, applyFilter, getComparator } from '../utils-products';
 
 // ----------------------------------------------------------------------
 
@@ -46,6 +46,7 @@ export default function ComponentPage() {
         return response.json();
       })
       .then((resdata) => {
+        console.log(resdata);
         setComponentList(resdata);
       })
       .catch((error) => {
@@ -131,6 +132,7 @@ export default function ComponentPage() {
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
+                  { id: 'componentCatalog', label: 'Catalog' },
                   { id: 'componentName', label: 'Component Name' },
                   { id: 'manufactureDate', label: 'Date' },
                   { id: 'lotNumber', label: 'Lot#' },
@@ -144,6 +146,7 @@ export default function ComponentPage() {
                     .map((row) => (
                       <ProductTableRow
                         key={row.componentRecordId}
+                        catalog = {row.componentCatalog}
                         name={row.componentName}
                         date={row.manufactureDate}
                         lotNumber={row.lotNumber}

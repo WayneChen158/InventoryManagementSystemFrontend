@@ -15,11 +15,11 @@ import { getConsumablesURL } from 'src/utils/url-provider';
 import Scrollbar from 'src/components/scrollbar';
 
 import TableNoData from '../table-no-data';
-import StockTableRow from '../stock-table-row';
+import ConsumableTableRow from '../consumable-table-row';
 import StockTableHead from '../stock-table-head';
 import TableEmptyRows from '../table-empty-rows';
 import StockTableToolbar from '../stock-table-toolbar';
-import { emptyRows, applyFilter, getComparator } from '../utils';
+import { emptyRows, applyFilter, getComparator } from '../utils-consumables';
 
 // ----------------------------------------------------------------------
 
@@ -142,7 +142,7 @@ export default function ConsumablePage() {
                 {dataFiltered
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
-                    <StockTableRow
+                    <ConsumableTableRow
                       key={row.materialId}
                       name={row.description}
                       catalog={row.catalogNumber}
