@@ -16,6 +16,7 @@ import Iconify from 'src/components/iconify';
 
 export default function ProductTableRow({
   selected,
+  catalog,
   name,
   date,
   lotNumber,
@@ -37,6 +38,10 @@ export default function ProductTableRow({
       <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
         <TableCell padding="checkbox">
           <Checkbox disableRipple checked={selected} onChange={handleClick} />
+        </TableCell>
+
+        <TableCell align="center">
+              {catalog}
         </TableCell>
 
         <TableCell align="center" component="th" scope="row" padding="none">
@@ -95,6 +100,7 @@ export default function ProductTableRow({
 
 ProductTableRow.propTypes = {
   handleClick: PropTypes.func,
+  catalog: PropTypes.any,
   name: PropTypes.any,
   date: PropTypes.any,
   lotNumber: PropTypes.any,
