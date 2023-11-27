@@ -46,7 +46,6 @@ export default function ComponentPage() {
         return response.json();
       })
       .then((resdata) => {
-        console.log(resdata);
         setComponentList(resdata);
       })
       .catch((error) => {
