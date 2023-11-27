@@ -46,7 +46,6 @@ export default function ProductPage() {
         return response.json();
       })
       .then((resdata) => {
-        console.log(resdata);
         setProductList(resdata);
       })
       .catch((error) => {
