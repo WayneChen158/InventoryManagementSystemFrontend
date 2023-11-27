@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useRef, useState, useEffect } from "react";
 
 import { Card, Table, Container, TableBody, TableContainer, TablePagination } from "@mui/material";
@@ -14,7 +15,9 @@ import RequestTableToolbar from "../request-table-toolbar";
 import RequestTableEmptyRows from "../request-table-empty-rows";
 import { emptyRows, applyFilter, getComparator } from "../utils";
 
-export default function RequestPurchasePageNew() {
+export default function RequestPurchasePageNew({
+    refreshTrigger,
+}) {
     const [page, setPage] = useState(0);
 
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -27,7 +30,7 @@ export default function RequestPurchasePageNew() {
 
     const [filterName, setFilterName] = useState('');
 
-    const [ requestData, setRequestData ] = useState([]);
+    const [requestData, setRequestData] = useState([]);
 
     const requestsURL = useRef(getRequestsURL());
 
@@ -39,7 +42,7 @@ export default function RequestPurchasePageNew() {
             console.log(data);
             setRequestData(data);
         })
-    }, []);
+    }, [refreshTrigger]);
 
     const handleSort = (event, id) => {
         const isAsc = orderBy === id && order === 'asc';
@@ -178,4 +181,8 @@ export default function RequestPurchasePageNew() {
             </Card>
         </Container>
     );
+}
+
+RequestPurchasePageNew.propTypes = {
+    refreshTrigger: PropTypes.number,
 }

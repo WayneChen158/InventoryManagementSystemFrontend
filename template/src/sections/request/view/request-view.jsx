@@ -13,6 +13,8 @@ export default function RequestPage() {
 
     const [openModal, setOpenModal] = useState(false);
 
+    const [refreshTrigger, setRefreshTrigger] = useState(1);
+
     const handleTabChange = (event, newTabValue) => {
         setTabValue(newTabValue);
     }
@@ -23,6 +25,10 @@ export default function RequestPage() {
 
     const handleCloseModal = () => {
         setOpenModal(false);
+    }
+
+    const triggerRefresh = () => {
+        setRefreshTrigger(prev => prev * (-1));
     }
 
     return (
@@ -41,9 +47,13 @@ export default function RequestPage() {
                 <Modal
                     open={openModal}
                     onClose={handleCloseModal}
+                    container={document.getElementById('root')}
                 >
                     <Box style={{ display: 'flex', margin: 'auto', justifyContent: 'center', width: '70%', height: '100%'}}>
-                        <NewRequestForm handleCloseModal={handleCloseModal}/>
+                        <NewRequestForm 
+                            handleCloseModal={handleCloseModal}
+                            triggerRefresh={triggerRefresh}
+                        />
                     </Box>
                 </Modal> 
             </Stack>
@@ -54,7 +64,7 @@ export default function RequestPage() {
                             <Tab label="New" value="new" sx={{ minWidth: '120px' }}/>
                         </TabList>
                     </Box>
-                    <TabPanel value="new"><RequestPurchasePageNew /></TabPanel>
+                    <TabPanel value="new"><RequestPurchasePageNew refreshTrigger={refreshTrigger}/></TabPanel>
                 </TabContext>
             </Box>
         </Container>

@@ -5,8 +5,12 @@ import { Box, Card, Grid, Stack, Button, Select, MenuItem, TextField, InputLabel
 
 import { addRequestURL } from 'src/utils/url-provider';
 
-export default function NewRequestForm({handleCloseModal}) {
-    
+import { config } from '../../../config';
+
+export default function NewRequestForm({
+    handleCloseModal,
+    triggerRefresh,    
+}) {
     const [itemDescription, setItemDescription] = useState('');
 
     const [catalogNumber, setCatalogNumber] = useState('');
@@ -93,6 +97,12 @@ export default function NewRequestForm({handleCloseModal}) {
         });
 
         handleCloseModal();
+
+        console.log("Successfully submitted request!");
+        
+        setTimeout(() => {
+            triggerRefresh();
+          }, config.timeout);
     }
 
     return(
@@ -204,4 +214,5 @@ export default function NewRequestForm({handleCloseModal}) {
 
 NewRequestForm.propTypes = {
     handleCloseModal: PropTypes.func.isRequired,
+    triggerRefresh: PropTypes.func.isRequired,
 }
