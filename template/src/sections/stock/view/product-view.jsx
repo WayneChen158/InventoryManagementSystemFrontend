@@ -131,10 +131,10 @@ export default function ProductPage() {
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
-                  { id: 'name', label: 'Product Name' },
-                  { id: 'date', label: 'Date' },
+                  { id: 'productName', label: 'Product Name' },
+                  { id: 'manufactureDate', label: 'Date' },
                   { id: 'lotNumber', label: 'Lot#' },
-                  { id: 'inStock', label: 'In Stock' },
+                  { id: 'amountInStock', label: 'In Stock' },
                 ]}
               />
               <TableBody>
