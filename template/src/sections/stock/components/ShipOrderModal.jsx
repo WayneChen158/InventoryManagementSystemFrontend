@@ -8,22 +8,43 @@ export default function ShipOrderModal({ open, handleClose, productList, compone
     const [items, setItems] = useState([]);
 
     const handleAddItem = () => {
-        setItems([...items, { catalog: '', itemName: '', currentStock: 0, sellQty: 0, isEditable: true }]);
+        setItems([...items, { uniqueId: '', catalog: '', itemName: '', currentStock: 0, sellQty: 0, category: '', recordId: 0, isEditable: true }]);
     };
 
     const handleItemSelect = (index, selectedItem) => {
         const updatedItems = items.map((item, idx) => {
-            if (idx === index) {
-                return { ...item, 
-                    catalog: selectedItem.catalogNumber || selectedItem.componentCatalog || selectedItem.productCatalog, 
-                    itemName: selectedItem.productName || selectedItem.componentName || selectedItem.description, 
-                    currentStock: selectedItem.amountInStock, 
-                    isEditable: true };
+          if (idx === index) {
+            // Determine the category and record ID based on the selected item's properties
+            let category;
+            let recordId;
+            if (selectedItem.productRecordId) {
+              category = 'product';
+              recordId = selectedItem.productRecordId;
+            } else if (selectedItem.componentRecordId) {
+              category = 'component';
+              recordId = selectedItem.componentRecordId;
+            } else if (selectedItem.materialId) {
+              category = 'inventory';
+              recordId = selectedItem.materialId;
             }
-            return item;
+      
+            return {
+              ...item,
+              uniqueId: selectedItem.uniqueId,
+              catalog: selectedItem.catalogNumber || selectedItem.componentCatalog || selectedItem.productCatalog,
+              itemName: selectedItem.productName || selectedItem.componentName || selectedItem.description,
+              currentStock: selectedItem.amountInStock,
+              category,
+              recordId, 
+              isEditable: false
+            };
+          }
+          return item;
         });
         setItems(updatedItems);
-    };
+        console.log(items);
+      };
+      
 
     const handleSellQtyChange = (index, qty) => {
         const updatedItems = items.map((item, idx) => {
@@ -35,16 +56,34 @@ export default function ShipOrderModal({ open, handleClose, productList, compone
         setItems(updatedItems);
     };
 
+    const filterOptions = (options, { inputValue }) => {
+        const trimmedInput = inputValue.trim().toLowerCase();
+
+        const filteredOptions = options.filter(option =>
+                (option.productCatalog && typeof option.productCatalog === 'string' && option.productCatalog.toLowerCase().includes(trimmedInput)) ||
+                (option.componentCatalog && typeof option.componentCatalog === 'string' && option.componentCatalog.toLowerCase().includes(trimmedInput)) ||
+                (option.catalogNumber && typeof option.catalogNumber === 'string' && option.catalogNumber.toLowerCase().includes(trimmedInput))
+            );
+
+        return filteredOptions;
+    }
+  
+
     const handleDeleteItem = (index) => {
         setItems(items.filter((_, idx) => idx !== index));
-    };
+      };
 
     const handleSubmit = () => {
         // Process data and make API call to update backend
         handleClose();
-    };
+      };
 
-    const combinedInventoryList = [...productList, ...componentList, ...inventoryData];
+    const combinedInventoryList = [
+        ...productList.map((item, index) => ({ ...item, uniqueId: `P${index}` })),
+        ...componentList.map((item, index) => ({ ...item, uniqueId: `C${index}` })),
+        ...inventoryData.map((item, index) => ({ ...item, uniqueId: `I${index}` })),
+    ];
+      
 
     return (
         <Modal open={open} onClose={handleClose} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -68,7 +107,11 @@ export default function ShipOrderModal({ open, handleClose, productList, compone
                                     {item.isEditable ? (
                                         <Autocomplete
                                             options={combinedInventoryList}
-                                            getOptionLabel={(option) => `${option.productCatalog || option.componentCatalog || option.catalogNumber} | ${option.lotNumber ? option.lotNumber : null}`}
+                                            filterOptions={filterOptions}
+                                            getOptionLabel={(option) => `${option.uniqueId} : ${option.productCatalog || option.componentCatalog || option.catalogNumber} | ${option.lotNumber ? option.lotNumber : 'consumable'}`}
+                                            isOptionEqualToValue={(option, value) =>
+                                                option.uniqueId === value.uniqueId
+                                              }
                                             style={{ width: 300 }}
                                             onChange={(event, newValue) => handleItemSelect(index, newValue)}
                                             renderInput={(params) => <TextField {...params} label="Select Catalog#" />}
@@ -82,7 +125,6 @@ export default function ShipOrderModal({ open, handleClose, productList, compone
                                         type="number"
                                         value={item.sellQty}
                                         onChange={(e) => handleSellQtyChange(index, parseInt(e.target.value, 10))}
-                                        disabled={!item.isEditable}
                                     />
                                 </TableCell>
                                 <TableCell>
