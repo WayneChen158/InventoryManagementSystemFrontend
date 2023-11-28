@@ -81,18 +81,14 @@ export default function ProductTableRow({
       >
         <MenuItem onClick={handleCloseMenu}>
           <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
-          Edit
+          sell
         </MenuItem>
 
         <MenuItem onClick={handleCloseMenu} sx={{ color: 'error.main' }}>
           <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
-          Delete
+          Add
         </MenuItem>
 
-        <MenuItem onClick={handleCloseMenu}>
-          <Iconify icon="carbon:request-quote"  sx={{ mr: 2 }} />
-          Request
-        </MenuItem>
       </Popover>
     </>
   );
