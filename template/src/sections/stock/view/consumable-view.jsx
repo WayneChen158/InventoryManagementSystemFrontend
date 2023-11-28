@@ -1,16 +1,12 @@
-import { useRef, useState, useEffect} from 'react';
+import { useState} from 'react';
+import PropTypes from 'prop-types';
 
 import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
-import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
-import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
-
-import { getConsumablesURL } from 'src/utils/url-provider';
 
 import Scrollbar from 'src/components/scrollbar';
 
@@ -23,7 +19,7 @@ import { emptyRows, applyFilter, getComparator } from '../utils-consumables';
 
 // ----------------------------------------------------------------------
 
-export default function ConsumablePage() {
+export default function ConsumablePage({ inventoryData }) {
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -35,20 +31,6 @@ export default function ConsumablePage() {
   const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(10);
-
-  const [inventoryData, setInventoryData] = useState([]); 
-
-  const consumablesURL = useRef(getConsumablesURL());
-  
-  useEffect(() => {
-    fetch(consumablesURL.current)
-    .then(res => res.json())
-    .then(data => {
-      console.log("Consumables Fetch Invoked!")
-      console.log(data)
-      setInventoryData(data)
-    })
-  }, []);
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -179,4 +161,8 @@ export default function ConsumablePage() {
       </Card>
     </Container>
   );
+}
+
+ConsumablePage.propTypes = {
+  inventoryData: PropTypes.array,
 }

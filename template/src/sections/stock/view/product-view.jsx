@@ -1,4 +1,5 @@
-import { useRef, useState, useEffect } from 'react';
+import { useState } from 'react';
+import PropTypes from 'prop-types';
 
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
@@ -6,8 +7,6 @@ import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
-
-import { getProductsInStockURL } from 'src/utils/url-provider';
 
 import Scrollbar from 'src/components/scrollbar';
 
@@ -20,7 +19,7 @@ import { emptyRows, applyFilter, getComparator } from '../utils-products';
 
 // ----------------------------------------------------------------------
 
-export default function ProductPage() {
+export default function ProductPage({ productList }) {
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -32,26 +31,6 @@ export default function ProductPage() {
   const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(10);
-
-  const [productList, setProductList] = useState([]);
-
-  const productsInStockURL = useRef(getProductsInStockURL());
-
-  useEffect(() => {
-    fetch(productsInStockURL.current, { method: 'GET' })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then((resdata) => {
-        setProductList(resdata);
-      })
-      .catch((error) => {
-        console.error('There was a problem with the fetch operation:', error);
-      });
-  }, []);
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -178,4 +157,8 @@ export default function ProductPage() {
       </Card>
     </Container>
   );
+}
+
+ProductPage.propTypes = {
+  productList: PropTypes.array,
 }
