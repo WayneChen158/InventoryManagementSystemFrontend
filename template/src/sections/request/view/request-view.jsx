@@ -64,7 +64,9 @@ export default function RequestPage() {
                             <Tab label="New" value="new" sx={{ minWidth: '120px' }}/>
                         </TabList>
                     </Box>
-                    <TabPanel value="new"><RequestPurchasePageNew refreshTrigger={refreshTrigger}/></TabPanel>
+                    <TabPanel value="new">
+                        <RequestPurchasePageNew statusCode={1} refreshTrigger={refreshTrigger}/>
+                    </TabPanel>
                 </TabContext>
             </Box>
         </Container>

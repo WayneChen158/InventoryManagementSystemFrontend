@@ -17,6 +17,7 @@ import { emptyRows, applyFilter, getComparator } from "../utils";
 
 export default function RequestPurchasePageNew({
     refreshTrigger,
+    statusCode,
 }) {
     const [page, setPage] = useState(0);
 
@@ -37,12 +38,15 @@ export default function RequestPurchasePageNew({
     useEffect(() => {
         fetch(requestsURL.current)
         .then(res => res.json())
-        .then(data => {
+        .then(rawData => {
             console.log("Request Fetch Invoked!");
-            console.log(data);
+            console.log(rawData);
+            console.log(`Status code: ${statusCode}`);
+            const data = rawData.filter((request) => request.status === statusCode);
             setRequestData(data);
+            console.log(data);
         })
-    }, [refreshTrigger]);
+    }, [refreshTrigger, statusCode]);
 
     const handleSort = (event, id) => {
         const isAsc = orderBy === id && order === 'asc';
@@ -185,4 +189,5 @@ export default function RequestPurchasePageNew({
 
 RequestPurchasePageNew.propTypes = {
     refreshTrigger: PropTypes.number,
+    statusCode: PropTypes.number.isRequired,
 }
