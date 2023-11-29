@@ -33,6 +33,8 @@ export default function RequestPurchasePageNew({
 
     const [requestData, setRequestData] = useState([]);
 
+    const [deleteTrigger, setDeleteTrigger] = useState(1);
+
     const requestsURL = useRef(getRequestsURL());
 
     useEffect(() => {
@@ -46,7 +48,7 @@ export default function RequestPurchasePageNew({
             setRequestData(data);
             console.log(data);
         })
-    }, [refreshTrigger, statusCode]);
+    }, [refreshTrigger, statusCode, deleteTrigger]);
 
     const handleSort = (event, id) => {
         const isAsc = orderBy === id && order === 'asc';
@@ -97,6 +99,10 @@ export default function RequestPurchasePageNew({
         setPage(0);
         setFilterName(event.target.value);
     }
+
+    const handleDeleteRequest = () => {
+        setDeleteTrigger((prev) => prev * (-1));
+    };
 
     const dateParser = (mysqlDateStr) => {
         if (mysqlDateStr === null) {
@@ -152,6 +158,7 @@ export default function RequestPurchasePageNew({
                                         <RequestTableRow 
                                             key={row.requestId}
                                             selected={selected.indexOf(row.requestId) !== -1}
+                                            requestId={row.requestId}
                                             itemDescription={row.itemDescription}
                                             project={row.project}
                                             purpose={row.purpose === 1 ? 'R&D' : 'MFG'}
@@ -160,6 +167,7 @@ export default function RequestPurchasePageNew({
                                             requestBy={row.requestBy}
                                             requestDate={dateParser(row.requestDate)}
                                             handleClick={(event) => handleClick(event, row.requestId)}
+                                            onDeleteRequest={handleDeleteRequest}
                                         />
                                     ))}
                                 <RequestTableEmptyRows 

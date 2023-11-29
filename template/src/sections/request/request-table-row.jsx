@@ -1,12 +1,17 @@
-import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { useRef, useState } from 'react';
 
 import { Popover, Checkbox, MenuItem, TableRow, TableCell, IconButton, Typography } from '@mui/material';
 
+import { deleteRequestURL } from 'src/utils/url-provider';
+
 import Iconify from 'src/components/iconify';
+
+import { config } from '../../config';
 
 export default function RequestTableRow({
     selected,
+    requestId,
     itemDescription,
     project,
     purpose,
@@ -15,8 +20,11 @@ export default function RequestTableRow({
     requestBy,
     requestDate,
     handleClick,
+    onDeleteRequest,
 }) {
     const [ open, setOpen ] = useState(null);
+
+    const deleteURL = useRef(deleteRequestURL());
 
     const handleOpenMenu = (event) => {
         setOpen(event.currentTarget);
@@ -24,6 +32,28 @@ export default function RequestTableRow({
 
     const handleCloseMenu = () => {
         setOpen(null);
+    }
+
+    const handleDeleteRequest = () => {
+        console.log(`Request to delete: ${requestId}`);
+        
+        fetch(`${deleteURL.current}/${requestId}`, {
+            method: 'DELETE',
+            headers: {'Content-Type': 'application/json'},
+        })
+            .then((response) => {
+                if (response.ok) {
+                    console.log(`Request ID ${requestId} has been successfully deleted`);
+                } else {
+                    console.log(`Failed to delete request ID ${requestId}...`);
+                }
+            });
+        
+        handleCloseMenu();
+
+        setTimeout(() => {
+            onDeleteRequest();
+          }, config.timeout);
     }
 
     return(
@@ -73,7 +103,7 @@ export default function RequestTableRow({
                     Mark Ordered
                 </MenuItem>
                 
-                <MenuItem onClick={handleCloseMenu} sx={{ color: 'error.main' }}>
+                <MenuItem onClick={handleDeleteRequest} sx={{ color: 'error.main' }}>
                     <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
                     Delete Request
                 </MenuItem>
@@ -84,6 +114,7 @@ export default function RequestTableRow({
 
 RequestTableRow.propTypes = {
     selected: PropTypes.any,
+    requestId: PropTypes.number.isRequired,
     itemDescription: PropTypes.any,
     project: PropTypes.any,
     purpose: PropTypes.any,
@@ -92,4 +123,5 @@ RequestTableRow.propTypes = {
     requestBy: PropTypes.any,
     requestDate: PropTypes.any,
     handleClick: PropTypes.func,
+    onDeleteRequest: PropTypes.func,
 }

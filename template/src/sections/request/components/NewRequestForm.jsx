@@ -94,11 +94,16 @@ export default function NewRequestForm({
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(requestData)
-        });
+        })
+            .then((response) => {
+                if (response.ok) {
+                    console.log(`Request for ${itemDescription} has been successfully recorded!`);
+                } else {
+                    console.log(`Failed to record request for ${itemDescription}...`);
+                }
+            });
 
         handleCloseModal();
-
-        console.log("Successfully submitted request!");
         
         setTimeout(() => {
             triggerRefresh();
