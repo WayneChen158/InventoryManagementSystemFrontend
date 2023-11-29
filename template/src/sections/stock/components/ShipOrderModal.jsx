@@ -6,12 +6,28 @@ import Iconify from 'src/components/iconify';
 export default function ShipOrderModal({ open, handleClose, productList, componentList, inventoryData }) {
     const [invoiceNumber, setInvoiceNumber] = useState('');
     const [items, setItems] = useState([]);
+    const [isSubmitDisabled, setSubmitDisabled] = useState(false);
 
     const handleAddItem = () => {
         setItems([...items, { uniqueId: '', catalog: '', itemName: '', currentStock: 0, sellQty: 0, category: '', recordId: 0, isEditable: true }]);
     };
 
+    const checkIfSubmitShouldBeDisabled = () => {
+        const isInvalid = items.some(item => item.sellQty > item.currentStock || item.sellQty === 0);
+        setSubmitDisabled(isInvalid);
+      };
+
     const handleItemSelect = (index, selectedItem) => {
+        const isItemAlreadyAdded = items.some(item =>
+            item.uniqueId === selectedItem.uniqueId
+        );
+    
+        if (isItemAlreadyAdded) {
+            // If the item is already added, don't add it again
+            console.warn("Item is already added to the list.");
+            return;
+        }
+        
         const updatedItems = items.map((item, idx) => {
           if (idx === index) {
             // Determine the category and record ID based on the selected item's properties
@@ -42,7 +58,7 @@ export default function ShipOrderModal({ open, handleClose, productList, compone
           return item;
         });
         setItems(updatedItems);
-        console.log(items);
+        checkIfSubmitShouldBeDisabled();
       };
       
 
@@ -54,12 +70,17 @@ export default function ShipOrderModal({ open, handleClose, productList, compone
             return item;
         });
         setItems(updatedItems);
+        checkIfSubmitShouldBeDisabled();
     };
 
     const filterOptions = (options, { inputValue }) => {
         const trimmedInput = inputValue.trim().toLowerCase();
 
-        const filteredOptions = options.filter(option =>
+        const availableOptions = options.filter(option =>
+            !items.some(item => item.uniqueId === option.uniqueId)
+        );
+
+        const filteredOptions = availableOptions.filter(option =>
                 (option.productCatalog && typeof option.productCatalog === 'string' && option.productCatalog.toLowerCase().includes(trimmedInput)) ||
                 (option.componentCatalog && typeof option.componentCatalog === 'string' && option.componentCatalog.toLowerCase().includes(trimmedInput)) ||
                 (option.catalogNumber && typeof option.catalogNumber === 'string' && option.catalogNumber.toLowerCase().includes(trimmedInput))
@@ -68,13 +89,13 @@ export default function ShipOrderModal({ open, handleClose, productList, compone
         return filteredOptions;
     }
   
-
     const handleDeleteItem = (index) => {
         setItems(items.filter((_, idx) => idx !== index));
+        checkIfSubmitShouldBeDisabled();
       };
 
     const handleSubmit = () => {
-        // Process data and make API call to update backend
+        console.log(items);
         handleClose();
       };
 
@@ -140,7 +161,7 @@ export default function ShipOrderModal({ open, handleClose, productList, compone
                 <Button onClick={handleAddItem}>+ Add Item</Button>
 
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-                    <Button onClick={handleSubmit}>Submit</Button>
+                    <Button onClick={handleSubmit} disabled={isSubmitDisabled}>Submit</Button>
                 </Box>
             </Paper>
         </Modal>
