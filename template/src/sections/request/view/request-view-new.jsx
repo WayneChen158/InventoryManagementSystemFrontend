@@ -120,12 +120,14 @@ export default function RequestPurchasePageNew({
 
     const tableHeader = [
         { id: 'itemDescription', label: 'Item Description'},
+        { id: 'itemCatalog', label: 'Catalog Number'},
         { id: 'project', label: 'Project'},
         { id: 'purpose', label: 'Purpose'},
         { id: 'requestAmount', label: 'Requested Amount'},
         { id: 'pricePerUnit', label: 'Unit Price'},
         { id: 'requestBy', label: 'Request By'},
         { id: 'requestDate', label: 'Request Date'},
+        { id: 'actionButton', label: ''},
     ];
 
     const notFound = !dataFiltered.length && !!filterName;
@@ -160,6 +162,8 @@ export default function RequestPurchasePageNew({
                                             selected={selected.indexOf(row.requestId) !== -1}
                                             requestId={row.requestId}
                                             itemDescription={row.itemDescription}
+                                            itemCatalog={row.itemCatalog}
+                                            itemURL={row.itemURL}
                                             project={row.project}
                                             purpose={row.purpose === 1 ? 'R&D' : 'MFG'}
                                             requestAmount={row.requestAmount}

@@ -13,6 +13,8 @@ export default function RequestTableRow({
     selected,
     requestId,
     itemDescription,
+    itemCatalog,
+    itemURL,
     project,
     purpose,
     requestAmount,
@@ -65,10 +67,16 @@ export default function RequestTableRow({
 
                 <TableCell component="th" scope="row" padding="none" align="center">
                     <Typography variant="subtitle2" wrap = "true" width='1/4'>
-                        {itemDescription}
+                        {(itemURL === null || itemURL === "") ? (
+                            itemDescription
+                        ) : (
+                            <a href={itemURL} target='_blank' rel="noreferrer">{itemDescription}</a>    
+                        )}
                     </Typography>
                 </TableCell>
 
+                <TableCell align="center">{itemCatalog}</TableCell>
+                
                 <TableCell align="center">{project}</TableCell>
 
                 <TableCell align="center">{purpose}</TableCell>
@@ -115,7 +123,9 @@ export default function RequestTableRow({
 RequestTableRow.propTypes = {
     selected: PropTypes.any,
     requestId: PropTypes.number.isRequired,
-    itemDescription: PropTypes.any,
+    itemDescription: PropTypes.string.isRequired,
+    itemCatalog: PropTypes.any,
+    itemURL: PropTypes.any,
     project: PropTypes.any,
     purpose: PropTypes.any,
     requestAmount: PropTypes.any,
