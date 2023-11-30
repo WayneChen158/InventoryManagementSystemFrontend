@@ -4,6 +4,25 @@ export function getRawMaterialsURL() {
     return `http://${config.server_host}:${config.server_port}/api/rawMaterials`;
   };
 
+// ============================ Manufacture Page ============================
+
+// Add Component Form
+export function getComponentManufactureURL() {
+  return `http://${config.server_host}:${config.server_port}/api/components/manufacture`
+}
+
+export function postComponentManufactureURL() {
+  return `http://${config.server_host}:${config.server_port}/api/components/manufacture`
+}
+
+// manufacture table row
+export function cancelManufactureTaskURL() {
+  return `http://${config.server_host}:${config.server_port}/api/manufacture/cancel`
+}
+
+
+// ============================ Stock Page ============================
+
 export function getConsumablesURL() {
   return `http://${config.server_host}:${config.server_port}/api/consumables`;
 }
@@ -15,18 +34,6 @@ export function getProductsInStockURL() {
 export function getComponentsInStockURL() {
   return `http://${config.server_host}:${config.server_port}/api/components/inStock`;
 }
-
-// export function updateConsumableStockURL() {
-//   return `http://${config.server_host}:${config.server_port}/api/consumables/updateStock`;
-// }
-
-// export function updateProductStockURL() {
-//   return `http://${config.server_host}:${config.server_port}/api/products/updateStock`;
-// }
-
-// export function updateComponentStockURL() {
-//   return `http://${config.server_host}:${config.server_port}/api/components/updateStock`;
-// }
 
 export function sellInvoiceURL() {
   return `http://${config.server_host}:${config.server_port}/api/sell`;
