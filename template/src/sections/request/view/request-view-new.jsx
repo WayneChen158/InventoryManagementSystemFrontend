@@ -165,7 +165,20 @@ export default function RequestPurchasePageNew({
                                             itemCatalog={row.itemCatalog}
                                             itemURL={row.itemURL}
                                             project={row.project}
-                                            purpose={row.purpose === 1 ? 'R&D' : 'MFG'}
+                                            purpose={
+                                                (() => {
+                                                    switch (row.purpose) {
+                                                      case 1:
+                                                        return 'R&D';
+                                                      case 2:
+                                                        return 'MFG';
+                                                      case 3:
+                                                        return 'Re-sale';
+                                                      default:
+                                                        return 'Unknown';
+                                                    }
+                                                  })()
+                                            }
                                             requestAmount={row.requestAmount}
                                             pricePerUnit={row.pricePerUnit}
                                             requestBy={row.requestBy}

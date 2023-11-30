@@ -181,6 +181,7 @@ export default function NewRequestForm({
                                 >
                                     <MenuItem value={1}>R&D</MenuItem>
                                     <MenuItem value={2}>Manufacture</MenuItem>
+                                    <MenuItem value={3}>Re-sale</MenuItem>
                                 </Select>
                             </FormControl>
                         </Box>
