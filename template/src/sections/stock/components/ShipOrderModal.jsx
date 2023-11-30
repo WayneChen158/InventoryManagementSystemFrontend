@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Paper, TextField, Button, Box, Table, TableBody, TableCell, TableHead, TableRow, Autocomplete, IconButton } from '@mui/material';
+import { sellInvoiceURL } from 'src/utils/url-provider'
 import Iconify from 'src/components/iconify';
 
 export default function ShipOrderModal({ open, handleClose, productList, componentList, inventoryData }) {
     const [invoiceNumber, setInvoiceNumber] = useState('');
     const [items, setItems] = useState([]);
     const [isSubmitDisabled, setSubmitDisabled] = useState(false);
+
+    const sellInvoiceRef = useRef(sellInvoiceURL());
 
     const handleAddItem = () => {
         setItems([...items, { uniqueId: '', catalog: '', itemName: '', currentStock: 0, sellQty: 0, category: '', recordId: 0, isEditable: true }]);
@@ -65,7 +68,8 @@ export default function ShipOrderModal({ open, handleClose, productList, compone
     const handleSellQtyChange = (index, qty) => {
         const updatedItems = items.map((item, idx) => {
             if (idx === index) {
-                return { ...item, sellQty: qty };
+                const parsedQty = qty === "" ? 0 : parseInt(qty, 10);
+                return { ...item, sellQty: parsedQty };
             }
             return item;
         });
@@ -95,9 +99,35 @@ export default function ShipOrderModal({ open, handleClose, productList, compone
       };
 
     const handleSubmit = () => {
-        console.log(items);
-        handleClose();
-      };
+        fetch(sellInvoiceRef.current, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(items)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();  // Handling the response as text instead of JSON
+        })
+        .then(data => {
+            console.log('Success:', data);
+            // You can add any further processing here if needed
+        })
+        .catch((error) => {
+            console.error('There was a problem with the PUT request:', error);
+        })
+        .finally(() => {
+            handleClose();  // Ensure that the modal is closed after processing the request
+            setItems([]);
+            setInvoiceNumber('');
+            setSubmitDisabled(false);
+        });
+    };
+    
+    
 
     const combinedInventoryList = [
         ...productList.map((item, index) => ({ ...item, uniqueId: `P${index}` })),
@@ -144,7 +174,7 @@ export default function ShipOrderModal({ open, handleClose, productList, compone
                                 <TableCell>
                                     <TextField
                                         type="number"
-                                        value={item.sellQty}
+                                        value={Number.isNaN(item.sellQty) ? '' : item.sellQty}
                                         onChange={(e) => handleSellQtyChange(index, parseInt(e.target.value, 10))}
                                     />
                                 </TableCell>

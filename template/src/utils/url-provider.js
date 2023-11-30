@@ -28,6 +28,10 @@ export function updateComponentStockURL() {
   return `http://${config.server_host}:${config.server_port}/api/components/updateStock`;
 }
 
+export function sellInvoiceURL() {
+  return `http://${config.server_host}:${config.server_port}/api/sell`;
+}
+
 export function getRequestsURL() {
     return `http://${config.server_host}:${config.server_port}/api/requests`;
 }
