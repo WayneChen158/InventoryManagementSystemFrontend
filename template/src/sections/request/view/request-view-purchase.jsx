@@ -13,7 +13,7 @@ import RequestTableToolbar from "../request-table-toolbar";
 import RequestTableEmptyRows from "../request-table-empty-rows";
 import { emptyRows, applyFilter, getComparator } from "../utils";
 
-export default function RequestPurchasePageNew({
+export default function RequestPurchasePage({
     allRequestData,
     triggerRefresh,
     statusCode,
@@ -190,7 +190,7 @@ export default function RequestPurchasePageNew({
     );
 }
 
-RequestPurchasePageNew.propTypes = {
+RequestPurchasePage.propTypes = {
     allRequestData: PropTypes.array.isRequired,
     triggerRefresh: PropTypes.func.isRequired,
     statusCode: PropTypes.number.isRequired,

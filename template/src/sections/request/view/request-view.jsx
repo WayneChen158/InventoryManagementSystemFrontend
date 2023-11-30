@@ -7,9 +7,8 @@ import { getRequestsURL, getRawMaterialsURL } from 'src/utils/url-provider';
 
 import Iconify from 'src/components/iconify';
 
-import RequestPurchasePageNew from './request-view-new';
+import RequestPurchasePage from './request-view-purchase';
 import NewRequestForm from '../components/NewRequestForm';
-import RequestPurchasePageOngoing from './request-view-ongoing';
 
 export default function RequestPage() {
     const [tabValue, setTabValue] = useState('new-purchase');
@@ -100,14 +99,14 @@ export default function RequestPage() {
                         </TabList>
                     </Box>
                     <TabPanel value="new-purchase">
-                        <RequestPurchasePageNew 
+                        <RequestPurchasePage 
                             allRequestData={requestData}
                             statusCode={1} 
                             triggerRefresh={triggerRefresh}
                         />
                     </TabPanel>
                     <TabPanel value="ongoing-purchase">
-                        <RequestPurchasePageOngoing 
+                        <RequestPurchasePage 
                             allRequestData={requestData}
                             statusCode={2} 
                             triggerRefresh={triggerRefresh}
