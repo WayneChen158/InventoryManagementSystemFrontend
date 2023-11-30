@@ -22,7 +22,7 @@ export default function RequestTableRow({
     requestBy,
     requestDate,
     handleClick,
-    onDeleteRequest,
+    triggerRefresh,
 }) {
     const [ open, setOpen ] = useState(null);
 
@@ -54,7 +54,7 @@ export default function RequestTableRow({
         handleCloseMenu();
 
         setTimeout(() => {
-            onDeleteRequest();
+            triggerRefresh();
           }, config.timeout);
     }
 
@@ -133,5 +133,5 @@ RequestTableRow.propTypes = {
     requestBy: PropTypes.any,
     requestDate: PropTypes.any,
     handleClick: PropTypes.func,
-    onDeleteRequest: PropTypes.func,
+    triggerRefresh: PropTypes.func.isRequired,
 }

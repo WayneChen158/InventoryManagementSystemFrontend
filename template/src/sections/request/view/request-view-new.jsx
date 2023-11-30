@@ -1,9 +1,7 @@
+import { useState } from "react";
 import PropTypes from 'prop-types';
-import { useRef, useState, useEffect } from "react";
 
 import { Card, Table, Container, TableBody, TableContainer, TablePagination } from "@mui/material";
-
-import { getRequestsURL } from "src/utils/url-provider";
 
 import Scrollbar from "src/components/scrollbar";
 
@@ -16,7 +14,8 @@ import RequestTableEmptyRows from "../request-table-empty-rows";
 import { emptyRows, applyFilter, getComparator } from "../utils";
 
 export default function RequestPurchasePageNew({
-    refreshTrigger,
+    allRequestData,
+    triggerRefresh,
     statusCode,
 }) {
     const [page, setPage] = useState(0);
@@ -31,24 +30,7 @@ export default function RequestPurchasePageNew({
 
     const [filterName, setFilterName] = useState('');
 
-    const [requestData, setRequestData] = useState([]);
-
-    const [deleteTrigger, setDeleteTrigger] = useState(1);
-
-    const requestsURL = useRef(getRequestsURL());
-
-    useEffect(() => {
-        fetch(requestsURL.current)
-        .then(res => res.json())
-        .then(rawData => {
-            console.log("Request Fetch Invoked!");
-            console.log(rawData);
-            console.log(`Status code: ${statusCode}`);
-            const data = rawData.filter((request) => request.status === statusCode);
-            setRequestData(data);
-            console.log(data);
-        })
-    }, [refreshTrigger, statusCode, deleteTrigger]);
+    const requestData = allRequestData.filter((request) => request.status === statusCode);
 
     const handleSort = (event, id) => {
         const isAsc = orderBy === id && order === 'asc';
@@ -99,10 +81,6 @@ export default function RequestPurchasePageNew({
         setPage(0);
         setFilterName(event.target.value);
     }
-
-    const handleDeleteRequest = () => {
-        setDeleteTrigger((prev) => prev * (-1));
-    };
 
     const dateParser = (mysqlDateStr) => {
         if (mysqlDateStr === null) {
@@ -184,7 +162,7 @@ export default function RequestPurchasePageNew({
                                             requestBy={row.requestBy}
                                             requestDate={dateParser(row.requestDate)}
                                             handleClick={(event) => handleClick(event, row.requestId)}
-                                            onDeleteRequest={handleDeleteRequest}
+                                            triggerRefresh={triggerRefresh}
                                         />
                                     ))}
                                 <RequestTableEmptyRows 
@@ -213,6 +191,7 @@ export default function RequestPurchasePageNew({
 }
 
 RequestPurchasePageNew.propTypes = {
-    refreshTrigger: PropTypes.number,
+    allRequestData: PropTypes.array.isRequired,
+    triggerRefresh: PropTypes.func.isRequired,
     statusCode: PropTypes.number.isRequired,
 }
