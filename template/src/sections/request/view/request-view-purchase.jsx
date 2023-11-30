@@ -96,17 +96,36 @@ export default function RequestPurchasePage({
         filterName,
     });
 
-    const tableHeader = [
-        { id: 'itemDescription', label: 'Item Description'},
-        { id: 'itemCatalog', label: 'Catalog Number'},
-        { id: 'project', label: 'Project'},
-        { id: 'purpose', label: 'Purpose'},
-        { id: 'requestAmount', label: 'Requested Amount'},
-        { id: 'pricePerUnit', label: 'Unit Price'},
-        { id: 'requestBy', label: 'Request By'},
-        { id: 'requestDate', label: 'Request Date'},
-        { id: 'actionButton', label: ''},
-    ];
+    let tableHeader = [];
+
+    if (statusCode === 1) {
+        tableHeader = [
+            { id: 'itemDescription', label: 'Item Description'},
+            { id: 'itemCatalog', label: 'Catalog Number'},
+            { id: 'project', label: 'Project'},
+            { id: 'purpose', label: 'Purpose'},
+            { id: 'requestAmount', label: 'Requested Amount'},
+            { id: 'pricePerUnit', label: 'Unit Price'},
+            { id: 'requestBy', label: 'Request By'},
+            { id: 'requestDate', label: 'Request Date'},
+            { id: 'actionButton', label: ''},
+        ];
+    } else if (statusCode === 2) {
+        tableHeader = [
+            { id: 'itemDescription', label: 'Item Description'},
+            { id: 'itemCatalog', label: 'Catalog Number'},
+            { id: 'project', label: 'Project'},
+            { id: 'purpose', label: 'Purpose'},
+            { id: 'requestAmount', label: 'Requested Amount'},
+            { id: 'fulfilledAmount', label: 'Fulfilled Amount'},
+            { id: 'pricePerUnit', label: 'Unit Price'},
+            { id: 'requestBy', label: 'Request By'},
+            { id: 'doneBy', label: 'Fulfilled By'},
+            { id: 'requestDate', label: 'Request Date'},
+            { id: 'fulfilledDate', label: 'Fulfilled Date'},
+            { id: 'actionButton', label: ''},
+        ];
+    }
 
     const notFound = !dataFiltered.length && !!filterName;
 
@@ -135,7 +154,8 @@ export default function RequestPurchasePage({
                                 {dataFiltered
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((row) => (
-                                        <RequestTableRow 
+                                        <RequestTableRow
+                                            statusCode={statusCode} 
                                             key={row.requestId}
                                             selected={selected.indexOf(row.requestId) !== -1}
                                             requestId={row.requestId}
@@ -158,9 +178,12 @@ export default function RequestPurchasePage({
                                                   })()
                                             }
                                             requestAmount={row.requestAmount}
+                                            fulfilledAmount={row.fulfilledAmount}
                                             pricePerUnit={row.pricePerUnit}
                                             requestBy={row.requestBy}
+                                            doneBy={row.doneBy}
                                             requestDate={dateParser(row.requestDate)}
+                                            fulfilledDate={dateParser(row.fulfilledDate)}
                                             handleClick={(event) => handleClick(event, row.requestId)}
                                             triggerRefresh={triggerRefresh}
                                         />
