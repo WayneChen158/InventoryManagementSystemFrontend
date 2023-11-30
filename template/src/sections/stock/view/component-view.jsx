@@ -12,8 +12,8 @@ import Scrollbar from 'src/components/scrollbar';
 
 import TableNoData from '../table-no-data';
 import StockTableHead from '../stock-table-head';
-import ProductTableRow from '../product-table-row';
 import TableEmptyRows from '../table-empty-rows';
+import ProductTableRow from '../product-table-row';
 import StockTableToolbar from '../stock-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils-products';
 

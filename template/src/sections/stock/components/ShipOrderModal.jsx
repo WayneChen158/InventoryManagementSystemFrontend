@@ -1,10 +1,17 @@
-import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Paper, TextField, Button, Box, Table, TableBody, TableCell, TableHead, TableRow, Autocomplete, IconButton } from '@mui/material';
+import { useRef, useState } from 'react';
+
+import { Box, Modal, Paper, Table, Button, 
+    TableRow, TableBody, TextField, TableCell, 
+    TableHead, IconButton, Autocomplete } from '@mui/material';
+
 import { sellInvoiceURL } from 'src/utils/url-provider'
+
+import { config } from 'src/config';
+
 import Iconify from 'src/components/iconify';
 
-export default function ShipOrderModal({ open, handleClose, productList, componentList, inventoryData }) {
+export default function ShipOrderModal({ open, handleClose, triggerRefresh, productList, componentList, inventoryData }) {
     const [invoiceNumber, setInvoiceNumber] = useState('');
     const [items, setItems] = useState([]);
     const [isSubmitDisabled, setSubmitDisabled] = useState(false);
@@ -120,6 +127,9 @@ export default function ShipOrderModal({ open, handleClose, productList, compone
             console.error('There was a problem with the PUT request:', error);
         })
         .finally(() => {
+            setTimeout(() => {
+                triggerRefresh();
+              }, config.timeout);
             handleClose();  // Ensure that the modal is closed after processing the request
             setItems([]);
             setInvoiceNumber('');
@@ -201,6 +211,7 @@ export default function ShipOrderModal({ open, handleClose, productList, compone
 ShipOrderModal.propTypes = {
     open: PropTypes.bool.isRequired,
     handleClose: PropTypes.func.isRequired,
+    triggerRefresh: PropTypes.func.isRequired,
     productList: PropTypes.array.isRequired,
     componentList: PropTypes.array.isRequired,
     inventoryData: PropTypes.array.isRequired,

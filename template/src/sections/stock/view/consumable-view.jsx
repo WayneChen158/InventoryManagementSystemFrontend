@@ -11,10 +11,10 @@ import TablePagination from '@mui/material/TablePagination';
 import Scrollbar from 'src/components/scrollbar';
 
 import TableNoData from '../table-no-data';
-import ConsumableTableRow from '../consumable-table-row';
 import StockTableHead from '../stock-table-head';
 import TableEmptyRows from '../table-empty-rows';
 import StockTableToolbar from '../stock-table-toolbar';
+import ConsumableTableRow from '../consumable-table-row';
 import { emptyRows, applyFilter, getComparator } from '../utils-consumables';
 
 // ----------------------------------------------------------------------

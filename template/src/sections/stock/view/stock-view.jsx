@@ -11,20 +11,21 @@ import TabContext from '@mui/lab/TabContext';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
-import { getProductsInStockURL, getComponentsInStockURL, getConsumablesURL  } from 'src/utils/url-provider';
+import { getConsumablesURL, getProductsInStockURL, getComponentsInStockURL  } from 'src/utils/url-provider';
 
 import Iconify from 'src/components/iconify';
 
 import ProductPage from './product-view';
 import ComponentPage from './component-view';
 import ConsumablePage from './consumable-view';
-
 import ShipOrderModal from '../components/ShipOrderModal';
 
 // ----------------------------------------------------------------------
 
 export default function StockPage() {
   const [value, setValue] = useState('1');
+
+  const [refreshTrigger, setRefreshTrigger] = useState(1);
 
   const [openModal, setOpenModal] = useState(false);
 
@@ -54,7 +55,7 @@ export default function StockPage() {
       .catch((error) => {
         console.error('There was a problem with the fetch operation:', error);
       });
-  }, []);
+  }, [refreshTrigger]);
 
   useEffect(() => {
     fetch(componentsInStockURL.current, { method: 'GET' })
@@ -70,7 +71,7 @@ export default function StockPage() {
       .catch((error) => {
         console.error('There was a problem with the fetch operation:', error);
       });
-  }, []);
+  }, [refreshTrigger]);
   
   useEffect(() => {
     fetch(consumablesURL.current)
@@ -80,11 +81,15 @@ export default function StockPage() {
       console.log(data)
       setInventoryData(data)
     })
-  }, []);
+  }, [refreshTrigger]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const triggerRefresh = () => {
+      setRefreshTrigger(prev => prev * (-1));
+    }
   
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -105,6 +110,7 @@ export default function StockPage() {
         <ShipOrderModal
           open={openModal}
           handleClose={handleCloseModal}
+          triggerRefresh = {triggerRefresh}
           productList={productList}
           componentList={componentList}
           inventoryData={inventoryData}

@@ -11,9 +11,9 @@ import TablePagination from '@mui/material/TablePagination';
 import Scrollbar from 'src/components/scrollbar';
 
 import TableNoData from '../table-no-data';
+import TableEmptyRows from '../table-empty-rows';
 import StockTableHead from '../stock-table-head';
 import ProductTableRow from '../product-table-row';
-import TableEmptyRows from '../table-empty-rows';
 import StockTableToolbar from '../stock-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils-products';
 
