@@ -1,4 +1,5 @@
-import { useRef, useState, useEffect } from 'react';
+import { useState } from 'react';
+import PropTypes from 'prop-types';
 
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
@@ -7,20 +8,18 @@ import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-import { getComponentsInStockURL } from 'src/utils/url-provider';
-
 import Scrollbar from 'src/components/scrollbar';
 
 import TableNoData from '../table-no-data';
 import StockTableHead from '../stock-table-head';
-import ProductTableRow from '../product-table-row';
 import TableEmptyRows from '../table-empty-rows';
+import ProductTableRow from '../product-table-row';
 import StockTableToolbar from '../stock-table-toolbar';
-import { emptyRows, applyFilter, getComparator } from '../utils';
+import { emptyRows, applyFilter, getComparator } from '../utils-products';
 
 // ----------------------------------------------------------------------
 
-export default function ComponentPage() {
+export default function ComponentPage({ componentList }) {
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -32,26 +31,6 @@ export default function ComponentPage() {
   const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(10);
-
-  const [componentList, setComponentList] = useState([]);
-
-  const componentsInStockURL = useRef(getComponentsInStockURL());
-
-  useEffect(() => {
-    fetch(componentsInStockURL.current, { method: 'GET' })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then((resdata) => {
-        setComponentList(resdata);
-      })
-      .catch((error) => {
-        console.error('There was a problem with the fetch operation:', error);
-      });
-  }, []);
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -131,10 +110,11 @@ export default function ComponentPage() {
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
-                  { id: 'name', label: 'Component Name' },
-                  { id: 'date', label: 'Date' },
+                  { id: 'componentCatalog', label: 'Catalog' },
+                  { id: 'componentName', label: 'Component Name' },
+                  { id: 'manufactureDate', label: 'Date' },
                   { id: 'lotNumber', label: 'Lot#' },
-                  { id: 'inStock', label: 'In Stock' },
+                  { id: 'amountInStock', label: 'In Stock' },
                 ]}
               />
               <TableBody>
@@ -144,6 +124,7 @@ export default function ComponentPage() {
                     .map((row) => (
                       <ProductTableRow
                         key={row.componentRecordId}
+                        catalog = {row.componentCatalog}
                         name={row.componentName}
                         date={row.manufactureDate}
                         lotNumber={row.lotNumber}
@@ -176,4 +157,8 @@ export default function ComponentPage() {
       </Card>
     </Container>
   );
+}
+
+ComponentPage.propTypes = {
+  componentList: PropTypes.array,
 }

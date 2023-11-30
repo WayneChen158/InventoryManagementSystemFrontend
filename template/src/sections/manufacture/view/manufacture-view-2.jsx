@@ -116,9 +116,9 @@ export default function ManufacturePageTwo({triggerFetch, refreshData}) {
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
-                  { id: 'id', label: 'ID' },
-                  { id: 'name', label: 'Description' },
-                  { id: 'date', label: 'Date' },
+                  { id: 'manufactureRecordId', label: 'ID' },
+                  { id: 'componentName', label: 'Description' },
+                  { id: 'manufactureDate', label: 'Date' },
                   { id: 'owner', label: 'Owner' },
                   { id: 'scale', label: 'Scale' },
                 ]}

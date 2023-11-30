@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import Tooltip from '@mui/material/Tooltip';
@@ -10,30 +9,12 @@ import InputAdornment from '@mui/material/InputAdornment';
 
 import Iconify from 'src/components/iconify';
 
-import FilterCheckBox from './components/Checkmark';
-
 // ----------------------------------------------------------------------
 
 //  lowStock, onLowStockChange, selectedFilters, onSelectedFiltersChange 
 export default function StockTableToolbar({ 
   numSelected, filterName, onFilterName
 }) {
-
-  const [selectedLocation, setSelectedLocation] = useState([]);
-  const [selectedType, setSelectedType] = useState([]);
-  const [selectedOwner, setSelectedOwner] = useState([]);
-
-  const handleLocationChange = (selectedOptions) => {
-    setSelectedLocation(selectedOptions);
-  };
-
-  const handleTypeChange = (selectedOptions) => {
-    setSelectedType(selectedOptions);
-  };
-
-  const handleOwnerChange = (selectedOptions) => {
-    setSelectedOwner(selectedOptions);
-  };
 
   return (
     <Toolbar
@@ -68,33 +49,6 @@ export default function StockTableToolbar({
           }
         />
       )}
-
-      {numSelected === 0 &&
-          <FilterCheckBox
-          label="Location"
-          options={['Location 1', 'Location 2', 'Location 3']}
-          selected={selectedLocation}
-          onSelectionChange={handleLocationChange}
-        />
-        }
-
-      {numSelected === 0 &&
-          <FilterCheckBox
-          label="Type"
-          options={['Type 1', 'type 2', 'Type 3']}
-          selected={selectedType}
-          onSelectionChange={handleTypeChange}
-        />
-        }
-
-      {numSelected === 0 &&
-          <FilterCheckBox
-          label="Owner"
-          options={['Owner 1', 'Owner 2', 'Owner 3']}
-          selected={selectedOwner}
-          onSelectionChange={handleOwnerChange}
-        />
-        }
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
