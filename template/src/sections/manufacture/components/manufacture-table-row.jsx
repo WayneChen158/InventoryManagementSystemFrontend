@@ -1,6 +1,6 @@
-import { format } from 'date-fns'
-import { useState } from 'react';
+import { format } from 'date-fns';
 import PropTypes from 'prop-types';
+import { useRef, useState } from 'react';
 
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
@@ -11,6 +11,8 @@ import Checkbox from '@mui/material/Checkbox';
 import MenuItem from '@mui/material/MenuItem';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
+
+import { cancelManufactureTaskURL } from 'src/utils/url-provider';
 
 import Iconify from 'src/components/iconify';
 
@@ -28,6 +30,8 @@ export default function UserTableRow({
   handleOperation,
 }) {
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const cancelManufactureTask = useRef(cancelManufactureTaskURL());
 
   const handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -60,7 +64,7 @@ export default function UserTableRow({
   };
 
   const handleCancelTask = () => {
-    fetch(`http://${config.server_host}:${config.server_port}/api/manufacture/cancel/${record.manufactureRecordId}`, {
+    fetch(`${cancelManufactureTask.current}/${record.manufactureRecordId}`, {
         method: 'PUT',
     }).then((response) => {
     if (!response.ok) {

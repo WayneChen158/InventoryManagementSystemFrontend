@@ -1,11 +1,14 @@
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 import { Box, Modal, Paper, 
     Table, Button, TableRow, TextField, TableHead, TableCell, 
     TableBody, Typography, TableContainer } from '@mui/material';
 
-import { config } from '../../../config';
+import { getComponentManufactureURL, postComponentManufactureURL } from 'src/utils/url-provider';
+
+import { config } from 'src/config';
+
 import RecipeTableRow from './RecipeTableRow';
 
 export default function AddComponentForm ({ 
@@ -26,8 +29,12 @@ export default function AddComponentForm ({
 
   const [itemLst, setItemLst] = useState([]);
 
+  const ComponentManufactureURL = useRef(getComponentManufactureURL());
+
+  const submitComponentManufactureURL = useRef(postComponentManufactureURL());
+
   useEffect(() => {
-        fetch(`http://${config.server_host}:${config.server_port}/api/components/manufacture/${componentId}?scale=${scale}`, {
+        fetch(`${ComponentManufactureURL.current}/${componentId}?scale=${scale}`, {
             method: 'GET',
         })
         .then((response) => {
@@ -59,7 +66,7 @@ export default function AddComponentForm ({
 
   const handleSubmit = () => {
         if(componentId !== 0) {
-            fetch(`http://${config.server_host}:${config.server_port}/api/components/manufacture/${componentId}?scale=${scale}`, {
+            fetch(`${submitComponentManufactureURL.current}/${componentId}?scale=${scale}`, {
                 method: 'POST',
             }).then((response) => {
             if (!response.ok) {
@@ -67,7 +74,7 @@ export default function AddComponentForm ({
             }
             return response.json();
             }).catch((error) => {
-            console.error('There was a problem with the fetch operation:', error);
+                console.error('There was a problem with the fetch operation:', error);
             });
         }
         console.log("submit test")
