@@ -1,12 +1,17 @@
 import PropTypes from 'prop-types';
 import { useRef, useState } from 'react';
 
-import { Box, Card, Grid, Stack, Button, Select, MenuItem, TextField, InputLabel, FormControl, InputAdornment } from '@mui/material';
+import { Box, Card, Grid, Stack, Button, Select, MenuItem, TextField, InputLabel, FormControl, Autocomplete, InputAdornment } from '@mui/material';
 
 import { addRequestURL } from 'src/utils/url-provider';
 
-export default function NewRequestForm({handleCloseModal}) {
-    
+import { config } from 'src/config';
+
+export default function NewRequestForm({
+    handleCloseModal,
+    triggerRefresh,
+    inventoryItems,    
+}) {
     const [itemDescription, setItemDescription] = useState('');
 
     const [catalogNumber, setCatalogNumber] = useState('');
@@ -24,10 +29,6 @@ export default function NewRequestForm({handleCloseModal}) {
     const [requestBy, setRequestBy] = useState('');
 
     const addNewRequestURL = useRef(addRequestURL());
-
-    const handleItemDescriptionChange = (event) => {
-        setItemDescription(event.target.value);
-    }
 
     const handleCatalogNumberChange = (event) => {
         setCatalogNumber(event.target.value);
@@ -55,6 +56,27 @@ export default function NewRequestForm({handleCloseModal}) {
 
     const handleRequestByChange = (event) => {
         setRequestBy(event.target.value);
+    }
+
+    const handleAutocompleteChange = (_, selectedItem) => {
+        console.log("Selected existing inventory item:")
+        console.log(selectedItem);
+        if (selectedItem) {
+            if (selectedItem.catalogNumber !== null) {
+                setCatalogNumber(selectedItem.catalogNumber);
+            }
+            if (selectedItem.website !== null) {
+                setItemURL(selectedItem.website);
+            }
+            if (selectedItem.threshold !== null) {
+                setRequestAmount(selectedItem.threshold);
+            }
+        } else {
+            setCatalogNumber('');
+            setItemURL('');
+            setRequestAmount(0);
+        }
+        
     }
 
     const convertDateFormat = (timestamp) => {
@@ -90,9 +112,20 @@ export default function NewRequestForm({handleCloseModal}) {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(requestData)
-        });
+        })
+            .then((response) => {
+                if (response.ok) {
+                    console.log(`Request for ${itemDescription} has been successfully recorded!`);
+                } else {
+                    console.log(`Failed to record request for ${itemDescription}...`);
+                }
+            });
 
         handleCloseModal();
+        
+        setTimeout(() => {
+            triggerRefresh();
+          }, config.timeout);
     }
 
     return(
@@ -105,12 +138,17 @@ export default function NewRequestForm({handleCloseModal}) {
                         </Box>
 
                         <Box style={{padding: '10px 0 0 0'}}>
-                            <TextField 
-                                label='Item name'
-                                type='text'
-                                value={itemDescription}
-                                onChange={handleItemDescriptionChange}
-                            />
+                        <Autocomplete
+                            freeSolo
+                            options={inventoryItems}
+                            getOptionLabel={(option) => option.description}
+                            inputValue={itemDescription}
+                            onInputChange={(_, newInputValue) => setItemDescription(newInputValue)}
+                            onChange={handleAutocompleteChange}
+                            renderInput={(params) => (
+                            <TextField {...params} label="Item name" variant="outlined" fullWidth />
+                            )}
+                        />
                         </Box>
 
                         <Box style={{padding: '10px 0 0 0'}}>
@@ -143,6 +181,7 @@ export default function NewRequestForm({handleCloseModal}) {
                                 >
                                     <MenuItem value={1}>R&D</MenuItem>
                                     <MenuItem value={2}>Manufacture</MenuItem>
+                                    <MenuItem value={3}>Re-sale</MenuItem>
                                 </Select>
                             </FormControl>
                         </Box>
@@ -204,4 +243,6 @@ export default function NewRequestForm({handleCloseModal}) {
 
 NewRequestForm.propTypes = {
     handleCloseModal: PropTypes.func.isRequired,
+    triggerRefresh: PropTypes.func.isRequired,
+    inventoryItems: PropTypes.array,
 }

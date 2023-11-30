@@ -1,8 +1,7 @@
-import { useRef, useState, useEffect } from "react";
+import { useState } from "react";
+import PropTypes from 'prop-types';
 
 import { Card, Table, Container, TableBody, TableContainer, TablePagination } from "@mui/material";
-
-import { getRequestsURL } from "src/utils/url-provider";
 
 import Scrollbar from "src/components/scrollbar";
 
@@ -14,7 +13,11 @@ import RequestTableToolbar from "../request-table-toolbar";
 import RequestTableEmptyRows from "../request-table-empty-rows";
 import { emptyRows, applyFilter, getComparator } from "../utils";
 
-export default function RequestPurchasePageNew() {
+export default function RequestPurchasePage({
+    allRequestData,
+    triggerRefresh,
+    statusCode,
+}) {
     const [page, setPage] = useState(0);
 
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -27,19 +30,7 @@ export default function RequestPurchasePageNew() {
 
     const [filterName, setFilterName] = useState('');
 
-    const [ requestData, setRequestData ] = useState([]);
-
-    const requestsURL = useRef(getRequestsURL());
-
-    useEffect(() => {
-        fetch(requestsURL.current)
-        .then(res => res.json())
-        .then(data => {
-            console.log("Request Fetch Invoked!");
-            console.log(data);
-            setRequestData(data);
-        })
-    }, []);
+    const requestData = allRequestData.filter((request) => request.status === statusCode);
 
     const handleSort = (event, id) => {
         const isAsc = orderBy === id && order === 'asc';
@@ -105,15 +96,36 @@ export default function RequestPurchasePageNew() {
         filterName,
     });
 
-    const tableHeader = [
-        { id: 'itemDescription', label: 'Item Description'},
-        { id: 'project', label: 'Project'},
-        { id: 'purpose', label: 'Purpose'},
-        { id: 'requestAmount', label: 'Requested Amount'},
-        { id: 'pricePerUnit', label: 'Unit Price'},
-        { id: 'requestBy', label: 'Request By'},
-        { id: 'requestDate', label: 'Request Date'},
-    ];
+    let tableHeader = [];
+
+    if (statusCode === 1) {
+        tableHeader = [
+            { id: 'itemDescription', label: 'Item Description'},
+            { id: 'itemCatalog', label: 'Catalog Number'},
+            { id: 'project', label: 'Project'},
+            { id: 'purpose', label: 'Purpose'},
+            { id: 'requestAmount', label: 'Requested Amount'},
+            { id: 'pricePerUnit', label: 'Unit Price'},
+            { id: 'requestBy', label: 'Request By'},
+            { id: 'requestDate', label: 'Request Date'},
+            { id: 'actionButton', label: ''},
+        ];
+    } else if (statusCode === 2) {
+        tableHeader = [
+            { id: 'itemDescription', label: 'Item Description'},
+            { id: 'itemCatalog', label: 'Catalog Number'},
+            { id: 'project', label: 'Project'},
+            { id: 'purpose', label: 'Purpose'},
+            { id: 'requestAmount', label: 'Requested Amount'},
+            { id: 'fulfilledAmount', label: 'Fulfilled Amount'},
+            { id: 'pricePerUnit', label: 'Unit Price'},
+            { id: 'requestBy', label: 'Request By'},
+            { id: 'doneBy', label: 'Fulfilled By'},
+            { id: 'requestDate', label: 'Request Date'},
+            { id: 'fulfilledDate', label: 'Fulfilled Date'},
+            { id: 'actionButton', label: ''},
+        ];
+    }
 
     const notFound = !dataFiltered.length && !!filterName;
 
@@ -142,17 +154,38 @@ export default function RequestPurchasePageNew() {
                                 {dataFiltered
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((row) => (
-                                        <RequestTableRow 
+                                        <RequestTableRow
+                                            statusCode={statusCode} 
                                             key={row.requestId}
                                             selected={selected.indexOf(row.requestId) !== -1}
+                                            requestId={row.requestId}
                                             itemDescription={row.itemDescription}
+                                            itemCatalog={row.itemCatalog}
+                                            itemURL={row.itemURL}
                                             project={row.project}
-                                            purpose={row.purpose === 1 ? 'R&D' : 'MFG'}
+                                            purpose={
+                                                (() => {
+                                                    switch (row.purpose) {
+                                                      case 1:
+                                                        return 'R&D';
+                                                      case 2:
+                                                        return 'MFG';
+                                                      case 3:
+                                                        return 'Re-sale';
+                                                      default:
+                                                        return 'Unknown';
+                                                    }
+                                                  })()
+                                            }
                                             requestAmount={row.requestAmount}
+                                            fulfilledAmount={row.fulfilledAmount}
                                             pricePerUnit={row.pricePerUnit}
                                             requestBy={row.requestBy}
+                                            doneBy={row.doneBy}
                                             requestDate={dateParser(row.requestDate)}
+                                            fulfilledDate={dateParser(row.fulfilledDate)}
                                             handleClick={(event) => handleClick(event, row.requestId)}
+                                            triggerRefresh={triggerRefresh}
                                         />
                                     ))}
                                 <RequestTableEmptyRows 
@@ -178,4 +211,10 @@ export default function RequestPurchasePageNew() {
             </Card>
         </Container>
     );
+}
+
+RequestPurchasePage.propTypes = {
+    allRequestData: PropTypes.array.isRequired,
+    triggerRefresh: PropTypes.func.isRequired,
+    statusCode: PropTypes.number.isRequired,
 }

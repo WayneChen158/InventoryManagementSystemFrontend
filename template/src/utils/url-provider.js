@@ -23,3 +23,7 @@ export function getRequestsURL() {
 export function addRequestURL() {
   return `http://${config.server_host}:${config.server_port}/api/requests/add`;
 }
+
+export function deleteRequestURL() {
+  return `http://${config.server_host}:${config.server_port}/api/requests/delete`;
+}
