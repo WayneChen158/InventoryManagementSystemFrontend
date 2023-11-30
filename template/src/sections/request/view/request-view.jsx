@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 import { TabList, TabPanel, TabContext } from '@mui/lab';
 import { Tab, Box, Modal, Stack, Button, Container, Typography } from '@mui/material';
+
+import { getRawMaterialsURL } from 'src/utils/url-provider';
 
 import Iconify from 'src/components/iconify';
 
@@ -14,6 +16,10 @@ export default function RequestPage() {
     const [openModal, setOpenModal] = useState(false);
 
     const [refreshTrigger, setRefreshTrigger] = useState(1);
+
+    const [inventoryData, setInventoryData] = useState([]);
+
+    const rawMaterialsURL = useRef(getRawMaterialsURL());
 
     const handleTabChange = (event, newTabValue) => {
         setTabValue(newTabValue);
@@ -30,6 +36,16 @@ export default function RequestPage() {
     const triggerRefresh = () => {
         setRefreshTrigger(prev => prev * (-1));
     }
+
+    useEffect(() => {
+        fetch(rawMaterialsURL.current)
+        .then(res => res.json())
+        .then(data => {
+          console.log("Raw Material Fetch Invoked!")
+          console.log(data)
+          setInventoryData(data)
+        })
+      }, [refreshTrigger]);
 
     return (
         <Container>
@@ -53,6 +69,7 @@ export default function RequestPage() {
                         <NewRequestForm 
                             handleCloseModal={handleCloseModal}
                             triggerRefresh={triggerRefresh}
+                            inventoryItems={inventoryData}
                         />
                     </Box>
                 </Modal> 
