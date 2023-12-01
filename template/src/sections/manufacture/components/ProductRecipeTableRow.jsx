@@ -1,19 +1,33 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 
-import {  Button, TableRow, TableCell } from '@mui/material';
+import { Box, Modal, Button, TableRow, TableCell } from '@mui/material';
+
+import NewRequestForm from 'src/sections/request/components/NewRequestForm';
 
 export default function ProductRecipeTableRow ({ row, onAddSubComponent, scale, isSubmitted }) {
 
-  const handleClick = () => {
+    const [openRequestRawMaterialModal, setOpenRequestRawMaterialModal] = useState(false);
+  
+    const handleOpenRequestRawMaterialModal = () => {
+        setOpenRequestRawMaterialModal(true);
+    }
+
+    const handleCloseRequestRawMaterialModal = () => {
+        setOpenRequestRawMaterialModal(false);
+    }
+    
+    const handleClick = () => {
     if (row.type === 'component') {
         onAddSubComponent(row.componentId, row.componentName, scale);
     } else {
         console.log("Raw material request sent");
+        handleOpenRequestRawMaterialModal();
     }
   }
 
   return (
+    <>
     <TableRow>
         <TableCell>{row.componentName}</TableCell>
         <TableCell>{row.lotNumber || 'N/A'}</TableCell>
@@ -33,6 +47,19 @@ export default function ProductRecipeTableRow ({ row, onAddSubComponent, scale, 
             )}
         </TableCell>
     </TableRow>
+    <Modal
+        open={openRequestRawMaterialModal}
+        onClose={handleCloseRequestRawMaterialModal}
+        container={document.getElementById('root')}
+    >
+        <Box style={{ display: 'flex', margin: 'auto', justifyContent: 'center', width: '70%', height: '100%'}}>
+            <NewRequestForm 
+                handleCloseModal={handleCloseRequestRawMaterialModal}
+                inventoryItems={[]}
+            />
+        </Box>
+    </Modal>
+    </>
   );
 };
 
