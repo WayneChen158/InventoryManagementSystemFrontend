@@ -10,11 +10,14 @@ import { config } from 'src/config';
 export default function NewRequestForm({
     handleCloseModal,
     triggerRefresh,
-    inventoryItems,    
+    inventoryItems,
+    candidateItemDescription,
+    candidateItemCatalog,
+    candidateItemAmount,    
 }) {
-    const [itemDescription, setItemDescription] = useState('');
+    const [itemDescription, setItemDescription] = useState(candidateItemDescription === undefined ? '' : candidateItemDescription);
 
-    const [catalogNumber, setCatalogNumber] = useState('');
+    const [catalogNumber, setCatalogNumber] = useState(candidateItemCatalog === undefined ? '' : candidateItemCatalog);
 
     const [itemURL, setItemURL] = useState('');
 
@@ -22,7 +25,7 @@ export default function NewRequestForm({
 
     const [project, setProject] = useState('');
 
-    const [requestAmount, setRequestAmount] = useState(0);
+    const [requestAmount, setRequestAmount] = useState(candidateItemAmount === undefined ? 0 : candidateItemAmount);
 
     const [pricePerUnit, setPricePerUnit] = useState(0.0);
 
@@ -30,6 +33,10 @@ export default function NewRequestForm({
 
     const addNewRequestURL = useRef(addRequestURL());
 
+    const handleItemDescriptionChange = (event) => {
+        setItemDescription(event.target.value);
+    }
+    
     const handleCatalogNumberChange = (event) => {
         setCatalogNumber(event.target.value);
     }
@@ -123,9 +130,12 @@ export default function NewRequestForm({
 
         handleCloseModal();
         
-        setTimeout(() => {
-            triggerRefresh();
-          }, config.timeout);
+        
+        if (triggerRefresh !== undefined) {
+            setTimeout(() => {
+                triggerRefresh();
+              }, config.timeout);
+        }
     }
 
     return(
@@ -134,21 +144,30 @@ export default function NewRequestForm({
                 <Card style={{ display: 'flex', justifyContent: 'center', width: '100%', height: '100%' }}>
                     <Stack>
                         <Box>
-                            <h2>Add a new request</h2>
+                            <h2>Add a New Purchase Request</h2>
                         </Box>
 
                         <Box style={{padding: '10px 0 0 0'}}>
-                        <Autocomplete
-                            freeSolo
-                            options={inventoryItems}
-                            getOptionLabel={(option) => option.description}
-                            inputValue={itemDescription}
-                            onInputChange={(_, newInputValue) => setItemDescription(newInputValue)}
-                            onChange={handleAutocompleteChange}
-                            renderInput={(params) => (
-                            <TextField {...params} label="Item name" variant="outlined" fullWidth />
-                            )}
-                        />
+                        {candidateItemDescription === undefined ? (
+                            <Autocomplete
+                                freeSolo
+                                options={inventoryItems}
+                                getOptionLabel={(option) => option.description}
+                                inputValue={itemDescription}
+                                onInputChange={(_, newInputValue) => setItemDescription(newInputValue)}
+                                onChange={handleAutocompleteChange}
+                                renderInput={(params) => (
+                                <TextField {...params} label="Item name" variant="outlined" fullWidth />
+                                )}
+                            />
+                        ) : (
+                            <TextField 
+                                label='Item name'
+                                type='text'
+                                value={itemDescription}
+                                onChange={handleItemDescriptionChange}
+                            />
+                        )}
                         </Box>
 
                         <Box style={{padding: '10px 0 0 0'}}>
@@ -243,6 +262,9 @@ export default function NewRequestForm({
 
 NewRequestForm.propTypes = {
     handleCloseModal: PropTypes.func.isRequired,
-    triggerRefresh: PropTypes.func.isRequired,
+    triggerRefresh: PropTypes.func,
     inventoryItems: PropTypes.array,
+    candidateItemDescription: PropTypes.string,
+    candidateItemCatalog: PropTypes.string,
+    candidateItemAmount: PropTypes.number,
 }
