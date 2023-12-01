@@ -1,13 +1,14 @@
 import PropTypes from 'prop-types';
 import { useRef, useState } from 'react';
 
-import { Popover, Checkbox, MenuItem, TableRow, TableCell, IconButton, Typography } from '@mui/material';
+import { Box, Modal, Popover, Checkbox, MenuItem, TableRow, TableCell, IconButton, Typography } from '@mui/material';
 
 import { deleteRequestURL } from 'src/utils/url-provider';
 
 import Iconify from 'src/components/iconify';
 
 import { config } from '../../config';
+import MarkRequestOrderedForm from './components/mark-request-ordered-form';
 
 export default function RequestTableRow({
     statusCode,
@@ -28,17 +29,27 @@ export default function RequestTableRow({
     handleClick,
     triggerRefresh,
 }) {
-    const [ open, setOpen ] = useState(null);
+    const [open, setOpen] = useState(null);
+
+    const [openMarkOrderForm, setOpenMarkOrderForm] = useState(false);
 
     const deleteURL = useRef(deleteRequestURL());
 
     const handleOpenMenu = (event) => {
         setOpen(event.currentTarget);
-    }
+    };
 
     const handleCloseMenu = () => {
         setOpen(null);
-    }
+    };
+
+    const handleOpenMarkOrderModal = () => {
+        setOpenMarkOrderForm(true);
+    };
+    
+    const handleCloseMarkOrderModal = () => {
+        setOpenMarkOrderForm(false);
+    };
 
     const handleDeleteRequest = () => {
         console.log(`Request to delete: ${requestId}`);
@@ -60,7 +71,15 @@ export default function RequestTableRow({
         setTimeout(() => {
             triggerRefresh();
           }, config.timeout);
-    }
+    };
+
+    const handleMarkOrderRequest = () => {
+        console.log(`Request to mark ordered: ${requestId}`);
+
+        handleCloseMenu();
+
+        handleOpenMarkOrderModal();
+    };
 
     return(
         <>
@@ -123,7 +142,7 @@ export default function RequestTableRow({
                 }}
             >
                 {statusCode === 1 ? (
-                    <MenuItem onClick={handleCloseMenu}>
+                    <MenuItem onClick={handleMarkOrderRequest}>
                         <Iconify icon="eva:shopping-cart-outline" sx={{ mr: 2 }} />
                         Mark Ordered
                     </MenuItem>
@@ -144,6 +163,24 @@ export default function RequestTableRow({
                 ) : null}
                 
             </Popover>
+
+            <Modal
+                open={openMarkOrderForm}
+                onClose={handleCloseMarkOrderModal}
+                container={document.getElementById('root')}
+            >
+                <Box style={{ display: 'flex', margin: 'auto', justifyContent: 'center', width: '70%', height: '100%'}}>
+                    <MarkRequestOrderedForm 
+                        targetRequestId={requestId}
+                        itemDescription={itemDescription}
+                        itemCatalog={itemCatalog}
+                        requestAmount={requestAmount}
+                        requestBy={requestBy}
+                        handleCloseModal={handleCloseMarkOrderModal}
+                        triggerRefresh={triggerRefresh}
+                    />
+                </Box>
+            </Modal>
         </>
     );
 }
