@@ -1,9 +1,13 @@
-import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { useRef, useState } from 'react';
 
 import { Box, Card, Grid, Stack, Button, TextField } from '@mui/material';
 
+import { markOrderedRequestURL } from 'src/utils/url-provider';
+
 import { config } from 'src/config';
+
+import { convertDateFormat } from '../utils';
 
 export default function MarkRequestOrderedForm({
     targetRequestId,
@@ -15,6 +19,8 @@ export default function MarkRequestOrderedForm({
     triggerRefresh,
 }) {
 
+    const markOrderedURL = useRef(markOrderedRequestURL());
+    
     const [fulfilledAmount, setFulfilledAmount] = useState(requestAmount);
 
     const [doneBy, setDoneBy] = useState('');
@@ -27,11 +33,33 @@ export default function MarkRequestOrderedForm({
         setDoneBy(event.target.value);
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = (event) => {
+        event.preventDefault();
+
+        const requestId = targetRequestId;
+        const fulfilledDate = convertDateFormat(Date.now());
+
+        const formData = {
+            requestId,
+            fulfilledAmount,
+            doneBy,
+            fulfilledDate,
+        };
         console.log('Mark ordered with following info');
-        console.log(targetRequestId);
-        console.log(fulfilledAmount);
-        console.log(doneBy);
+        console.log(formData);
+
+        fetch(markOrderedURL.current, {
+            method: 'PATCH',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(formData),
+        })
+        .then((response) => {
+            if (response.ok) {
+                console.log(`Request ID ${targetRequestId} has been marked as ordered.`);
+            } else {
+                console.log(`Failed to mark Request ID ${targetRequestId} as ordered...`);
+            }
+        });
 
         handleCloseModal();
 
