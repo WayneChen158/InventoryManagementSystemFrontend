@@ -58,3 +58,19 @@ export function deleteRequestURL() {
 export function markOrderedRequestURL() {
   return `http://${config.server_host}:${config.server_port}/api/requests/mark-ordered`;
 }
+
+export function getComponentRecordsURL() {
+  return `http://${config.server_host}:${config.server_port}/api/componentRecords`;
+}
+
+export function getProductRecordsURL() {
+  return `http://${config.server_host}:${config.server_port}/api/productRecords`;
+}
+
+export function getComponentsURL() {
+  return `http://${config.server_host}:${config.server_port}/api/components`;
+}
+
+export function getProductsURL() {
+  return `http://${config.server_host}:${config.server_port}/api/products`;
+}

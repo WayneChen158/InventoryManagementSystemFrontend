@@ -3,7 +3,7 @@ import { useRef, useState, useEffect } from 'react';
 import { TabList, TabPanel, TabContext } from '@mui/lab';
 import { Tab, Box, Modal, Stack, Button, Container, Typography } from '@mui/material';
 
-import { getRequestsURL, getRawMaterialsURL } from 'src/utils/url-provider';
+import { getRequestsURL, getProductsURL, getComponentsURL, getRawMaterialsURL } from 'src/utils/url-provider';
 
 import Iconify from 'src/components/iconify';
 
@@ -21,9 +21,17 @@ export default function RequestPage() {
     
     const [inventoryData, setInventoryData] = useState([]);
 
+    const [internalComponentData, setInternalComponentData] = useState([]);
+
+    const [internalProductData, setInternalProductData] = useState([]);
+
     const rawMaterialsURL = useRef(getRawMaterialsURL());
 
     const requestsURL = useRef(getRequestsURL());
+
+    const componentsURL = useRef(getComponentsURL());
+
+    const productsURL = useRef(getProductsURL());
 
     const handleTabChange = (event, newTabValue) => {
         setTabValue(newTabValue);
@@ -61,6 +69,26 @@ export default function RequestPage() {
         })
     }, [refreshTrigger]);
 
+    useEffect(() => {
+        fetch(componentsURL.current)
+        .then(res => res.json())
+        .then(data => {
+            console.log("Component Fetch Invoked!");
+            console.log(data);
+            setInternalComponentData(data);
+        })
+    }, [refreshTrigger]);
+
+    useEffect(() => {
+        fetch(productsURL.current)
+        .then(res => res.json())
+        .then(data => {
+            console.log("Product Fetch Invoked!");
+            console.log(data);
+            setInternalProductData(data);
+        })
+    }, [refreshTrigger]);
+
     return (
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
@@ -71,7 +99,7 @@ export default function RequestPage() {
                     startIcon={<Iconify icon="eva:plus-fill" />}
                     onClick={handleOpenModal}
                 >
-                    New Purchase Request
+                    New Request
                 </Button>
 
                 <Modal
@@ -81,9 +109,12 @@ export default function RequestPage() {
                 >
                     <Box style={{ display: 'flex', margin: 'auto', justifyContent: 'center', width: '70%', height: '100%'}}>
                         <NewRequestForm 
+                            complete
                             handleCloseModal={handleCloseModal}
                             triggerRefresh={triggerRefresh}
                             inventoryItems={inventoryData}
+                            internalComponents={internalComponentData}
+                            internalProducts={internalProductData}
                         />
                     </Box>
                 </Modal> 
