@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useRef, useState } from 'react';
 
-import { Box, Modal, Popover, Checkbox, MenuItem, TableRow, TableCell, IconButton, Typography } from '@mui/material';
+import { Box, Modal, Dialog, Button, Popover, Checkbox, MenuItem, TableRow, TableCell, IconButton, Typography, DialogTitle, DialogContent, DialogActions, DialogContentText } from '@mui/material';
 
 import { deleteRequestURL } from 'src/utils/url-provider';
 
@@ -33,6 +33,8 @@ export default function RequestTableRow({
 
     const [openMarkOrderForm, setOpenMarkOrderForm] = useState(false);
 
+    const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+
     const deleteURL = useRef(deleteRequestURL());
 
     const handleOpenMenu = (event) => {
@@ -51,6 +53,14 @@ export default function RequestTableRow({
         setOpenMarkOrderForm(false);
     };
 
+    const handleOpenDeleteDialog = () => {
+        setOpenDeleteDialog(true);
+    };
+
+    const handleCloseDeleteDialog = () => {
+        setOpenDeleteDialog(false);
+    };
+
     const handleDeleteRequest = () => {
         console.log(`Request to delete: ${requestId}`);
         
@@ -65,6 +75,8 @@ export default function RequestTableRow({
                     console.log(`Failed to delete request ID ${requestId}...`);
                 }
             });
+        
+        handleCloseDeleteDialog();
         
         handleCloseMenu();
 
@@ -149,7 +161,7 @@ export default function RequestTableRow({
                 ) : null}
 
                 {statusCode === 1 ? (
-                    <MenuItem onClick={handleDeleteRequest} sx={{ color: 'error.main' }}>
+                    <MenuItem onClick={handleOpenDeleteDialog} sx={{ color: 'error.main' }}>
                         <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
                         Delete Request
                     </MenuItem>
@@ -181,6 +193,31 @@ export default function RequestTableRow({
                     />
                 </Box>
             </Modal>
+
+            {/* Delete Comfirmation Dialog */}
+            <Dialog
+                open={openDeleteDialog}
+                onClose={handleCloseDeleteDialog}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle>Confirm Delete Request</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Are you sure you want to delete your request for {itemDescription}?
+                        <br /> 
+                        This action is irreversible!
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseDeleteDialog} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleDeleteRequest} color="error">
+                        Confirm Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </>
     );
 }
