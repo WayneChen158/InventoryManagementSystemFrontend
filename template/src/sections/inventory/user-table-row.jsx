@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 // import Stack from '@mui/material/Stack';
 // import Avatar from '@mui/material/Avatar';
+import { Box, Modal } from '@mui/material';
 import Popover from '@mui/material/Popover';
 import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
@@ -13,6 +14,8 @@ import IconButton from '@mui/material/IconButton';
 
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
+
+import NewRequestForm from '../request/components/NewRequestForm';
 
 // ----------------------------------------------------------------------
 
@@ -30,6 +33,8 @@ export default function UserTableRow({
 }) {
   const [open, setOpen] = useState(null);
 
+  const [openRequestModal, setOpenRequestModal] = useState(false);
+
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
   };
@@ -37,6 +42,15 @@ export default function UserTableRow({
   const handleCloseMenu = () => {
     setOpen(null);
   };
+
+  const handleOpenRequestModal = () => {
+    setOpen(null);
+    setOpenRequestModal(true);
+  };
+
+  const handleCloseRequestModal = () => {
+    setOpenRequestModal(false);
+  }
 
   return (
     <>
@@ -94,11 +108,26 @@ export default function UserTableRow({
           Delete
         </MenuItem>
 
-        <MenuItem onClick={handleCloseMenu}>
-          <Iconify icon="carbon:request-quote"  sx={{ mr: 2 }} />
+        <MenuItem onClick={handleOpenRequestModal}>
+          <Iconify icon="mdi:offer"  sx={{ mr: 2 }} />
           Request
         </MenuItem>
       </Popover>
+
+      <Modal
+        open={openRequestModal}
+        onClose={handleCloseRequestModal}
+        container={document.getElementById('root')}
+      >
+        <Box style={{ display: 'flex', margin: 'auto', justifyContent: 'center', width: '70%', height: '100%'}}>
+          <NewRequestForm 
+            handleCloseModal={handleCloseRequestModal}
+            inventoryItems={[]}
+            candidateItemDescription={name}
+            candidateItemCatalog={catalog}
+          />
+        </Box>
+      </Modal>
     </>
   );
 }
