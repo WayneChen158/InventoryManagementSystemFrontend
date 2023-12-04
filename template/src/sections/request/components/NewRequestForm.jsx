@@ -309,7 +309,7 @@ export default function NewRequestForm({
                             />
                         </Box>
 
-                        {requestCategory === 1 && (
+                        {requestCategory === '1' && (
                             <Box style={{padding: '10px 0 0 0'}}>
                                 <TextField 
                                     label='Price per unit'
