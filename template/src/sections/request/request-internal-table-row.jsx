@@ -8,20 +8,17 @@ import { deleteRequestURL } from 'src/utils/url-provider';
 import Iconify from 'src/components/iconify';
 
 import { config } from '../../config';
-import MarkRequestOrderedForm from './components/mark-request-ordered-form';
+import MarkInternalRequestFulfilledForm from './components/mark-internal-request-fulfilled-form';
 
-export default function RequestTableRow({
+export default function RequestInternalTableRow({
     statusCode,
     selected,
     requestId,
     itemDescription,
     itemCatalog,
-    itemURL,
     project,
-    purpose,
     requestAmount,
     fulfilledAmount,
-    pricePerUnit,
     requestBy,
     doneBy,
     requestDate,
@@ -31,7 +28,7 @@ export default function RequestTableRow({
 }) {
     const [open, setOpen] = useState(null);
 
-    const [openMarkOrderForm, setOpenMarkOrderForm] = useState(false);
+    const [openMarkFulfilledForm, setOpenMarkFulfilledForm] = useState(false);
 
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
@@ -45,12 +42,12 @@ export default function RequestTableRow({
         setOpen(null);
     };
 
-    const handleOpenMarkOrderModal = () => {
-        setOpenMarkOrderForm(true);
+    const handleOpenMarkFulfilledModal = () => {
+        setOpenMarkFulfilledForm(true);
     };
     
-    const handleCloseMarkOrderModal = () => {
-        setOpenMarkOrderForm(false);
+    const handleCloseMarkFulfilledModal = () => {
+        setOpenMarkFulfilledForm(false);
     };
 
     const handleOpenDeleteDialog = () => {
@@ -86,12 +83,12 @@ export default function RequestTableRow({
           }, config.timeout);
     };
 
-    const handleMarkOrderRequest = () => {
-        console.log(`Request to mark ordered: ${requestId}`);
+    const handleMarkFulfilledRequest = () => {
+        console.log(`Internal request to mark fulfilled: ${requestId}`);
 
         handleCloseMenu();
 
-        handleOpenMarkOrderModal();
+        handleOpenMarkFulfilledModal();
     };
 
     return(
@@ -103,11 +100,7 @@ export default function RequestTableRow({
 
                 <TableCell component="th" scope="row" padding="none" align="center">
                     <Typography variant="subtitle2" wrap = "true" width='1/4'>
-                        {(itemURL === null || itemURL === "") ? (
-                            itemDescription
-                        ) : (
-                            <a href={itemURL} target='_blank' rel="noreferrer">{itemDescription}</a>    
-                        )}
+                        {itemDescription}
                     </Typography>
                 </TableCell>
 
@@ -115,15 +108,11 @@ export default function RequestTableRow({
                 
                 <TableCell align="center">{project}</TableCell>
 
-                <TableCell align="center">{purpose}</TableCell>
-
                 <TableCell align="center">{requestAmount}</TableCell>
 
                 {statusCode === 2 ? (
                     <TableCell align="center">{fulfilledAmount}</TableCell>
                 ) : null}
-
-                <TableCell align="center">{pricePerUnit}</TableCell>
 
                 <TableCell align="center">{requestBy}</TableCell>
 
@@ -155,9 +144,9 @@ export default function RequestTableRow({
                 }}
             >
                 {statusCode === 1 ? (
-                    <MenuItem onClick={handleMarkOrderRequest}>
+                    <MenuItem onClick={handleMarkFulfilledRequest}>
                         <Iconify icon="eva:shopping-cart-outline" sx={{ mr: 2 }} />
-                        Mark Ordered
+                        Mark Filfilled
                     </MenuItem>
                 ) : null}
 
@@ -178,18 +167,18 @@ export default function RequestTableRow({
             </Popover>
 
             <Modal
-                open={openMarkOrderForm}
-                onClose={handleCloseMarkOrderModal}
+                open={openMarkFulfilledForm}
+                onClose={handleCloseMarkFulfilledModal}
                 container={document.getElementById('root')}
             >
                 <Box style={{ display: 'flex', margin: 'auto', justifyContent: 'center', width: '70%', height: '100%'}}>
-                    <MarkRequestOrderedForm 
+                    <MarkInternalRequestFulfilledForm
                         targetRequestId={requestId}
                         itemDescription={itemDescription}
                         itemCatalog={itemCatalog}
                         requestAmount={requestAmount}
                         requestBy={requestBy}
-                        handleCloseModal={handleCloseMarkOrderModal}
+                        handleCloseModal={handleCloseMarkFulfilledModal}
                         triggerRefresh={triggerRefresh}
                     />
                 </Box>
@@ -223,18 +212,15 @@ export default function RequestTableRow({
     );
 }
 
-RequestTableRow.propTypes = {
+RequestInternalTableRow.propTypes = {
     statusCode: PropTypes.number.isRequired,
     selected: PropTypes.any,
     requestId: PropTypes.number.isRequired,
     itemDescription: PropTypes.string.isRequired,
     itemCatalog: PropTypes.any,
-    itemURL: PropTypes.any,
     project: PropTypes.any,
-    purpose: PropTypes.any,
     requestAmount: PropTypes.any,
     fulfilledAmount: PropTypes.any,
-    pricePerUnit: PropTypes.any,
     requestBy: PropTypes.any,
     doneBy: PropTypes.any,
     requestDate: PropTypes.any,

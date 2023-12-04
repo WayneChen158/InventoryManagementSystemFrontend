@@ -3,12 +3,13 @@ import { useRef, useState, useEffect } from 'react';
 import { TabList, TabPanel, TabContext } from '@mui/lab';
 import { Tab, Box, Modal, Stack, Button, Container, Typography } from '@mui/material';
 
-import { getRequestsURL, getRawMaterialsURL } from 'src/utils/url-provider';
+import { getRequestsURL, getProductsURL, getComponentsURL, getRawMaterialsURL } from 'src/utils/url-provider';
 
 import Iconify from 'src/components/iconify';
 
 import RequestPurchasePage from './request-view-purchase';
 import NewRequestForm from '../components/NewRequestForm';
+import RequestInternalPage from './request-view-internal';
 
 export default function RequestPage() {
     const [tabValue, setTabValue] = useState('new-purchase');
@@ -21,9 +22,17 @@ export default function RequestPage() {
     
     const [inventoryData, setInventoryData] = useState([]);
 
+    const [internalComponentData, setInternalComponentData] = useState([]);
+
+    const [internalProductData, setInternalProductData] = useState([]);
+
     const rawMaterialsURL = useRef(getRawMaterialsURL());
 
     const requestsURL = useRef(getRequestsURL());
+
+    const componentsURL = useRef(getComponentsURL());
+
+    const productsURL = useRef(getProductsURL());
 
     const handleTabChange = (event, newTabValue) => {
         setTabValue(newTabValue);
@@ -61,6 +70,26 @@ export default function RequestPage() {
         })
     }, [refreshTrigger]);
 
+    useEffect(() => {
+        fetch(componentsURL.current)
+        .then(res => res.json())
+        .then(data => {
+            console.log("Component Fetch Invoked!");
+            console.log(data);
+            setInternalComponentData(data);
+        })
+    }, [refreshTrigger]);
+
+    useEffect(() => {
+        fetch(productsURL.current)
+        .then(res => res.json())
+        .then(data => {
+            console.log("Product Fetch Invoked!");
+            console.log(data);
+            setInternalProductData(data);
+        })
+    }, [refreshTrigger]);
+
     return (
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
@@ -71,7 +100,7 @@ export default function RequestPage() {
                     startIcon={<Iconify icon="eva:plus-fill" />}
                     onClick={handleOpenModal}
                 >
-                    New Purchase Request
+                    New Request
                 </Button>
 
                 <Modal
@@ -81,9 +110,12 @@ export default function RequestPage() {
                 >
                     <Box style={{ display: 'flex', margin: 'auto', justifyContent: 'center', width: '70%', height: '100%'}}>
                         <NewRequestForm 
+                            complete
                             handleCloseModal={handleCloseModal}
                             triggerRefresh={triggerRefresh}
                             inventoryItems={inventoryData}
+                            internalComponents={internalComponentData}
+                            internalProducts={internalProductData}
                         />
                     </Box>
                 </Modal> 
@@ -95,20 +127,38 @@ export default function RequestPage() {
                             <Tab label="New Purchase Request" value="new-purchase" sx={{ minWidth: '120px' }}/>
                             <Tab label="Ongoing Purchase Request" value="ongoing-purchase" sx={{ minWidth: '120px' }}/>
                             <Tab label="New Internal Request" value="new-internal" sx={{ minWidth: '120px' }}/>
-                            <Tab label="Ongoing Internal Request" value="ongoing-internal" sx={{ minWidth: '120px' }}/>
+                            <Tab label="Fulfilled Internal Request" value="fulfilled-internal" sx={{ minWidth: '120px' }}/>
                         </TabList>
                     </Box>
                     <TabPanel value="new-purchase">
                         <RequestPurchasePage 
                             allRequestData={requestData}
-                            statusCode={1} 
+                            statusCode={1}
+                            categoryCode={1} 
                             triggerRefresh={triggerRefresh}
                         />
                     </TabPanel>
                     <TabPanel value="ongoing-purchase">
                         <RequestPurchasePage 
                             allRequestData={requestData}
-                            statusCode={2} 
+                            statusCode={2}
+                            categoryCode={1} 
+                            triggerRefresh={triggerRefresh}
+                        />
+                    </TabPanel>
+                    <TabPanel value="new-internal">
+                        <RequestInternalPage 
+                            allRequestData={requestData}
+                            statusCode={1}
+                            categoryCode={2} 
+                            triggerRefresh={triggerRefresh}
+                        />
+                    </TabPanel>
+                    <TabPanel value="fulfilled-internal">
+                        <RequestInternalPage 
+                            allRequestData={requestData}
+                            statusCode={2}
+                            categoryCode={2} 
                             triggerRefresh={triggerRefresh}
                         />
                     </TabPanel>

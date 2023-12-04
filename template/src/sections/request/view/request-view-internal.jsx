@@ -7,13 +7,13 @@ import Scrollbar from "src/components/scrollbar";
 
 import TableNoData from "src/sections/user/table-no-data";
 
-import RequestTableRow from "../request-table-row";
 import RequestTableHead from "../request-table-head";
 import RequestTableToolbar from "../request-table-toolbar";
 import RequestTableEmptyRows from "../request-table-empty-rows";
 import { emptyRows, applyFilter, getComparator } from "../utils";
+import RequestInternalTableRow from "../request-internal-table-row";
 
-export default function RequestPurchasePage({
+export default function RequestInternalPage({
     allRequestData,
     triggerRefresh,
     statusCode,
@@ -40,7 +40,7 @@ export default function RequestPurchasePage({
             setOrderBy(id);
         }
     }
-    
+
     const handleSelectAllClick = (event) => {
         // console.log("Checked");
         if (event.target.checked) {
@@ -97,6 +97,8 @@ export default function RequestPurchasePage({
         filterName,
     });
 
+    const notFound = !dataFiltered.length && !!filterName;
+
     let tableHeader = [];
 
     if (statusCode === 1) {
@@ -104,9 +106,7 @@ export default function RequestPurchasePage({
             { id: 'itemDescription', label: 'Item Description'},
             { id: 'itemCatalog', label: 'Catalog Number'},
             { id: 'project', label: 'Project'},
-            { id: 'purpose', label: 'Purpose'},
             { id: 'requestAmount', label: 'Requested Amount'},
-            { id: 'pricePerUnit', label: 'Unit Price'},
             { id: 'requestBy', label: 'Request By'},
             { id: 'requestDate', label: 'Request Date'},
             { id: 'actionButton', label: ''},
@@ -116,10 +116,8 @@ export default function RequestPurchasePage({
             { id: 'itemDescription', label: 'Item Description'},
             { id: 'itemCatalog', label: 'Catalog Number'},
             { id: 'project', label: 'Project'},
-            { id: 'purpose', label: 'Purpose'},
             { id: 'requestAmount', label: 'Requested Amount'},
             { id: 'fulfilledAmount', label: 'Fulfilled Amount'},
-            { id: 'pricePerUnit', label: 'Unit Price'},
             { id: 'requestBy', label: 'Request By'},
             { id: 'doneBy', label: 'Fulfilled By'},
             { id: 'requestDate', label: 'Request Date'},
@@ -128,9 +126,7 @@ export default function RequestPurchasePage({
         ];
     }
 
-    const notFound = !dataFiltered.length && !!filterName;
-
-    return (
+    return(
         <Container>
             <Card>
                 <RequestTableToolbar 
@@ -155,32 +151,16 @@ export default function RequestPurchasePage({
                                 {dataFiltered
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((row) => (
-                                        <RequestTableRow
-                                            statusCode={statusCode} 
+                                        <RequestInternalTableRow 
+                                            statusCode={statusCode}
                                             key={row.requestId}
                                             selected={selected.indexOf(row.requestId) !== -1}
                                             requestId={row.requestId}
                                             itemDescription={row.itemDescription}
                                             itemCatalog={row.itemCatalog}
-                                            itemURL={row.itemURL}
                                             project={row.project}
-                                            purpose={
-                                                (() => {
-                                                    switch (row.purpose) {
-                                                      case 1:
-                                                        return 'R&D';
-                                                      case 2:
-                                                        return 'MFG';
-                                                      case 3:
-                                                        return 'Re-sale';
-                                                      default:
-                                                        return 'Unknown';
-                                                    }
-                                                  })()
-                                            }
                                             requestAmount={row.requestAmount}
                                             fulfilledAmount={row.fulfilledAmount}
-                                            pricePerUnit={row.pricePerUnit}
                                             requestBy={row.requestBy}
                                             doneBy={row.doneBy}
                                             requestDate={dateParser(row.requestDate)}
@@ -188,7 +168,8 @@ export default function RequestPurchasePage({
                                             handleClick={(event) => handleClick(event, row.requestId)}
                                             triggerRefresh={triggerRefresh}
                                         />
-                                    ))}
+                                ))}
+
                                 <RequestTableEmptyRows 
                                     height={77}
                                     emptyRows={emptyRows(page, rowsPerPage, requestData.length)}
@@ -214,7 +195,7 @@ export default function RequestPurchasePage({
     );
 }
 
-RequestPurchasePage.propTypes = {
+RequestInternalPage.propTypes = {
     allRequestData: PropTypes.array.isRequired,
     triggerRefresh: PropTypes.func.isRequired,
     statusCode: PropTypes.number.isRequired,

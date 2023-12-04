@@ -1,5 +1,7 @@
 import { config } from '../config';
 
+// ============================ Inventory Page ============================
+
 export function getRawMaterialsURL() {
     return `http://${config.server_host}:${config.server_port}/api/rawMaterials`;
   };
@@ -39,6 +41,8 @@ export function sellInvoiceURL() {
   return `http://${config.server_host}:${config.server_port}/api/sell`;
 }
 
+// ============================ Request Page ============================
+
 export function getRequestsURL() {
     return `http://${config.server_host}:${config.server_port}/api/requests`;
 }
@@ -49,4 +53,24 @@ export function addRequestURL() {
 
 export function deleteRequestURL() {
   return `http://${config.server_host}:${config.server_port}/api/requests/delete`;
+}
+
+export function markOrderedRequestURL() {
+  return `http://${config.server_host}:${config.server_port}/api/requests/mark-ordered`;
+}
+
+export function getComponentRecordsURL() {
+  return `http://${config.server_host}:${config.server_port}/api/componentRecords`;
+}
+
+export function getProductRecordsURL() {
+  return `http://${config.server_host}:${config.server_port}/api/productRecords`;
+}
+
+export function getComponentsURL() {
+  return `http://${config.server_host}:${config.server_port}/api/components`;
+}
+
+export function getProductsURL() {
+  return `http://${config.server_host}:${config.server_port}/api/products`;
 }

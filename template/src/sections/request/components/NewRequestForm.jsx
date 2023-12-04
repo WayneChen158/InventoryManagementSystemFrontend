@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useRef, useState } from 'react';
 
-import { Box, Card, Grid, Stack, Button, Select, MenuItem, TextField, InputLabel, FormControl, Autocomplete, InputAdornment } from '@mui/material';
+import { Box, Card, Grid, Stack, Radio, Button, Select, MenuItem, TextField, FormLabel, RadioGroup, InputLabel, FormControl, Autocomplete, InputAdornment, FormControlLabel } from '@mui/material';
 
 import { addRequestURL } from 'src/utils/url-provider';
 
@@ -10,10 +10,14 @@ import { config } from 'src/config';
 export default function NewRequestForm({
     handleCloseModal,
     triggerRefresh,
+    complete,
+    formType,
     inventoryItems,
     candidateItemDescription,
     candidateItemCatalog,
-    candidateItemAmount,    
+    candidateItemAmount,
+    internalComponents,
+    internalProducts,    
 }) {
     const [itemDescription, setItemDescription] = useState(candidateItemDescription === undefined ? '' : candidateItemDescription);
 
@@ -21,7 +25,7 @@ export default function NewRequestForm({
 
     const [itemURL, setItemURL] = useState('');
 
-    const [requestCategory, setRequestCategory] = useState(1);
+    const [requestPurpose, setRequestPurpose] = useState(1);
 
     const [project, setProject] = useState('');
 
@@ -31,52 +35,92 @@ export default function NewRequestForm({
 
     const [requestBy, setRequestBy] = useState('');
 
-    const addNewRequestURL = useRef(addRequestURL());
+    const [requestCategory, setRequestCategory] = useState((formType === undefined) || (formType === 'purchase') ? '1' : '2');
 
+    const addNewRequestURL = useRef(addRequestURL());
+    
     const handleItemDescriptionChange = (event) => {
         setItemDescription(event.target.value);
-    }
+    };
     
     const handleCatalogNumberChange = (event) => {
         setCatalogNumber(event.target.value);
-    }
+    };
 
     const handleItemURLChange = (event) => {
         setItemURL(event.target.value);
-    }
+    };
 
-    const handleRequestCategoryChange = (event) => {
-        setRequestCategory(event.target.value);
-    }
+    const handleRequestPurposeChange = (event) => {
+        setRequestPurpose(event.target.value);
+    };
 
     const handleProjectChange = (event) => {
         setProject(event.target.value);
-    }
+    };
 
     const handleRequestAmountChange = (event) => {
         setRequestAmount(event.target.value);
-    }
+    };
 
     const handlePricePerUnitChange = (event) => {
         setPricePerUnit(event.target.value);
-    }
+    };
 
     const handleRequestByChange = (event) => {
         setRequestBy(event.target.value);
+    };
+
+    const handleRequestCategoryChange = (event) => {
+        setRequestCategory(event.target.value);
+        setItemDescription('');
+        setCatalogNumber('');
+        setItemURL('');
+        setRequestPurpose(1);
+        setProject('');
+        setRequestAmount(0);
+    };
+
+    const combineItems = () => {
+        const combinedItems = [
+            ...(internalComponents || []),
+            ...(internalProducts || []),
+            ...(inventoryItems || []),
+          ];
+        return combinedItems;
+    };
+
+    const getAutocompleteLabel = (item) => {
+        if ('materialId' in item) {
+            return `[Raw Material] ${item.description}`;
+        }
+        if ('componentId' in item) {
+            return `[Component] ${item.componentName}`;
+        }
+        if ('productId' in item) {
+            return `[Product] ${item.productName}`;
+        }
+        return 'Unknown';
     }
 
     const handleAutocompleteChange = (_, selectedItem) => {
         console.log("Selected existing inventory item:")
         console.log(selectedItem);
         if (selectedItem) {
-            if (selectedItem.catalogNumber !== null) {
-                setCatalogNumber(selectedItem.catalogNumber);
-            }
-            if (selectedItem.website !== null) {
-                setItemURL(selectedItem.website);
-            }
-            if (selectedItem.threshold !== null) {
-                setRequestAmount(selectedItem.threshold);
+            if ('materialId' in selectedItem) {
+                if (selectedItem.catalogNumber !== null) {
+                    setCatalogNumber(selectedItem.catalogNumber);
+                }
+                if (selectedItem.website !== null) {
+                    setItemURL(selectedItem.website);
+                }
+                if (selectedItem.threshold !== null) {
+                    setRequestAmount(selectedItem.threshold);
+                }
+            } else if ('componentId' in selectedItem) {
+                setCatalogNumber(selectedItem.componentCatalog);
+            } else if ('productId' in selectedItem) {
+                setCatalogNumber(selectedItem.productCatalog);
             }
         } else {
             setCatalogNumber('');
@@ -84,7 +128,7 @@ export default function NewRequestForm({
             setRequestAmount(0);
         }
         
-    }
+    };
 
     const convertDateFormat = (timestamp) => {
         const date = new Date(timestamp);
@@ -92,12 +136,12 @@ export default function NewRequestForm({
         const day = String(date.getDate()).padStart(2, '0');
         const year = date.getFullYear();
         return `${month}-${day}-${year}`;
-    }
+    };
  
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        const purpose = requestCategory;
+        const purpose = requestPurpose;
         const timestamp = Date.now();
         const requestDate = convertDateFormat(timestamp);
 
@@ -113,6 +157,7 @@ export default function NewRequestForm({
             requestBy,
             requestDate,
         }
+        console.log("Request form data")
         console.log(requestData);
 
         fetch(addNewRequestURL.current, {
@@ -136,7 +181,7 @@ export default function NewRequestForm({
                 triggerRefresh();
               }, config.timeout);
         }
-    }
+    };
 
     return(
         <Grid container spacing={0.5} justifyContent="center">
@@ -144,15 +189,62 @@ export default function NewRequestForm({
                 <Card style={{ display: 'flex', justifyContent: 'center', width: '100%', height: '100%' }}>
                     <Stack>
                         <Box>
-                            <h2>Add a New Purchase Request</h2>
+                            <h2>Add a New Request</h2>
                         </Box>
 
-                        <Box style={{padding: '10px 0 0 0'}}>
-                        {candidateItemDescription === undefined ? (
+                        {complete && (
+                            <Box style={{padding: '10px 0 0 0'}}>
+                                <FormControl>
+                                    <FormLabel>Request Type</FormLabel>
+                                    <RadioGroup
+                                        row
+                                        value={requestCategory}
+                                        onChange={handleRequestCategoryChange}
+                                    >
+                                        <FormControlLabel
+                                            value='1'
+                                            control={<Radio />}
+                                            label="Purchase"
+                                        />
+                                        <FormControlLabel
+                                            value='2'
+                                            control={<Radio />}
+                                            label="Internal"
+                                        />
+                                    </RadioGroup>
+                                </FormControl>
+                            </Box>
+                        )}
+
+                        {requestCategory === '1' && (
+                            <Box style={{padding: '10px 0 0 0'}}>
+                                {candidateItemDescription === undefined ? (
+                                    <Autocomplete
+                                        freeSolo
+                                        options={inventoryItems}
+                                        getOptionLabel={(option) => option.description}
+                                        inputValue={itemDescription}
+                                        onInputChange={(_, newInputValue) => setItemDescription(newInputValue)}
+                                        onChange={handleAutocompleteChange}
+                                        renderInput={(params) => (
+                                        <TextField {...params} label="Item name" variant="outlined" fullWidth />
+                                        )}
+                                    />
+                                ) : (
+                                    <TextField 
+                                        label='Item name'
+                                        type='text'
+                                        value={itemDescription}
+                                        onChange={handleItemDescriptionChange}
+                                    />
+                                )}
+                            </Box>
+                        )}
+
+                        {requestCategory === '2' && (
                             <Autocomplete
-                                freeSolo
-                                options={inventoryItems}
-                                getOptionLabel={(option) => option.description}
+                                options={combineItems()}
+                                getOptionLabel={(option) => getAutocompleteLabel(option)}
                                 inputValue={itemDescription}
                                 onInputChange={(_, newInputValue) => setItemDescription(newInputValue)}
                                 onChange={handleAutocompleteChange}
@@ -160,16 +252,8 @@ export default function NewRequestForm({
                                 <TextField {...params} label="Item name" variant="outlined" fullWidth />
                                 )}
                             />
-                        ) : (
-                            <TextField 
-                                label='Item name'
-                                type='text'
-                                value={itemDescription}
-                                onChange={handleItemDescriptionChange}
-                            />
                         )}
-                        </Box>
-
+    
                         <Box style={{padding: '10px 0 0 0'}}>
                             <TextField 
                                 label='Catlog number'
@@ -179,14 +263,16 @@ export default function NewRequestForm({
                             />
                         </Box>
 
-                        <Box style={{padding: '10px 0 0 0'}}>
-                            <TextField 
-                                label='URL'
-                                type='text'
-                                value={itemURL}
-                                onChange={handleItemURLChange}
-                            />
-                        </Box>
+                        {requestCategory === '1' && (
+                            <Box style={{padding: '10px 0 0 0'}}>
+                                <TextField 
+                                    label='URL'
+                                    type='text'
+                                    value={itemURL}
+                                    onChange={handleItemURLChange}
+                                />
+                            </Box>
+                        )}
 
                         <Box style={{padding: '10px 0 0 0'}}>
                             <FormControl fullWidth>
@@ -194,9 +280,9 @@ export default function NewRequestForm({
                                     Purpose
                                 </InputLabel>
                                 <Select 
-                                    value={requestCategory}
+                                    value={requestPurpose}
                                     label='Purpose'
-                                    onChange={handleRequestCategoryChange}
+                                    onChange={handleRequestPurposeChange}
                                 >
                                     <MenuItem value={1}>R&D</MenuItem>
                                     <MenuItem value={2}>Manufacture</MenuItem>
@@ -223,17 +309,19 @@ export default function NewRequestForm({
                             />
                         </Box>
 
-                        <Box style={{padding: '10px 0 0 0'}}>
-                            <TextField 
-                                label='Price per unit'
-                                type='number'
-                                value={pricePerUnit}
-                                onChange={handlePricePerUnitChange}
-                                InputProps={{
-                                    startAdornment: <InputAdornment position='start'>$</InputAdornment>
-                                }}
-                            />
-                        </Box>
+                        {requestCategory === '1' && (
+                            <Box style={{padding: '10px 0 0 0'}}>
+                                <TextField 
+                                    label='Price per unit'
+                                    type='number'
+                                    value={pricePerUnit}
+                                    onChange={handlePricePerUnitChange}
+                                    InputProps={{
+                                        startAdornment: <InputAdornment position='start'>$</InputAdornment>
+                                    }}
+                                />
+                            </Box>
+                        )}
 
                         <Box style={{padding: '10px 0 0 0'}}>
                             <TextField 
@@ -263,8 +351,12 @@ export default function NewRequestForm({
 NewRequestForm.propTypes = {
     handleCloseModal: PropTypes.func.isRequired,
     triggerRefresh: PropTypes.func,
+    complete: PropTypes.bool,
+    formType: PropTypes.string,
     inventoryItems: PropTypes.array,
     candidateItemDescription: PropTypes.string,
     candidateItemCatalog: PropTypes.string,
     candidateItemAmount: PropTypes.number,
+    internalComponents: PropTypes.array,
+    internalProducts: PropTypes.array,
 }
