@@ -17,7 +17,9 @@ export default function NewRequestForm({
     candidateItemCatalog,
     candidateItemAmount,
     internalComponents,
+    internalComponentRecords,
     internalProducts,    
+    internalProductRecords,
 }) {
     const [itemDescription, setItemDescription] = useState(candidateItemDescription === undefined ? '' : candidateItemDescription);
 
@@ -358,5 +360,7 @@ NewRequestForm.propTypes = {
     candidateItemCatalog: PropTypes.string,
     candidateItemAmount: PropTypes.number,
     internalComponents: PropTypes.array,
+    internalComponentRecords: PropTypes.array,
     internalProducts: PropTypes.array,
+    internalProductRecords: PropTypes.array,
 }
