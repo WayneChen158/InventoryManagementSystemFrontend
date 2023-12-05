@@ -85,6 +85,7 @@ export default function MarkRequestOrderedForm({
                                 type='text'
                                 value={itemDescription}
                                 InputProps={{ readOnly: true }}
+                                multiline
                             />
                         </Box>
 

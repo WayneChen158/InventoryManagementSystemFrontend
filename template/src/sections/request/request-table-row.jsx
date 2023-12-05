@@ -9,6 +9,7 @@ import Iconify from 'src/components/iconify';
 
 import { config } from '../../config';
 import MarkRequestOrderedForm from './components/mark-request-ordered-form';
+import MarkRequestReceivedForm from './components/mark-request-received-form';
 
 export default function RequestTableRow({
     statusCode,
@@ -31,7 +32,9 @@ export default function RequestTableRow({
 }) {
     const [open, setOpen] = useState(null);
 
-    const [openMarkOrderForm, setOpenMarkOrderForm] = useState(false);
+    const [openMarkOrderedForm, setOpenMarkOrderedForm] = useState(false);
+
+    const [openMarkReceivedForm, setOpenMarkReceivedForm] = useState(false);
 
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
@@ -45,13 +48,21 @@ export default function RequestTableRow({
         setOpen(null);
     };
 
-    const handleOpenMarkOrderModal = () => {
-        setOpenMarkOrderForm(true);
+    const handleOpenMarkOrderedModal = () => {
+        setOpenMarkOrderedForm(true);
     };
     
-    const handleCloseMarkOrderModal = () => {
-        setOpenMarkOrderForm(false);
+    const handleCloseMarkOrderedModal = () => {
+        setOpenMarkOrderedForm(false);
     };
+
+    const handleOpenMarkReceivedModal = () => {
+        setOpenMarkReceivedForm(true);
+    }
+
+    const handleCloseMarkReceivedModal = () => {
+        setOpenMarkReceivedForm(false);
+    }
 
     const handleOpenDeleteDialog = () => {
         setOpenDeleteDialog(true);
@@ -86,13 +97,21 @@ export default function RequestTableRow({
           }, config.timeout);
     };
 
-    const handleMarkOrderRequest = () => {
+    const handleMarkRequestOrdered = () => {
         console.log(`Request to mark ordered: ${requestId}`);
 
         handleCloseMenu();
 
-        handleOpenMarkOrderModal();
+        handleOpenMarkOrderedModal();
     };
+
+    const handleMarkRequestReceived = () => {
+        console.log(`Request to mark received: ${requestId}`);
+
+        handleCloseMenu();
+
+        handleOpenMarkReceivedModal();
+    }
 
     return(
         <>
@@ -155,7 +174,7 @@ export default function RequestTableRow({
                 }}
             >
                 {statusCode === 1 ? (
-                    <MenuItem onClick={handleMarkOrderRequest}>
+                    <MenuItem onClick={handleMarkRequestOrdered}>
                         <Iconify icon="eva:shopping-cart-outline" sx={{ mr: 2 }} />
                         Mark Ordered
                     </MenuItem>
@@ -169,7 +188,7 @@ export default function RequestTableRow({
                 ) : null}
                 
                 {statusCode === 2 ? (
-                    <MenuItem onClick={handleCloseMenu}>
+                    <MenuItem onClick={handleMarkRequestReceived}>
                         <Iconify icon="icon-park-outline:receive" sx={{ mr: 2 }} />
                         Mark Received
                     </MenuItem>
@@ -178,8 +197,8 @@ export default function RequestTableRow({
             </Popover>
 
             <Modal
-                open={openMarkOrderForm}
-                onClose={handleCloseMarkOrderModal}
+                open={openMarkOrderedForm}
+                onClose={handleCloseMarkOrderedModal}
                 container={document.getElementById('root')}
             >
                 <Box style={{ display: 'flex', margin: 'auto', justifyContent: 'center', width: '70%', height: '100%'}}>
@@ -189,8 +208,23 @@ export default function RequestTableRow({
                         itemCatalog={itemCatalog}
                         requestAmount={requestAmount}
                         requestBy={requestBy}
-                        handleCloseModal={handleCloseMarkOrderModal}
+                        handleCloseModal={handleCloseMarkOrderedModal}
                         triggerRefresh={triggerRefresh}
+                    />
+                </Box>
+            </Modal>
+
+            <Modal
+                open={openMarkReceivedForm}
+                onClose={handleCloseMarkReceivedModal}
+                container={document.getElementById('root')}
+            >
+                <Box style={{ display: 'flex', margin: 'auto', justifyContent: 'center', width: '70%', height: '100%'}}>
+                    <MarkRequestReceivedForm 
+                        targetRequestId={requestId}
+                        itemDescription={itemDescription}
+                        itemCatalog={itemCatalog}
+                        orderedAmount={fulfilledAmount}
                     />
                 </Box>
             </Modal>
