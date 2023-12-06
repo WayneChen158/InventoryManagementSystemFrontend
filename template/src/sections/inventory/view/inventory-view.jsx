@@ -47,6 +47,8 @@ export default function InventoryPage() {
   
   const [openModal, setOpenModal] = useState(false);
 
+  const [refreshTrigger, setRefreshTrigger] = useState(1);
+
   const rawMaterialsURL = useRef(getRawMaterialsURL());
   
   const handleOpenModal = () => {
@@ -56,6 +58,10 @@ export default function InventoryPage() {
   const handleCloseModal = () => {
     setOpenModal(false);
   };
+
+  const triggerRefresh = () => {
+    setRefreshTrigger(prev => prev * (-1));
+  }
   
   useEffect(() => {
     fetch(rawMaterialsURL.current)
@@ -65,7 +71,7 @@ export default function InventoryPage() {
       console.log(data)
       setInventoryData(data)
     })
-  }, []);
+  }, [refreshTrigger]);
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -143,7 +149,10 @@ export default function InventoryPage() {
           onClose={handleCloseModal}
         >
           <Box style={{ display: 'flex', margin: 'auto', justifyContent: 'center', width: '70%', height: '100%'}}>
-            <NewItemForm handleCloseModal={handleCloseModal}/>
+            <NewItemForm 
+              handleCloseModal={handleCloseModal}
+              triggerRefresh={triggerRefresh}
+            />
           </Box>
         </Modal> 
       </Stack>
@@ -184,15 +193,17 @@ export default function InventoryPage() {
                       key={row.materialId}
                       materialId={row.materialId}
                       name={row.description}
+                      website={row.website}
                       catalog={row.catalogNumber}
                       vendor={row.manufacturer}
                       type={row.groupName === 1 ? 'Chemical' : 'Oligo'}
-                      owner='YC'
-                      location='Unknown'
+                      owner={row.owner}
+                      location={row.location}
                       amountInStock={row.amountInStock}
                       LowInStock={row.amountInStock > row.threshold ? 'Enough' : 'Low'}
                       selected={selected.indexOf(row.materialId) !== -1}
                       handleClick={(event) => handleClick(event, row.materialId)}
+                      triggerRefresh={triggerRefresh}
                     />
                   ))}
                 <TableEmptyRows

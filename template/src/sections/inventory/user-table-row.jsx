@@ -1,20 +1,16 @@
-import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { useRef, useState } from 'react';
 
 // import Stack from '@mui/material/Stack';
 // import Avatar from '@mui/material/Avatar';
-import { Box, Modal } from '@mui/material';
-import Popover from '@mui/material/Popover';
-import TableRow from '@mui/material/TableRow';
-import Checkbox from '@mui/material/Checkbox';
-import MenuItem from '@mui/material/MenuItem';
-import TableCell from '@mui/material/TableCell';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
+import { Box, Modal, Dialog, Button, Popover, TableRow, Checkbox, MenuItem, TableCell, Typography, IconButton, DialogTitle, DialogContent, DialogActions, DialogContentText } from '@mui/material';
+
+import { deleteRawMaterialsURL } from 'src/utils/url-provider';
 
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 
+import { config } from 'src/config';
 import NewRequestForm from '../request/components/NewRequestForm';
 
 // ----------------------------------------------------------------------
@@ -23,6 +19,7 @@ export default function UserTableRow({
   selected,
   materialId,
   name,
+  website,
   catalog,
   vendor,
   type,
@@ -31,10 +28,15 @@ export default function UserTableRow({
   amountInStock,
   LowInStock,
   handleClick,
+  triggerRefresh,
 }) {
   const [open, setOpen] = useState(null);
 
   const [openRequestModal, setOpenRequestModal] = useState(false);
+
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+
+  const deleteMaterialURL = useRef(deleteRawMaterialsURL());
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -51,7 +53,40 @@ export default function UserTableRow({
 
   const handleCloseRequestModal = () => {
     setOpenRequestModal(false);
-  }
+  };
+
+  const handleOpenDeleteDialog = () => {
+    handleCloseMenu();
+    setOpenDeleteDialog(true);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+  };
+
+  const handleDeleteRawMaterial = () => {
+    console.log(`Request to delete: ${materialId}`);
+
+    fetch(`${deleteMaterialURL.current}/${materialId}`, {
+      method: 'DELETE',
+      headers: {'Content-Type': 'application/json'},
+    })
+    .then((response) => {
+      if (response.ok) {
+        console.log(`Material ID ${materialId} has been successfully deleted`);
+      } else {
+        console.log(`Failed to delete material ID ${materialId}...`);
+      }
+    });
+
+    handleCloseDeleteDialog();
+
+    if (triggerRefresh !== undefined) {
+      setTimeout(() => {
+        triggerRefresh();
+      }, config.timeout);
+    }
+  };
 
   return (
     <>
@@ -62,7 +97,11 @@ export default function UserTableRow({
 
         <TableCell component="th" scope="row" padding="none">
             <Typography variant="subtitle2" wrap = "true" width='1/4'>
-              {name}
+              {(website === null || website === "") ? (
+                name
+              ) : (
+                <a href={website} target='_blank' rel="noreferrer">{name}</a>
+              )}
             </Typography>
         </TableCell>
 
@@ -98,13 +137,16 @@ export default function UserTableRow({
         PaperProps={{
           sx: { width: 140 },
         }}
+        container={document.getElementById('root')}
       >
         <MenuItem onClick={handleCloseMenu}>
           <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
           Edit
         </MenuItem>
 
-        <MenuItem onClick={handleCloseMenu} sx={{ color: 'error.main' }}>
+        <MenuItem 
+          onClick={handleOpenDeleteDialog} 
+          sx={{ color: 'error.main' }}>
           <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
           Delete
         </MenuItem>
@@ -130,6 +172,36 @@ export default function UserTableRow({
           />
         </Box>
       </Modal>
+
+      {/* Delete Comfirmation Dialog */}
+      <Dialog
+        open={openDeleteDialog}
+        onClose={handleCloseDeleteDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        container={document.getElementById('root')}
+      >
+        <DialogTitle>Confirm Delete Raw Material</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete the following raw material? 
+            <br />
+            <br />
+            {name}
+            <br />
+            <br /> 
+            This action is irreversible!
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteRawMaterial} color="error">
+            Confirm Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
@@ -139,6 +211,7 @@ UserTableRow.propTypes = {
   materialId: PropTypes.number.isRequired,
   handleClick: PropTypes.func,
   name: PropTypes.any,
+  website: PropTypes.string,
   catalog: PropTypes.any,
   owner: PropTypes.any,
   type: PropTypes.any,
@@ -146,4 +219,5 @@ UserTableRow.propTypes = {
   amountInStock: PropTypes.any,
   LowInStock: PropTypes.any,
   selected: PropTypes.any,
+  triggerRefresh: PropTypes.func,
 };
