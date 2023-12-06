@@ -16,8 +16,11 @@ export default function NewRequestForm({
     candidateItemDescription,
     candidateItemCatalog,
     candidateItemAmount,
+    candidateMaterialId,
     internalComponents,
+    internalComponentRecords,
     internalProducts,    
+    internalProductRecords,
 }) {
     const [itemDescription, setItemDescription] = useState(candidateItemDescription === undefined ? '' : candidateItemDescription);
 
@@ -36,6 +39,12 @@ export default function NewRequestForm({
     const [requestBy, setRequestBy] = useState('');
 
     const [requestCategory, setRequestCategory] = useState((formType === undefined) || (formType === 'purchase') ? '1' : '2');
+
+    const [materialId, setMaterialId] = useState(candidateMaterialId === undefined ? null : candidateMaterialId);
+
+    const [componentRecordId, setComponentRecordId] = useState(null);
+
+    const [productRecordId, setProductRecordId] = useState(null);
 
     const addNewRequestURL = useRef(addRequestURL());
     
@@ -79,6 +88,9 @@ export default function NewRequestForm({
         setRequestPurpose(1);
         setProject('');
         setRequestAmount(0);
+        setMaterialId(null);
+        setComponentRecordId(null);
+        setProductRecordId(null);
     };
 
     const combineItems = () => {
@@ -108,6 +120,7 @@ export default function NewRequestForm({
         console.log(selectedItem);
         if (selectedItem) {
             if ('materialId' in selectedItem) {
+                setMaterialId(selectedItem.materialId);
                 if (selectedItem.catalogNumber !== null) {
                     setCatalogNumber(selectedItem.catalogNumber);
                 }
@@ -127,7 +140,6 @@ export default function NewRequestForm({
             setItemURL('');
             setRequestAmount(0);
         }
-        
     };
 
     const convertDateFormat = (timestamp) => {
@@ -156,6 +168,9 @@ export default function NewRequestForm({
             pricePerUnit,
             requestBy,
             requestDate,
+            materialId,
+            componentRecordId,
+            productRecordId,
         }
         console.log("Request form data")
         console.log(requestData);
@@ -227,7 +242,7 @@ export default function NewRequestForm({
                                         onInputChange={(_, newInputValue) => setItemDescription(newInputValue)}
                                         onChange={handleAutocompleteChange}
                                         renderInput={(params) => (
-                                        <TextField {...params} label="Item name" variant="outlined" fullWidth />
+                                        <TextField {...params} label="Item name" variant="outlined" fullWidth multiline />
                                         )}
                                     />
                                 ) : (
@@ -357,6 +372,9 @@ NewRequestForm.propTypes = {
     candidateItemDescription: PropTypes.string,
     candidateItemCatalog: PropTypes.string,
     candidateItemAmount: PropTypes.number,
+    candidateMaterialId: PropTypes.number,
     internalComponents: PropTypes.array,
+    internalComponentRecords: PropTypes.array,
     internalProducts: PropTypes.array,
+    internalProductRecords: PropTypes.array,
 }

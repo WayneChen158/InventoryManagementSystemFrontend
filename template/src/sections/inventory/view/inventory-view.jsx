@@ -182,6 +182,7 @@ export default function InventoryPage() {
                   .map((row) => (
                     <UserTableRow
                       key={row.materialId}
+                      materialId={row.materialId}
                       name={row.description}
                       catalog={row.catalogNumber}
                       vendor={row.manufacturer}
