@@ -225,6 +225,10 @@ export default function RequestTableRow({
                         itemDescription={itemDescription}
                         itemCatalog={itemCatalog}
                         orderedAmount={fulfilledAmount}
+                        requestBy={requestBy}
+                        doneBy={doneBy}
+                        handleCloseModal={handleCloseMarkReceivedModal}
+                        triggerRefresh={triggerRefresh}
                     />
                 </Box>
             </Modal>

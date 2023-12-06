@@ -59,6 +59,10 @@ export function markOrderedRequestURL() {
   return `http://${config.server_host}:${config.server_port}/api/requests/mark-ordered`;
 }
 
+export function markReceivedRequestURL() {
+  return `http://${config.server_host}:${config.server_port}/api/requests/mark-received`;
+}
+
 export function getComponentRecordsURL() {
   return `http://${config.server_host}:${config.server_port}/api/componentRecords`;
 }

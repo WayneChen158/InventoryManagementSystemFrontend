@@ -16,6 +16,7 @@ export default function NewRequestForm({
     candidateItemDescription,
     candidateItemCatalog,
     candidateItemAmount,
+    candidateMaterialId,
     internalComponents,
     internalComponentRecords,
     internalProducts,    
@@ -39,7 +40,7 @@ export default function NewRequestForm({
 
     const [requestCategory, setRequestCategory] = useState((formType === undefined) || (formType === 'purchase') ? '1' : '2');
 
-    const [materialId, setMaterialId] = useState(null);
+    const [materialId, setMaterialId] = useState(candidateMaterialId === undefined ? null : candidateMaterialId);
 
     const [componentRecordId, setComponentRecordId] = useState(null);
 
@@ -371,6 +372,7 @@ NewRequestForm.propTypes = {
     candidateItemDescription: PropTypes.string,
     candidateItemCatalog: PropTypes.string,
     candidateItemAmount: PropTypes.number,
+    candidateMaterialId: PropTypes.number,
     internalComponents: PropTypes.array,
     internalComponentRecords: PropTypes.array,
     internalProducts: PropTypes.array,

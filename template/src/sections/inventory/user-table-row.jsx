@@ -21,6 +21,7 @@ import NewRequestForm from '../request/components/NewRequestForm';
 
 export default function UserTableRow({
   selected,
+  materialId,
   name,
   catalog,
   vendor,
@@ -125,6 +126,7 @@ export default function UserTableRow({
             inventoryItems={[]}
             candidateItemDescription={name}
             candidateItemCatalog={catalog}
+            candidateMaterialId={materialId}
           />
         </Box>
       </Modal>
@@ -134,6 +136,7 @@ export default function UserTableRow({
 
 UserTableRow.propTypes = {
   vendor: PropTypes.any,
+  materialId: PropTypes.number.isRequired,
   handleClick: PropTypes.func,
   name: PropTypes.any,
   catalog: PropTypes.any,

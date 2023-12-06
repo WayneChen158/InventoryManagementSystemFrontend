@@ -1,26 +1,96 @@
 import PropTypes from 'prop-types';
 import { useRef, useState } from 'react';
 
-import { Box, Card, Grid, Stack, Button, TextField, FormControl, Select, InputLabel, MenuItem } from '@mui/material';
+import { Box, Card, Grid, Stack, Select, Button, MenuItem, TextField, InputLabel, FormControl } from '@mui/material';
+
+import { markReceivedRequestURL } from 'src/utils/url-provider';
+
+import { config } from 'src/config';
+
+import { convertDateFormat } from '../utils';
 
 export default function MarkRequestReceivedForm({
     targetRequestId,
     itemDescription,
     itemCatalog,
     orderedAmount,
+    requestBy,
+    handleCloseModal,
+    triggerRefresh,
 }) {
+    const markReceivedURL = useRef(markReceivedRequestURL());
+
     // 1: fully received, 2: partially received
     const [receivingCondition, setReceivingCondition] = useState(1);
 
-    const [receivedAmount, setReceivedAmount] = useState(0);
+    const [receivedAmount, setReceivedAmount] = useState(orderedAmount);
+
+    const [receivedBy, setReceivedBy] = useState('');
 
     const handelReceivingConditionChange = (event) => {
+        const prevState = receivingCondition;
+        if (prevState === 1) {
+            // Case 1: Transition from fully to partially received
+            setReceivedAmount(0);
+        } else {
+            // Case 2: Transition from partially to fully received
+            setReceivedAmount(orderedAmount);
+        }
         setReceivingCondition(event.target.value);
     };
 
     const handleReceivedAmountChange = (event) => {
         setReceivedAmount(event.target.value);
     };
+
+    const handleReceivedByChange = (event) => {
+        setReceivedBy(event.target.value);
+    };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+
+        const requestId = targetRequestId;
+        const fulfilledAmount = orderedAmount;
+        const receivedDate = convertDateFormat(Date.now());
+        const isFullyReceived = receivingCondition;
+
+        const formData = {
+            requestId,
+            fulfilledAmount,
+            receivedAmount,
+            receivedBy,
+            receivedDate,
+            isFullyReceived,
+        };
+        console.log('Mark received with following info');
+        console.log(formData);
+
+        fetch(markReceivedURL.current, {
+            method: 'PATCH',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(formData),
+        })
+        .then((response) => {
+            if (response.ok) {
+                if (receivingCondition === 1) {
+                    console.log(`Request ID ${targetRequestId} has been marked as fully received.`);
+                } else {
+                    console.log(`Request ID ${targetRequestId} has been marked as partially received.`);
+                }
+            } else {
+                console.log(`Failed to mark Request ID ${targetRequestId} as received...`);
+            }
+        });
+        
+        handleCloseModal();
+
+        if (triggerRefresh !== undefined) {
+            setTimeout(() => {
+                triggerRefresh();
+              }, config.timeout);
+        }
+    }
 
     return (
         <Grid container spacing={0.5} justifyContent="center">
@@ -96,6 +166,34 @@ export default function MarkRequestReceivedForm({
                                 />
                             </Box>
                         )}
+
+                        <Box style={{padding: '10px 0 0 0'}}>
+                            <TextField 
+                                label='Requested by'
+                                type='text'
+                                value={requestBy}
+                                InputProps={{ readOnly: true }}
+                            />
+                        </Box>
+
+                        <Box style={{padding: '10px 0 0 0'}}>
+                            <TextField 
+                                label='Received by'
+                                type='text'
+                                value={receivedBy}
+                                onChange={handleReceivedByChange}
+                            />
+                        </Box>
+
+                        <Box style={{padding: '10px 0 0 0'}}>
+                            <Button 
+                                variant="contained" 
+                                onClick={handleSubmit} 
+                                style={{margin: '0 0 0 0'}}
+                            >
+                                {receivingCondition === 1 ? 'Mark Fully Received' : 'Mark Partially Received'}
+                            </Button>
+                        </Box>
                     </Stack>
                 </Card>
             </Grid>
@@ -108,4 +206,7 @@ MarkRequestReceivedForm.propTypes = {
     itemDescription: PropTypes.string,
     itemCatalog: PropTypes.string,
     orderedAmount: PropTypes.number,
+    requestBy: PropTypes.string,
+    handleCloseModal: PropTypes.func.isRequired,
+    triggerRefresh: PropTypes.func,
 }
