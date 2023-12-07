@@ -6,6 +6,18 @@ export function getRawMaterialsURL() {
     return `http://${config.server_host}:${config.server_port}/api/rawMaterials`;
   };
 
+export function addRawMaterialsURL() {
+  return `http://${config.server_host}:${config.server_port}/api/rawMaterials/add`;
+};
+
+export function deleteRawMaterialsURL() {
+  return `http://${config.server_host}:${config.server_port}/api/rawMaterials/delete`;
+};
+
+export function updateRawMaterialsURL() {
+  return `http://${config.server_host}:${config.server_port}/api/rawMaterials/update`;
+};
+
 // ============================ Manufacture Page ============================
 
 // Add Component Form

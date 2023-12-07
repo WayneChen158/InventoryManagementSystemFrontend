@@ -5,9 +5,10 @@ import { Box, Modal, Dialog, Button, Popover, Checkbox, MenuItem, TableRow, Tabl
 
 import { deleteRequestURL } from 'src/utils/url-provider';
 
+import { config } from 'src/config';
+
 import Iconify from 'src/components/iconify';
 
-import { config } from '../../config';
 import MarkRequestOrderedForm from './components/mark-request-ordered-form';
 import MarkRequestReceivedForm from './components/mark-request-received-form';
 
@@ -65,12 +66,12 @@ export default function RequestTableRow({
     }
 
     const handleOpenDeleteDialog = () => {
+        handleCloseMenu();
         setOpenDeleteDialog(true);
     };
 
     const handleCloseDeleteDialog = () => {
         setOpenDeleteDialog(false);
-        handleCloseMenu();
     };
 
     const handleDeleteRequest = () => {
@@ -89,8 +90,6 @@ export default function RequestTableRow({
             });
         
         handleCloseDeleteDialog();
-        
-        handleCloseMenu();
 
         setTimeout(() => {
             triggerRefresh();
@@ -172,6 +171,7 @@ export default function RequestTableRow({
                 PaperProps={{
                 sx: { width: 170 },
                 }}
+                container={document.getElementById('root')}
             >
                 {statusCode === 1 ? (
                     <MenuItem onClick={handleMarkRequestOrdered}>
@@ -239,11 +239,16 @@ export default function RequestTableRow({
                 onClose={handleCloseDeleteDialog}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
+                container={document.getElementById('root')}
             >
                 <DialogTitle>Confirm Delete Request</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Are you sure you want to delete your request for {itemDescription}?
+                        Are you sure you want to delete the following request?
+                        <br />
+                        <br />
+                        {itemDescription}
+                        <br />
                         <br /> 
                         This action is irreversible!
                     </DialogContentText>

@@ -4,17 +4,19 @@ import { useRef, useState } from 'react';
 
 import { Box, Card, Grid, Stack, Button, Select, MenuItem, TextField, InputLabel, FormControl } from '@mui/material';
 
-import { getRawMaterialsURL } from 'src/utils/url-provider';
+import { addRawMaterialsURL } from 'src/utils/url-provider';
 
-
+import { config } from 'src/config';
 
 NewItemForm.propTypes = {
     handleCloseModal: PropTypes.func.isRequired,
+    triggerRefresh: PropTypes.func,
 };
 
-export default function NewItemForm(props) {
-
-    const { handleCloseModal } = props;
+export default function NewItemForm({
+    handleCloseModal,
+    triggerRefresh,
+}) {
     
     const [itemName, setItemName] = useState('');
     const [catlogNumber, setCatalogNumber] = useState('');
@@ -24,8 +26,9 @@ export default function NewItemForm(props) {
     const [location, setLocation] = useState('');
     const [amount, setAmount] = useState(0);
     const [alertAmount, setAlertAmount] = useState(0);
+    const [website, setWebsite] = useState('');
 
-    const rawMaterialsURL = useRef(getRawMaterialsURL());
+    const addMaterialsURL = useRef(addRawMaterialsURL());
 
     const handleItemNameChange = (e) => {
         setItemName(e.target.value);
@@ -59,17 +62,12 @@ export default function NewItemForm(props) {
         setAlertAmount(e.target.value);
     }
 
+    const handleWebsiteChange = (e) => {
+        setWebsite(e.target.value);
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        console.log(itemName);
-        console.log(catlogNumber);
-        console.log(vendor);
-        console.log(rawMaterialType);
-        console.log(owner);
-        console.log(location);
-        console.log(amount);
-        console.log(alertAmount);
 
         const rawMaterialData = {
             itemName,
@@ -80,16 +78,31 @@ export default function NewItemForm(props) {
             location,
             amount,
             alertAmount,
+            website,
         };
+        console.log("New item to be created:");
+        console.log(rawMaterialData);
 
-        
-        fetch(rawMaterialsURL.current, {
+        fetch(addMaterialsURL.current, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(rawMaterialData)
+        })
+        .then((response) => {
+            if (response.ok) {
+                console.log(`New inventory item ${itemName} was successfully created`);
+            } else {
+                console.log(`Failed to created new inventory item ${itemName}`);
+            }
         });
 
         handleCloseModal();
+
+        if (triggerRefresh !== undefined) {
+            setTimeout(() => {
+                triggerRefresh();
+              }, config.timeout);
+        }
     }
 
     return(
@@ -102,6 +115,7 @@ export default function NewItemForm(props) {
                         </Box>
                         <Box style={{padding: '10px 0 0 0'}}>
                             <TextField
+                                multiline
                                 label="Item Name"
                                 type='text'
                                 value={itemName}
@@ -114,6 +128,14 @@ export default function NewItemForm(props) {
                                 type='text'
                                 value={catlogNumber}
                                 onChange={handleCatalogNumberChange}
+                            />
+                        </Box>
+                        <Box style={{padding: '10px 0 0 0'}}>
+                            <TextField
+                                label="Item URL"
+                                type='text'
+                                value={website}
+                                onChange={handleWebsiteChange}
                             />
                         </Box>
                         <Box style={{padding: '10px 0 0 0'}}>
