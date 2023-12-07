@@ -75,3 +75,16 @@ export function applyFilter({ inputData, comparator, filterName }) {
 
   return inputData;
 }
+
+export function parseMySQLDateStr(mysqlDateStr) {
+  if (mysqlDateStr === null) {
+    return null;
+  }
+  const mysqlDate = new Date(mysqlDateStr);
+  const options = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  };
+  return mysqlDate.toLocaleDateString('en-US', options);
+}

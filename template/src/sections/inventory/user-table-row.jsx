@@ -7,10 +7,12 @@ import { Box, Modal, Dialog, Button, Popover, TableRow, Checkbox, MenuItem, Tabl
 
 import { deleteRawMaterialsURL } from 'src/utils/url-provider';
 
+import { config } from 'src/config';
+
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 
-import { config } from 'src/config';
+import UpdateItemForm from './components/update-item-form';
 import NewRequestForm from '../request/components/NewRequestForm';
 
 // ----------------------------------------------------------------------
@@ -34,6 +36,8 @@ export default function UserTableRow({
 
   const [openRequestModal, setOpenRequestModal] = useState(false);
 
+  const [openUpdateModal, setOpenUpdateModal] = useState(false);
+
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
   const deleteMaterialURL = useRef(deleteRawMaterialsURL());
@@ -54,6 +58,15 @@ export default function UserTableRow({
   const handleCloseRequestModal = () => {
     setOpenRequestModal(false);
   };
+
+  const handleOpenUpdateModal = () => {
+    setOpen(null);
+    setOpenUpdateModal(true);
+  };
+
+  const handleCloseUpdateModal = () => {
+    setOpenUpdateModal(false);
+  }
 
   const handleOpenDeleteDialog = () => {
     handleCloseMenu();
@@ -139,9 +152,14 @@ export default function UserTableRow({
         }}
         container={document.getElementById('root')}
       >
-        <MenuItem onClick={handleCloseMenu}>
+        <MenuItem onClick={handleOpenRequestModal}>
+          <Iconify icon="mdi:offer"  sx={{ mr: 2 }} />
+          Request
+        </MenuItem>
+        
+        <MenuItem onClick={handleOpenUpdateModal}>
           <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
-          Edit
+          Update
         </MenuItem>
 
         <MenuItem 
@@ -149,11 +167,6 @@ export default function UserTableRow({
           sx={{ color: 'error.main' }}>
           <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
           Delete
-        </MenuItem>
-
-        <MenuItem onClick={handleOpenRequestModal}>
-          <Iconify icon="mdi:offer"  sx={{ mr: 2 }} />
-          Request
         </MenuItem>
       </Popover>
 
@@ -169,6 +182,19 @@ export default function UserTableRow({
             candidateItemDescription={name}
             candidateItemCatalog={catalog}
             candidateMaterialId={materialId}
+          />
+        </Box>
+      </Modal>
+
+      <Modal
+        open={openUpdateModal}
+        onClose={handleCloseUpdateModal}
+        container={document.getElementById('root')}
+      >
+        <Box style={{ display: 'flex', margin: 'auto', justifyContent: 'center', width: '70%', height: '100%'}}>
+          <UpdateItemForm
+            handleCloseModal={handleCloseUpdateModal} 
+            materialId={materialId}
           />
         </Box>
       </Modal>

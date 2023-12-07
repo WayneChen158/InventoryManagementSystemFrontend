@@ -1,19 +1,15 @@
-import { useRef, useState, useEffect} from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
+import { Box, Modal } from '@mui/material';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
-
-// import { users } from 'src/_mock/user';
-// import { inventoryData } from 'src/_mock/inventory';
-
-import { Box, Modal } from '@mui/material';
 
 import { getRawMaterialsURL } from 'src/utils/url-provider';
 

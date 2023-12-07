@@ -5,9 +5,10 @@ import { Box, Modal, Dialog, Button, Popover, Checkbox, MenuItem, TableRow, Tabl
 
 import { deleteRequestURL } from 'src/utils/url-provider';
 
+import { config } from 'src/config';
+
 import Iconify from 'src/components/iconify';
 
-import { config } from 'src/config';
 import MarkRequestOrderedForm from './components/mark-request-ordered-form';
 import MarkRequestReceivedForm from './components/mark-request-received-form';
 
