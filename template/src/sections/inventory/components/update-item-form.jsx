@@ -3,7 +3,9 @@ import { useRef, useState, useEffect } from 'react';
 
 import { Box, Card, Grid, Stack, Select, Button, MenuItem, TextField, InputLabel, FormControl } from '@mui/material';
 
-import { getRawMaterialsURL } from 'src/utils/url-provider';
+import { getRawMaterialsURL, updateRawMaterialsURL } from 'src/utils/url-provider';
+
+import { config } from 'src/config';
 
 import { parseMySQLDateStr } from '../utils';
 
@@ -12,8 +14,6 @@ export default function UpdateItemForm({
     handleCloseModal,
     triggerRefresh,
 }) {
-    const [existingMaterial, setExistingMaterial] = useState({});
-
     const [existingMaterialFetched, setExistingMaterialFetched] = useState(false);
 
     const [description, setDescription] = useState('');
@@ -39,6 +39,10 @@ export default function UpdateItemForm({
     const [owner, setOwner] = useState('');
 
     const [receiveDate, setReceiveDate] = useState('');
+
+    const rawMaterialsURL = useRef(getRawMaterialsURL());
+
+    const updateMaterialURL = useRef(updateRawMaterialsURL());
 
     const handleDescriptionChange = (e) => {
         setDescription(e.target.value);
@@ -88,8 +92,6 @@ export default function UpdateItemForm({
         setReceiveDate(e.target.value);
     };
 
-    const rawMaterialsURL = useRef(getRawMaterialsURL());
-
     useEffect(() => {
         fetch(`${rawMaterialsURL.current}/${materialId}`)
         .then(res => res.json())
@@ -97,7 +99,6 @@ export default function UpdateItemForm({
             console.log(`Fetch for material ${materialId} invoked!`);
             console.log(material);
             if (material !== null && material !== undefined) {
-                setExistingMaterial(material);
                 setExistingMaterialFetched(true);
                 setDescription(material.description);
                 setCatalogNumber(material.catalogNumber);
@@ -117,10 +118,48 @@ export default function UpdateItemForm({
         });
     }, [materialId]);
 
-    const handleUpdate = () => {
-        console.log(receiveDate);
+    const handleUpdate = (e) => {
+        e.preventDefault();
+
+        const updateFormData = {
+            materialId,
+            category,
+            groupName,
+            catalogNumber,
+            description,
+            manufacturer,
+            concentration,
+            receiveDate,
+            location,
+            owner,
+            website,
+            threshold,
+            amountInStock,
+        }
+        console.log(`Update material ID ${materialId} as follows`);
+        console.log(updateFormData);
+
+        fetch(updateMaterialURL.current, {
+            method: 'PATCH',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(updateFormData),
+        })
+        .then((response) => {
+            if (response.ok) {
+                console.log(`Material ID ${materialId} was successfully updated`);
+            } else {
+                console.log(`Failed to update material ID ${materialId}...`);
+            }
+        });
+
         handleCloseModal();
-    }
+
+        if (triggerRefresh !== undefined) {
+            setTimeout(() => {
+                triggerRefresh();
+              }, config.timeout);
+        }
+    };
 
     return(
         <Grid container spacing={0.5} justifyContent="center">
@@ -255,11 +294,13 @@ export default function UpdateItemForm({
                             />
                         </Box>
 
-                        <Box style={{padding: '10px 0 20px 0'}}>
-                            <Button variant="contained" onClick={handleUpdate} style={{margin: '0 0 0 0'}}>
-                                Update
-                            </Button>   
-                        </Box>
+                        {existingMaterialFetched && (
+                            <Box style={{padding: '10px 0 20px 0'}}>
+                                <Button variant="contained" onClick={handleUpdate} style={{margin: '0 0 0 0'}}>
+                                    Update
+                                </Button>   
+                            </Box>
+                        )}                        
                     </Stack>
                 </Card>
             </Grid>

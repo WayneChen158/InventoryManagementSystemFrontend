@@ -195,6 +195,7 @@ export default function UserTableRow({
           <UpdateItemForm
             handleCloseModal={handleCloseUpdateModal} 
             materialId={materialId}
+            triggerRefresh={triggerRefresh}
           />
         </Box>
       </Modal>
