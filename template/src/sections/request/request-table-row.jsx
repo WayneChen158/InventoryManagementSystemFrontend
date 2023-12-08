@@ -13,7 +13,7 @@ import MarkRequestOrderedForm from './components/mark-request-ordered-form';
 import MarkRequestReceivedForm from './components/mark-request-received-form';
 
 export default function RequestTableRow({
-    statusCode,
+    status,
     selected,
     requestId,
     itemDescription,
@@ -23,11 +23,14 @@ export default function RequestTableRow({
     purpose,
     requestAmount,
     fulfilledAmount,
+    receivedAmount,
     pricePerUnit,
     requestBy,
     doneBy,
+    receivedBy,
     requestDate,
     fulfilledDate,
+    receivedDate,
     handleClick,
     triggerRefresh,
 }) {
@@ -130,36 +133,67 @@ export default function RequestTableRow({
                 </TableCell>
 
                 <TableCell align="center">{itemCatalog}</TableCell>
-                
-                <TableCell align="center">{project}</TableCell>
 
+                {status === 1 && (
+                    <TableCell align="center">{project}</TableCell>
+                )}
+                
                 <TableCell align="center">{purpose}</TableCell>
 
                 <TableCell align="center">{requestAmount}</TableCell>
 
-                {statusCode === 2 ? (
+                {status !== 1 && (
                     <TableCell align="center">{fulfilledAmount}</TableCell>
-                ) : null}
+                )}
 
-                <TableCell align="center">{pricePerUnit}</TableCell>
+                {status !== 1 && (
+                    <TableCell align="center">
+                        {status === 2 ? (0) : (receivedAmount)}
+                    </TableCell>
+                )}
+
+                {status === 1 && (
+                    <TableCell align="center">{pricePerUnit}</TableCell>
+                )}
 
                 <TableCell align="center">{requestBy}</TableCell>
 
-                {statusCode === 2 ? (
+                {status !== 1 && (
                     <TableCell align="center">{doneBy}</TableCell>
-                ) : null}
+                )}
+
+                {status !== 1 && (
+                    <TableCell align="center">
+                        {status === 2 ? ("Not Applicable") : (receivedBy)}
+                    </TableCell>
+                )}
 
                 <TableCell align="center">{requestDate}</TableCell>
 
-                {statusCode === 2 ? (
+                {status !== 1 && (
                     <TableCell align="center">{fulfilledDate}</TableCell>
-                ) : null}
+                )}
 
-                <TableCell align="right">
-                    <IconButton onClick={handleOpenMenu}>
-                        <Iconify icon="eva:more-vertical-fill" />
-                    </IconButton>
-                </TableCell>
+                {status !== 1 && (
+                    <TableCell align="center">
+                        {status === 2 ? ("Not Applicable") : (receivedDate)}
+                    </TableCell>
+                )}
+
+                {(status === 2 || status === 3) && (
+                    <TableCell align="center">
+                        {status === 2 ? "Not Yet Received" : "Partially Received"}
+                    </TableCell>
+                )}
+
+                {status !== 4 && (
+                    <TableCell align="right">
+                        <IconButton onClick={handleOpenMenu}>
+                            <Iconify icon="eva:more-vertical-fill" />
+                        </IconButton>
+                    </TableCell>
+                )}
+
             </TableRow>
 
             <Popover
@@ -173,26 +207,26 @@ export default function RequestTableRow({
                 }}
                 container={document.getElementById('root')}
             >
-                {statusCode === 1 ? (
+                {status === 1 && (
                     <MenuItem onClick={handleMarkRequestOrdered}>
                         <Iconify icon="eva:shopping-cart-outline" sx={{ mr: 2 }} />
                         Mark Ordered
                     </MenuItem>
-                ) : null}
+                )}
 
-                {statusCode === 1 ? (
+                {status === 1 && (
                     <MenuItem onClick={handleOpenDeleteDialog} sx={{ color: 'error.main' }}>
                         <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
                         Delete Request
                     </MenuItem>
-                ) : null}
+                )}
                 
-                {statusCode === 2 ? (
+                {(status === 2 || status === 3) && (
                     <MenuItem onClick={handleMarkRequestReceived}>
                         <Iconify icon="icon-park-outline:receive" sx={{ mr: 2 }} />
                         Mark Received
                     </MenuItem>
-                ) : null}
+                )}
                 
             </Popover>
 
@@ -267,7 +301,7 @@ export default function RequestTableRow({
 }
 
 RequestTableRow.propTypes = {
-    statusCode: PropTypes.number.isRequired,
+    status: PropTypes.number.isRequired,
     selected: PropTypes.any,
     requestId: PropTypes.number.isRequired,
     itemDescription: PropTypes.string.isRequired,
@@ -277,11 +311,14 @@ RequestTableRow.propTypes = {
     purpose: PropTypes.any,
     requestAmount: PropTypes.any,
     fulfilledAmount: PropTypes.any,
+    receivedAmount: PropTypes.number,
     pricePerUnit: PropTypes.any,
     requestBy: PropTypes.any,
     doneBy: PropTypes.any,
+    receivedBy: PropTypes.string,
     requestDate: PropTypes.any,
     fulfilledDate: PropTypes.any,
+    receivedDate: PropTypes.string,
     handleClick: PropTypes.func,
     triggerRefresh: PropTypes.func.isRequired,
 }
