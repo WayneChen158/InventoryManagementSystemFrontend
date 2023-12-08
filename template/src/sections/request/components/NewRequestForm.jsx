@@ -74,7 +74,7 @@ export default function NewRequestForm({
 
     const handleRequestAmountChange = (event) => {
         const inputAmount = event.target.value;
-        if (inputAmount <= 0) {
+        if (inputAmount < 0) {
             setRequestAmountError(true);
             setRequestAmountMessage("Request amount must be positive...");
         } else if (inputAmount === '') {
