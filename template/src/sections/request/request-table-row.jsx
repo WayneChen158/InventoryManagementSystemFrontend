@@ -256,9 +256,11 @@ export default function RequestTableRow({
                 <Box style={{ display: 'flex', margin: 'auto', justifyContent: 'center', width: '70%', height: '100%'}}>
                     <MarkRequestReceivedForm 
                         targetRequestId={requestId}
+                        requestStatus={status}
                         itemDescription={itemDescription}
                         itemCatalog={itemCatalog}
                         orderedAmount={fulfilledAmount}
+                        prevReceivedAmount={status === 2 ? 0 : receivedAmount}
                         requestBy={requestBy}
                         doneBy={doneBy}
                         handleCloseModal={handleCloseMarkReceivedModal}
