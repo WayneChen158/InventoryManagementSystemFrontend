@@ -34,6 +34,10 @@ export default function NewRequestForm({
 
     const [requestAmount, setRequestAmount] = useState(candidateItemAmount === undefined ? 0 : candidateItemAmount);
 
+    const [requestAmountError, setRequestAmountError] = useState(false);
+
+    const [requestAmountMessage, setRequestAmountMessage] = useState("");
+
     const [pricePerUnit, setPricePerUnit] = useState(0.0);
 
     const [requestBy, setRequestBy] = useState('');
@@ -69,6 +73,17 @@ export default function NewRequestForm({
     };
 
     const handleRequestAmountChange = (event) => {
+        const inputAmount = event.target.value;
+        if (inputAmount < 0) {
+            setRequestAmountError(true);
+            setRequestAmountMessage("Request amount must be positive...");
+        } else if (inputAmount === '') {
+            setRequestAmountError(true);
+            setRequestAmountMessage("Please input a request amount");
+        } else {
+            setRequestAmountError(false);
+            setRequestAmountMessage("");
+        }
         setRequestAmount(event.target.value);
     };
 
@@ -149,6 +164,13 @@ export default function NewRequestForm({
         const year = date.getFullYear();
         return `${month}-${day}-${year}`;
     };
+
+    const isFormValid = () => (
+        !requestAmountError
+        && itemDescription !== ""
+        && catalogNumber !== ""
+        && requestBy !== ""
+    );
  
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -242,11 +264,11 @@ export default function NewRequestForm({
                                         onInputChange={(_, newInputValue) => setItemDescription(newInputValue)}
                                         onChange={handleAutocompleteChange}
                                         renderInput={(params) => (
-                                        <TextField {...params} label="Item name" variant="outlined" fullWidth multiline />
+                                        <TextField {...params} label="Item name" variant="outlined" fullWidth multiline required />
                                         )}
                                     />
                                 ) : (
-                                    <TextField 
+                                    <TextField
                                         label='Item name'
                                         type='text'
                                         value={itemDescription}
@@ -264,13 +286,14 @@ export default function NewRequestForm({
                                 onInputChange={(_, newInputValue) => setItemDescription(newInputValue)}
                                 onChange={handleAutocompleteChange}
                                 renderInput={(params) => (
-                                <TextField {...params} label="Item name" variant="outlined" fullWidth />
+                                <TextField {...params} label="Item name" variant="outlined" fullWidth required />
                                 )}
                             />
                         )}
     
                         <Box style={{padding: '10px 0 0 0'}}>
-                            <TextField 
+                            <TextField
+                                required 
                                 label='Catlog number'
                                 type='text'
                                 value={catalogNumber}
@@ -316,11 +339,14 @@ export default function NewRequestForm({
                         </Box>
 
                         <Box style={{padding: '10px 0 0 0'}}>
-                            <TextField 
+                            <TextField
+                                required 
                                 label='Amount'
                                 type='number'
                                 value={requestAmount}
                                 onChange={handleRequestAmountChange}
+                                error={requestAmountError}
+                                helperText={requestAmountMessage}
                             />
                         </Box>
 
@@ -344,6 +370,7 @@ export default function NewRequestForm({
                                 type='text'
                                 value={requestBy}
                                 onChange={handleRequestByChange}
+                                required
                             />
                         </Box>
 
@@ -352,6 +379,7 @@ export default function NewRequestForm({
                                 variant="contained" 
                                 onClick={handleSubmit} 
                                 style={{margin: '0 0 0 0'}}
+                                disabled={!isFormValid()}
                             >
                                 Submit
                             </Button>
