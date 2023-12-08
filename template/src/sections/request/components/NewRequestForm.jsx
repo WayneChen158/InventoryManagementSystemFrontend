@@ -167,6 +167,8 @@ export default function NewRequestForm({
 
     const isFormValid = () => (
         !requestAmountError
+        && requestAmount !== 0
+        && requestAmount !== '0'
         && itemDescription !== ""
         && catalogNumber !== ""
         && requestBy !== ""
