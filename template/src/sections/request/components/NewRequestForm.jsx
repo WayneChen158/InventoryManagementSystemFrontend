@@ -34,6 +34,10 @@ export default function NewRequestForm({
 
     const [requestAmount, setRequestAmount] = useState(candidateItemAmount === undefined ? 0 : candidateItemAmount);
 
+    const [requestAmountError, setRequestAmountError] = useState(false);
+
+    const [requestAmountMessage, setRequestAmountMessage] = useState("");
+
     const [pricePerUnit, setPricePerUnit] = useState(0.0);
 
     const [requestBy, setRequestBy] = useState('');
@@ -45,6 +49,16 @@ export default function NewRequestForm({
     const [componentRecordId, setComponentRecordId] = useState(null);
 
     const [productRecordId, setProductRecordId] = useState(null);
+
+    const [madeInternalItemSelection, setMadeInternalItemSelection] = useState(false);
+
+    const [madeInternalLotSelection, setMadeInternalLotSelection] = useState(false);
+
+    const [internalLotNumber, setInternalLotNumber] = useState("");
+
+    const [internalLotAvailableAmount, setInternalLotAvailableAmount] = useState(0);
+
+    const [internalRecordOptions, setInternalRecordOptions] = useState([]);
 
     const addNewRequestURL = useRef(addRequestURL());
     
@@ -69,6 +83,26 @@ export default function NewRequestForm({
     };
 
     const handleRequestAmountChange = (event) => {
+        const inputAmount = event.target.value;
+        if (parseFloat(inputAmount) < 0) {
+            setRequestAmountError(true);
+            setRequestAmountMessage("Request amount must be positive...");
+        } else if (inputAmount === '') {
+            setRequestAmountError(true);
+            setRequestAmountMessage("Please input a request amount");
+        } else if (requestCategory === '2') {
+            console.log(inputAmount);
+            if (parseFloat(inputAmount) > internalLotAvailableAmount) {
+                setRequestAmountError(true);
+                setRequestAmountMessage("Request amount cannot exceed lot available amount");
+            } else {
+                setRequestAmountError(false);
+                setRequestAmountMessage("");
+            }
+        } else {
+            setRequestAmountError(false);
+            setRequestAmountMessage("");
+        }
         setRequestAmount(event.target.value);
     };
 
@@ -91,13 +125,20 @@ export default function NewRequestForm({
         setMaterialId(null);
         setComponentRecordId(null);
         setProductRecordId(null);
+        setMadeInternalItemSelection(false);
+        setInternalRecordOptions([]);
+        setInternalLotNumber("");
+        setMadeInternalLotSelection(false);
+        setInternalLotAvailableAmount(0);
+        setRequestAmountError(false);
+        setRequestAmountMessage("");
     };
 
     const combineItems = () => {
         const combinedItems = [
-            ...(internalComponents || []),
             ...(internalProducts || []),
-            ...(inventoryItems || []),
+            ...(internalComponents || []),
+            // ...(inventoryItems || []),
           ];
         return combinedItems;
     };
@@ -115,7 +156,22 @@ export default function NewRequestForm({
         return 'Unknown';
     }
 
-    const handleAutocompleteChange = (_, selectedItem) => {
+    const getInternalRecordOptions = (selectedItem) => {
+        let options = []
+        if ('componentId' in selectedItem) {
+            options = internalComponentRecords.filter(item => item.componentCatalog === selectedItem.componentCatalog);
+        } else if ('productId' in selectedItem) {
+            options = internalProductRecords.filter(item => item.productCatalog === selectedItem.productCatalog);
+        }
+        options.push({
+            amountInStock: Infinity,
+            lotNumber: "Request New Lot"
+        });
+        console.log(options);
+        return options;
+    }
+
+    const handleAutocompleteDescriptionChange = (_, selectedItem) => {
         console.log("Selected existing inventory item:")
         console.log(selectedItem);
         if (selectedItem) {
@@ -131,16 +187,46 @@ export default function NewRequestForm({
                     setRequestAmount(selectedItem.threshold);
                 }
             } else if ('componentId' in selectedItem) {
+                setMadeInternalItemSelection(true);
                 setCatalogNumber(selectedItem.componentCatalog);
+                const componentRecordOptions = getInternalRecordOptions(selectedItem);
+                setInternalRecordOptions(componentRecordOptions);
             } else if ('productId' in selectedItem) {
+                setMadeInternalItemSelection(true);
                 setCatalogNumber(selectedItem.productCatalog);
+                const productRecordOptions = getInternalRecordOptions(selectedItem);
+                setInternalRecordOptions(productRecordOptions);
             }
         } else {
             setCatalogNumber('');
             setItemURL('');
             setRequestAmount(0);
+            setMadeInternalItemSelection(false);
+            setInternalRecordOptions([]);
+            setInternalLotNumber("");
+            setMadeInternalLotSelection(false);
+            setInternalLotAvailableAmount(0);
         }
     };
+
+    const handleAutocompleteInternalLotChange = (_, selectedLot) => {
+        console.log("Selected the following lot:");
+        console.log(selectedLot);
+        if (selectedLot) {
+            setMadeInternalLotSelection(true);
+            setInternalLotNumber(selectedLot.lotNumber);
+            setInternalLotAvailableAmount(selectedLot.amountInStock);
+            if ('productRecordId' in selectedLot) {
+                setProductRecordId(selectedLot.productRecordId);
+            } else {
+                setComponentRecordId(selectedLot.componentRecordId);
+            }
+        } else {
+            setMadeInternalLotSelection(false);
+            setInternalLotNumber("");
+            setInternalLotAvailableAmount(0);
+        }
+    }
 
     const convertDateFormat = (timestamp) => {
         const date = new Date(timestamp);
@@ -149,6 +235,15 @@ export default function NewRequestForm({
         const year = date.getFullYear();
         return `${month}-${day}-${year}`;
     };
+
+    const isFormValid = () => (
+        !requestAmountError
+        && requestAmount !== 0
+        && requestAmount !== '0'
+        && itemDescription !== ""
+        && catalogNumber !== ""
+        && requestBy !== ""  
+    );
  
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -240,13 +335,13 @@ export default function NewRequestForm({
                                         getOptionLabel={(option) => option.description}
                                         inputValue={itemDescription}
                                         onInputChange={(_, newInputValue) => setItemDescription(newInputValue)}
-                                        onChange={handleAutocompleteChange}
+                                        onChange={handleAutocompleteDescriptionChange}
                                         renderInput={(params) => (
-                                        <TextField {...params} label="Item name" variant="outlined" fullWidth multiline />
+                                        <TextField {...params} label="Item name" variant="outlined" fullWidth multiline required />
                                         )}
                                     />
                                 ) : (
-                                    <TextField 
+                                    <TextField
                                         label='Item name'
                                         type='text'
                                         value={itemDescription}
@@ -262,21 +357,36 @@ export default function NewRequestForm({
                                 getOptionLabel={(option) => getAutocompleteLabel(option)}
                                 inputValue={itemDescription}
                                 onInputChange={(_, newInputValue) => setItemDescription(newInputValue)}
-                                onChange={handleAutocompleteChange}
+                                onChange={handleAutocompleteDescriptionChange}
                                 renderInput={(params) => (
-                                <TextField {...params} label="Item name" variant="outlined" fullWidth />
+                                <TextField {...params} label="Item name" variant="outlined" fullWidth required />
                                 )}
                             />
                         )}
     
                         <Box style={{padding: '10px 0 0 0'}}>
-                            <TextField 
+                            <TextField
+                                required 
                                 label='Catlog number'
                                 type='text'
                                 value={catalogNumber}
                                 onChange={handleCatalogNumberChange}
                             />
                         </Box>
+
+                        {requestCategory === '2' && madeInternalItemSelection && (
+                            <Autocomplete 
+                                options={internalRecordOptions}
+                                getOptionLabel={(option) => 
+                                    (`Lot ${internalRecordOptions.indexOf(option)+1}: ${option.lotNumber}`)}
+                                inputValue={internalLotNumber}
+                                onChange={handleAutocompleteInternalLotChange}
+                                onInputChange={(_, newInputValue) => setInternalLotNumber(newInputValue)}
+                                renderInput={(params) => (
+                                    <TextField {...params} label="Lot number" variant='outlined' fullWidth/>
+                                )}
+                            />
+                        )}
 
                         {requestCategory === '1' && (
                             <Box style={{padding: '10px 0 0 0'}}>
@@ -315,12 +425,30 @@ export default function NewRequestForm({
                             />
                         </Box>
 
+                        {requestCategory === '2' 
+                            && madeInternalItemSelection 
+                            && madeInternalLotSelection 
+                            && internalLotAvailableAmount !== Infinity 
+                            && (
+                                <Box style={{padding: '10px 0 0 0'}}>
+                                    <TextField
+                                        label='Lot available amount'
+                                        type='number'
+                                        value={internalLotAvailableAmount} 
+                                        InputProps={{ readOnly: true }}
+                                    />
+                                </Box>
+                            )}
+
                         <Box style={{padding: '10px 0 0 0'}}>
-                            <TextField 
-                                label='Amount'
+                            <TextField
+                                required 
+                                label='Request amount'
                                 type='number'
                                 value={requestAmount}
                                 onChange={handleRequestAmountChange}
+                                error={requestAmountError}
+                                helperText={requestAmountMessage}
                             />
                         </Box>
 
@@ -344,6 +472,7 @@ export default function NewRequestForm({
                                 type='text'
                                 value={requestBy}
                                 onChange={handleRequestByChange}
+                                required
                             />
                         </Box>
 
@@ -352,6 +481,7 @@ export default function NewRequestForm({
                                 variant="contained" 
                                 onClick={handleSubmit} 
                                 style={{margin: '0 0 0 0'}}
+                                disabled={!isFormValid()}
                             >
                                 Submit
                             </Button>

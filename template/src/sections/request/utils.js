@@ -15,7 +15,11 @@ export function emptyRows(page, rowsPerPage, arrayLength) {
 }
 
 function descendingComparator(a, b, orderBy) {
-    if (a[orderBy] === null) {
+  if (orderBy === 'orderStatus') {
+    return descendingComparator(a, b, 'status');
+  }
+
+  if (a[orderBy] === null) {
       return 1;
     }
     if (b[orderBy] === null) {

@@ -19,52 +19,98 @@ export default function NewItemForm({
 }) {
     
     const [itemName, setItemName] = useState('');
+
     const [catlogNumber, setCatalogNumber] = useState('');
+
     const [vendor, setVendor] = useState('');
+    
     const [rawMaterialType, setRawMaterialType] = useState(1);
+    
     const [owner, setOwner] = useState('');
+    
     const [location, setLocation] = useState('');
+    
     const [amount, setAmount] = useState(0);
+
+    const [amountError, setAmountError] = useState(false);
+
+    const [amountErrorMessage, setAmountErrorMessage] = useState("");
+    
     const [alertAmount, setAlertAmount] = useState(0);
+
+    const [alertAmountError, setAlertAmountError] = useState(false);
+
+    const [alertAmountErrorMessage, setAlertAmountErrorMessage] = useState("");
+    
     const [website, setWebsite] = useState('');
 
     const addMaterialsURL = useRef(addRawMaterialsURL());
 
     const handleItemNameChange = (e) => {
         setItemName(e.target.value);
-    }
+    };
 
     const handleCatalogNumberChange = (e) => {
         setCatalogNumber(e.target.value);  
-    }
+    };
 
     const handleVendorChange = (e) => {
         setVendor(e.target.value);  
-    }
+    };
 
     const handleRawMaterialTypeChange = (e) => {
         setRawMaterialType(e.target.value); 
-    }
+    };
 
     const handleOwnerChange = (e) => {
         setOwner(e.target.value);  
-    }
+    };
 
     const handleLocationChange = (e) => {
         setLocation(e.target.value); 
-    }
+    };
 
     const handleAmountChange = (e) => {
+        const inputAmount = parseFloat(e.target.value);
+        if (inputAmount < 0) {
+            setAmountError(true);
+            setAmountErrorMessage("Amount value must be positive...");
+        } else {
+            setAmountError(false);
+            setAmountErrorMessage("");
+        }
+        
         setAmount(e.target.value); 
-    }
+    };
 
     const handleAlertAmountChange = (e) => {
+        const inputAmount = parseFloat(e.target.value);
+        if (inputAmount < 0) {
+            setAlertAmountError(true);
+            setAlertAmountErrorMessage("Alert threshold value must be positive...");
+        } else if (inputAmount >= parseFloat(amount)) {
+            setAlertAmountError(true);
+            setAlertAmountErrorMessage("Alert threhold amount cannot equate or exceed stock amount");
+        } else {
+            setAlertAmountError(false);
+            setAlertAmountErrorMessage("");
+        }
         setAlertAmount(e.target.value);
-    }
+    };
 
     const handleWebsiteChange = (e) => {
         setWebsite(e.target.value);
-    }
+    };
+
+    const isFormValid = () => (
+        itemName !== "" &&
+        catlogNumber !== "" &&
+        vendor !== "" && 
+        amount !== 0 &&
+        amount !== '0' &&
+        amount !== "" &&
+        alertAmount < amount
+    );
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -115,6 +161,7 @@ export default function NewItemForm({
                         </Box>
                         <Box style={{padding: '10px 0 0 0'}}>
                             <TextField
+                                required
                                 multiline
                                 label="Item Name"
                                 type='text'
@@ -124,6 +171,7 @@ export default function NewItemForm({
                         </Box>
                         <Box style={{padding: '10px 0 0 0'}}>
                             <TextField
+                                required
                                 label="Catalog Number"
                                 type='text'
                                 value={catlogNumber}
@@ -140,6 +188,7 @@ export default function NewItemForm({
                         </Box>
                         <Box style={{padding: '10px 0 0 0'}}>
                             <TextField
+                                required
                                 label="Vendor"
                                 type='text'
                                 value={vendor}
@@ -177,10 +226,13 @@ export default function NewItemForm({
                         </Box>
                         <Box style={{padding: '10px 0 0 0'}}>
                             <TextField
+                                required
                                 label="Amount"
                                 type='number'
                                 value={amount}
                                 onChange={handleAmountChange}
+                                error={amountError}
+                                helperText={amountErrorMessage}
                             />
                         </Box>
                         <Box style={{padding: '10px 0 0 0'}}>
@@ -189,10 +241,17 @@ export default function NewItemForm({
                                 type='number'
                                 value={alertAmount}
                                 onChange={handleAlertAmountChange}
+                                error={alertAmountError}
+                                helperText={alertAmountErrorMessage}
                             />
                         </Box>
                         <Box style={{padding: '10px 0 0 0'}}>
-                            <Button variant="contained" onClick={handleSubmit} style={{margin: '0 0 0 0'}}>
+                            <Button 
+                                variant="contained" 
+                                onClick={handleSubmit} 
+                                style={{margin: '0 0 0 0'}}
+                                disabled={!isFormValid()}
+                            >
                                 Submit
                             </Button>   
                         </Box>

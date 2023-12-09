@@ -11,9 +11,11 @@ import { convertDateFormat } from '../utils';
 
 export default function MarkRequestReceivedForm({
     targetRequestId,
+    requestStatus,
     itemDescription,
     itemCatalog,
     orderedAmount,
+    prevReceivedAmount,
     requestBy,
     handleCloseModal,
     triggerRefresh,
@@ -23,7 +25,11 @@ export default function MarkRequestReceivedForm({
     // 1: fully received, 2: partially received
     const [receivingCondition, setReceivingCondition] = useState(1);
 
-    const [receivedAmount, setReceivedAmount] = useState(orderedAmount);
+    const [receivedAmount, setReceivedAmount] = useState(orderedAmount - prevReceivedAmount);
+
+    const [receivedAmountError, setReceivedAmountError] = useState(false);
+
+    const [receivedAmountErrorMessage, setReceivedAmountErrorMessage] = useState('');
 
     const [receivedBy, setReceivedBy] = useState('');
 
@@ -34,18 +40,35 @@ export default function MarkRequestReceivedForm({
             setReceivedAmount(0);
         } else {
             // Case 2: Transition from partially to fully received
-            setReceivedAmount(orderedAmount);
+            setReceivedAmount(orderedAmount - prevReceivedAmount);
         }
         setReceivingCondition(event.target.value);
     };
 
     const handleReceivedAmountChange = (event) => {
+        const attemptedReceivedAmount = event.target.value;
+        if (orderedAmount - prevReceivedAmount - attemptedReceivedAmount === 0) {
+            setReceivedAmountError(true);
+            setReceivedAmountErrorMessage("This request should be set as 'Fully Received'");
+        } else if (orderedAmount - prevReceivedAmount - attemptedReceivedAmount < 0) {
+            setReceivedAmountError(true);
+            setReceivedAmountErrorMessage("Received amount cannot exceed remaining amount of this request");
+        } else if (attemptedReceivedAmount < 0) {
+            setReceivedAmountError(true);
+            setReceivedAmountErrorMessage("Received amount cannot cannot be negative...");
+        } else {
+            setReceivedAmountError(false);
+            setReceivedAmountErrorMessage('');
+        }
+        
         setReceivedAmount(event.target.value);
     };
 
     const handleReceivedByChange = (event) => {
         setReceivedBy(event.target.value);
     };
+
+    const isFormValid = () => (!receivedAmountError && receivedAmount !== 0 && receivedBy !== '');
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -129,6 +152,17 @@ export default function MarkRequestReceivedForm({
                             />
                         </Box>
 
+                        {requestStatus === 3 && (
+                            <Box style={{padding: '10px 0 0 0'}}>
+                                <TextField 
+                                    label='Previously received amount'
+                                    type='number'
+                                    value={prevReceivedAmount}
+                                    InputProps={{ readOnly: true }}
+                                />
+                            </Box>
+                        )}
+
                         <Box style={{padding: '10px 0 0 0'}}>
                             <FormControl fullWidth>
                                 <InputLabel id='request-category-select'>
@@ -150,7 +184,7 @@ export default function MarkRequestReceivedForm({
                                 <TextField 
                                     label='Received amount'
                                     type='number'
-                                    value={orderedAmount}
+                                    value={orderedAmount - prevReceivedAmount}
                                     InputProps={{ readOnly: true }}
                                 />
                             </Box>
@@ -158,11 +192,14 @@ export default function MarkRequestReceivedForm({
 
                         {receivingCondition === 2 && (
                             <Box style={{padding: '10px 0 0 0'}}>
-                                <TextField 
+                                <TextField
+                                    required 
                                     label='Received amount'
                                     type='number'
                                     value={receivedAmount}
                                     onChange={handleReceivedAmountChange}
+                                    error={receivedAmountError}
+                                    helperText={receivedAmountErrorMessage}
                                 />
                             </Box>
                         )}
@@ -177,7 +214,8 @@ export default function MarkRequestReceivedForm({
                         </Box>
 
                         <Box style={{padding: '10px 0 0 0'}}>
-                            <TextField 
+                            <TextField
+                                required 
                                 label='Received by'
                                 type='text'
                                 value={receivedBy}
@@ -190,6 +228,7 @@ export default function MarkRequestReceivedForm({
                                 variant="contained" 
                                 onClick={handleSubmit} 
                                 style={{margin: '0 0 0 0'}}
+                                disabled={!isFormValid()}
                             >
                                 {receivingCondition === 1 ? 'Mark Fully Received' : 'Mark Partially Received'}
                             </Button>
@@ -203,9 +242,11 @@ export default function MarkRequestReceivedForm({
 
 MarkRequestReceivedForm.propTypes = {
     targetRequestId: PropTypes.number.isRequired,
+    requestStatus: PropTypes.number.isRequired,
     itemDescription: PropTypes.string,
     itemCatalog: PropTypes.string,
-    orderedAmount: PropTypes.number,
+    orderedAmount: PropTypes.number.isRequired,
+    prevReceivedAmount: PropTypes.number.isRequired,
     requestBy: PropTypes.string,
     handleCloseModal: PropTypes.func.isRequired,
     triggerRefresh: PropTypes.func,

@@ -16,7 +16,7 @@ import { emptyRows, applyFilter, getComparator } from "../utils";
 export default function RequestPurchasePage({
     allRequestData,
     triggerRefresh,
-    statusCode,
+    statusCodes,
     categoryCode,
 }) {
     const [page, setPage] = useState(0);
@@ -31,7 +31,7 @@ export default function RequestPurchasePage({
 
     const [filterName, setFilterName] = useState('');
 
-    const requestData = allRequestData.filter((request) => ((request.status === statusCode) && (request.requestCategory === categoryCode)));
+    const requestData = allRequestData.filter((request) => ((statusCodes.includes(request.status)) && (request.requestCategory === categoryCode)));
 
     const handleSort = (event, id) => {
         const isAsc = orderBy === id && order === 'asc';
@@ -99,7 +99,7 @@ export default function RequestPurchasePage({
 
     let tableHeader = [];
 
-    if (statusCode === 1) {
+    if (statusCodes.includes(1)) {
         tableHeader = [
             { id: 'itemDescription', label: 'Item Description'},
             { id: 'itemCatalog', label: 'Catalog Number'},
@@ -107,24 +107,41 @@ export default function RequestPurchasePage({
             { id: 'purpose', label: 'Purpose'},
             { id: 'requestAmount', label: 'Requested Amount'},
             { id: 'pricePerUnit', label: 'Unit Price'},
-            { id: 'requestBy', label: 'Request By'},
+            { id: 'requestBy', label: 'Requested By'},
             { id: 'requestDate', label: 'Request Date'},
             { id: 'actionButton', label: ''},
         ];
-    } else if (statusCode === 2) {
+    } else if (statusCodes.includes(2)) {
         tableHeader = [
             { id: 'itemDescription', label: 'Item Description'},
             { id: 'itemCatalog', label: 'Catalog Number'},
-            { id: 'project', label: 'Project'},
             { id: 'purpose', label: 'Purpose'},
             { id: 'requestAmount', label: 'Requested Amount'},
-            { id: 'fulfilledAmount', label: 'Fulfilled Amount'},
-            { id: 'pricePerUnit', label: 'Unit Price'},
-            { id: 'requestBy', label: 'Request By'},
-            { id: 'doneBy', label: 'Fulfilled By'},
+            { id: 'fulfilledAmount', label: 'Ordered Amount'},
+            { id: 'receivedAmount', label: 'Received Amount'},
+            { id: 'requestBy', label: 'Requested By'},
+            { id: 'doneBy', label: 'Ordered By'},
+            { id: 'receivedBy', label: 'Received By'},
             { id: 'requestDate', label: 'Request Date'},
-            { id: 'fulfilledDate', label: 'Fulfilled Date'},
+            { id: 'fulfilledDate', label: 'Ordered Date'},
+            { id: 'receivedDate', label: 'Partially Received Date'},
+            { id: 'orderStatus', label: 'Order Status'},
             { id: 'actionButton', label: ''},
+        ];
+    } else {
+        tableHeader = [
+            { id: 'itemDescription', label: 'Item Description'},
+            { id: 'itemCatalog', label: 'Catalog Number'},
+            { id: 'purpose', label: 'Purpose'},
+            { id: 'requestAmount', label: 'Requested Amount'},
+            { id: 'fulfilledAmount', label: 'Ordered Amount'},
+            { id: 'receivedAmount', label: 'Received Amount'},
+            { id: 'requestBy', label: 'Requested By'},
+            { id: 'doneBy', label: 'Ordered By'},
+            { id: 'receivedBy', label: 'Received By'},
+            { id: 'requestDate', label: 'Request Date'},
+            { id: 'fulfilledDate', label: 'Ordered Date'},
+            { id: 'receivedDate', label: 'Received Date'},
         ];
     }
 
@@ -156,7 +173,7 @@ export default function RequestPurchasePage({
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((row) => (
                                         <RequestTableRow
-                                            statusCode={statusCode} 
+                                            status={row.status} 
                                             key={row.requestId}
                                             selected={selected.indexOf(row.requestId) !== -1}
                                             requestId={row.requestId}
@@ -180,11 +197,14 @@ export default function RequestPurchasePage({
                                             }
                                             requestAmount={row.requestAmount}
                                             fulfilledAmount={row.fulfilledAmount}
+                                            receivedAmount={row.receivedAmount}
                                             pricePerUnit={row.pricePerUnit}
                                             requestBy={row.requestBy}
                                             doneBy={row.doneBy}
+                                            receivedBy={row.receivedBy}
                                             requestDate={dateParser(row.requestDate)}
                                             fulfilledDate={dateParser(row.fulfilledDate)}
+                                            receivedDate={dateParser(row.receivedDate)}
                                             handleClick={(event) => handleClick(event, row.requestId)}
                                             triggerRefresh={triggerRefresh}
                                         />
@@ -217,6 +237,6 @@ export default function RequestPurchasePage({
 RequestPurchasePage.propTypes = {
     allRequestData: PropTypes.array.isRequired,
     triggerRefresh: PropTypes.func.isRequired,
-    statusCode: PropTypes.number.isRequired,
+    statusCodes: PropTypes.array.isRequired,
     categoryCode: PropTypes.number.isRequired,
 }

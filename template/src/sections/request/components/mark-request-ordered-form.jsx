@@ -23,15 +23,32 @@ export default function MarkRequestOrderedForm({
     
     const [fulfilledAmount, setFulfilledAmount] = useState(requestAmount);
 
+    const [fulfilledAmountError, setFulfilledAmountError] = useState(false);
+
+    const [fulfilledAmountErrorMessage, setFulfilledAmountErrorMessage] = useState("");
+
     const [doneBy, setDoneBy] = useState('');
 
     const handleFulfilledAmountChange = (event) => {
+        const inputValue = event.target.value;
+        if (inputValue <= 0) {
+            setFulfilledAmountError(true);
+            setFulfilledAmountErrorMessage("Ordered amount must be positive");
+        } else if (inputValue !== requestAmount) {
+            setFulfilledAmountError(false);
+            setFulfilledAmountErrorMessage("Please double-check that a different amount will be ordered");
+        } else {
+            setFulfilledAmountError(false);
+            setFulfilledAmountErrorMessage("");
+        }
         setFulfilledAmount(event.target.value);
     };
 
     const handleDoneByChange = (event) => {
         setDoneBy(event.target.value);
     };
+
+    const isFormValid = () => (fulfilledAmount > 0 && doneBy !== '');
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -108,11 +125,14 @@ export default function MarkRequestOrderedForm({
                         </Box>
 
                         <Box style={{padding: '10px 0 0 0'}}>
-                            <TextField 
+                            <TextField
+                                required 
                                 label='Fulfilled amount'
                                 type='number'
                                 value={fulfilledAmount}
                                 onChange={handleFulfilledAmountChange}
+                                error={fulfilledAmountError}
+                                helperText={fulfilledAmountErrorMessage}
                             />
                         </Box>
 
@@ -126,7 +146,8 @@ export default function MarkRequestOrderedForm({
                         </Box>
 
                         <Box style={{padding: '10px 0 0 0'}}>
-                            <TextField 
+                            <TextField
+                                required 
                                 label='Fulfilled by'
                                 type='text'
                                 value={doneBy}
@@ -139,6 +160,7 @@ export default function MarkRequestOrderedForm({
                                 variant="contained" 
                                 onClick={handleSubmit} 
                                 style={{margin: '0 0 0 0'}}
+                                disabled={!isFormValid()}
                             >
                                 Mark Ordered
                             </Button>

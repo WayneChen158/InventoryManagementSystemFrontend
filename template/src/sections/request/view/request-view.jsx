@@ -154,16 +154,17 @@ export default function RequestPage() {
                 <TabContext value={tabValue}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <TabList onChange={handleTabChange} aria-label="tabs">
-                            <Tab label="New Purchase Request" value="new-purchase" sx={{ minWidth: '120px' }}/>
-                            <Tab label="Ongoing Purchase Request" value="ongoing-purchase" sx={{ minWidth: '120px' }}/>
-                            <Tab label="New Internal Request" value="new-internal" sx={{ minWidth: '120px' }}/>
-                            <Tab label="Fulfilled Internal Request" value="fulfilled-internal" sx={{ minWidth: '120px' }}/>
+                            <Tab label="New Purchase" value="new-purchase" sx={{ minWidth: '120px' }}/>
+                            <Tab label="Ongoing Purchase" value="ongoing-purchase" sx={{ minWidth: '120px' }}/>
+                            <Tab label="Completed Purchase" value="complete-purchase" sx={{ minWidth: '120px' }}/>
+                            <Tab label="New Internal" value="new-internal" sx={{ minWidth: '120px' }}/>
+                            <Tab label="Fulfilled Internal" value="fulfilled-internal" sx={{ minWidth: '120px' }}/>
                         </TabList>
                     </Box>
                     <TabPanel value="new-purchase">
                         <RequestPurchasePage 
                             allRequestData={requestData}
-                            statusCode={1}
+                            statusCodes={[1]}
                             categoryCode={1} 
                             triggerRefresh={triggerRefresh}
                         />
@@ -171,7 +172,16 @@ export default function RequestPage() {
                     <TabPanel value="ongoing-purchase">
                         <RequestPurchasePage 
                             allRequestData={requestData}
-                            statusCode={2}
+                            statusCodes={[2, 3]}
+                            categoryCode={1} 
+                            triggerRefresh={triggerRefresh}
+                        />
+                    </TabPanel>
+                    {/* Partially and fully received puchase requests */}
+                    <TabPanel value="complete-purchase">
+                        <RequestPurchasePage 
+                            allRequestData={requestData}
+                            statusCodes={[4]}
                             categoryCode={1} 
                             triggerRefresh={triggerRefresh}
                         />
