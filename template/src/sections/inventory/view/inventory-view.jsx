@@ -37,6 +37,14 @@ export default function InventoryPage() {
 
   const [filterName, setFilterName] = useState('');
 
+  const [filterCatalog, setFilterCatalog] = useState('');
+
+  const [filterManufacturer, setFilterManufacturer] = useState('');
+
+  const [filterOwner, setFilterOwner] = useState('');
+
+  const [filterItemType, setFilterItemType] = useState([]);
+
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const [inventoryData, setInventoryData] = useState([]);
@@ -118,10 +126,48 @@ export default function InventoryPage() {
     setFilterName(event.target.value);
   };
 
+  const handleFilterByCatalog = (event) => {
+    setPage(0);
+    setFilterCatalog(event.target.value);
+  };
+
+  const handleFilterByManufacturer = (event) => {
+    setPage(0);
+    setFilterManufacturer(event.target.value);
+  };
+
+  const handleFilterByOwner = (event) => {
+    setPage(0);
+    setFilterOwner(event.target.value);
+  };
+
+  const handleFilterByItemType = (types) => {
+    setPage(0);
+    if (types === undefined) {
+      setFilterItemType([]);
+      return;
+    }
+    const selectedTypeCodes = [];
+    if (types.includes("Chemical")) {
+      selectedTypeCodes.push(1);
+    }
+    if (types.includes("Oligo")) {
+      selectedTypeCodes.push(2);
+    }
+    if (types.includes("Re-sale Item")) {
+      selectedTypeCodes.push(3);
+    }
+    setFilterItemType(selectedTypeCodes);
+  };
+
   const dataFiltered = applyFilter({
     inputData: inventoryData,
     comparator: getComparator(order, orderBy),
     filterName,
+    filterCatalog,
+    filterManufacturer,
+    filterOwner,
+    filterItemType,
   });
 
   const notFound = !dataFiltered.length && !!filterName;
@@ -131,7 +177,6 @@ export default function InventoryPage() {
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">Inventory</Typography>
 
-        {/* {button onClick need to be implemented} */}
         <Button 
           variant="contained" 
           startIcon={<Iconify icon="eva:plus-fill" />}
@@ -158,6 +203,13 @@ export default function InventoryPage() {
           numSelected={selected.length}
           filterName={filterName}
           onFilterName={handleFilterByName}
+          filterCatalog={filterCatalog}
+          onFilterCatalog={handleFilterByCatalog}
+          filterManufacturer={filterManufacturer}
+          onFilterManufacturer={handleFilterByManufacturer}
+          filterOwner={filterOwner}
+          onFilterOwner={handleFilterByOwner}
+          onFilterItemType={handleFilterByItemType}
         />
 
         <Scrollbar>
