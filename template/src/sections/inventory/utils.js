@@ -52,7 +52,14 @@ export function getComparator(order, orderBy) {
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-export function applyFilter({ inputData, comparator, filterName }) {
+export function applyFilter({ 
+  inputData, 
+  comparator, 
+  filterName,
+  filterCatalog,
+  filterManufacturer,
+  filterOwner,
+  filterItemType }) {
   if (inputData === null) {
     return null
   }
@@ -71,6 +78,28 @@ export function applyFilter({ inputData, comparator, filterName }) {
     inputData = inputData.filter(
       (item) => item.description.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
+  }
+
+  if (filterCatalog) {
+    inputData = inputData.filter(
+      (item) => item.catalogNumber.toLowerCase().indexOf(filterCatalog.toLowerCase()) !== -1
+    );
+  }
+
+  if (filterManufacturer) {
+    inputData = inputData.filter(
+      (item) => item.manufacturer.toLowerCase().indexOf(filterManufacturer.toLowerCase()) !== -1
+    );
+  }
+
+  if (filterOwner) {
+    inputData = inputData.filter(
+      (item) => item.owner.toLowerCase().indexOf(filterOwner.toLowerCase()) !== -1
+    );
+  }
+
+  if (filterItemType !== undefined && filterItemType.length !== 0) {
+    inputData = inputData.filter(item => filterItemType.includes(item.groupName));
   }
 
   return inputData;

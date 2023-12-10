@@ -16,23 +16,27 @@ import FilterCheckBox from './components/Checkmark';
 
 //  lowStock, onLowStockChange, selectedFilters, onSelectedFiltersChange 
 export default function UserTableToolbar({ 
-  numSelected, filterName, onFilterName
+  numSelected, 
+  filterName, 
+  onFilterName,
+  filterCatalog,
+  onFilterCatalog,
+  filterManufacturer,
+  onFilterManufacturer,
+  filterOwner,
+  onFilterOwner,
+  onFilterItemType,
 }) {
 
-  const [selectedLocation, setSelectedLocation] = useState([]);
-  const [selectedType, setSelectedType] = useState([]);
-  const [selectedOwner, setSelectedOwner] = useState([]);
+  const itemTypeOptions = ["Chemical", "Oligo", "Re-sale Item"];
+  
+  const [selectedItemType, setSelectedItemType] = useState([]);
 
-  const handleLocationChange = (selectedOptions) => {
-    setSelectedLocation(selectedOptions);
-  };
-
-  const handleTypeChange = (selectedOptions) => {
-    setSelectedType(selectedOptions);
-  };
-
-  const handleOwnerChange = (selectedOptions) => {
-    setSelectedOwner(selectedOptions);
+  const handleItemTypeChange = (selectedTypes) => {
+    setSelectedItemType(selectedTypes);
+    if (onFilterItemType !== undefined) {
+      onFilterItemType(selectedTypes);
+    }
   };
 
   return (
@@ -57,7 +61,55 @@ export default function UserTableToolbar({
         <OutlinedInput
           value={filterName}
           onChange={onFilterName}
-          placeholder="Search item..."
+          placeholder="Search name..."
+          startAdornment={
+            <InputAdornment position="start">
+              <Iconify
+                icon="eva:search-fill"
+                sx={{ color: 'text.disabled', width: 20, height: 20 }}
+              />
+            </InputAdornment>
+          }
+        />
+      )}
+
+      {numSelected === 0 && (
+        <OutlinedInput 
+          value={filterCatalog}
+          onChange={onFilterCatalog}
+          placeholder="Search catalog..."
+          startAdornment={
+            <InputAdornment position="start">
+              <Iconify
+                icon="eva:search-fill"
+                sx={{ color: 'text.disabled', width: 20, height: 20 }}
+              />
+            </InputAdornment>
+          }
+        />
+      )}
+
+      {numSelected === 0 && (
+        <OutlinedInput 
+          value={filterManufacturer}
+          onChange={onFilterManufacturer}
+          placeholder="Search vendor..."
+          startAdornment={
+            <InputAdornment position="start">
+              <Iconify
+                icon="eva:search-fill"
+                sx={{ color: 'text.disabled', width: 20, height: 20 }}
+              />
+            </InputAdornment>
+          }
+        />
+      )}
+
+      {numSelected === 0 && (
+        <OutlinedInput 
+          value={filterOwner}
+          onChange={onFilterOwner}
+          placeholder="Search owner..."
           startAdornment={
             <InputAdornment position="start">
               <Iconify
@@ -71,28 +123,10 @@ export default function UserTableToolbar({
 
       {numSelected === 0 &&
           <FilterCheckBox
-          label="Location"
-          options={['Location 1', 'Location 2', 'Location 3']}
-          selected={selectedLocation}
-          onSelectionChange={handleLocationChange}
-        />
-        }
-
-      {numSelected === 0 &&
-          <FilterCheckBox
-          label="Type"
-          options={['Type 1', 'type 2', 'Type 3']}
-          selected={selectedType}
-          onSelectionChange={handleTypeChange}
-        />
-        }
-
-      {numSelected === 0 &&
-          <FilterCheckBox
-          label="Owner"
-          options={['Owner 1', 'Owner 2', 'Owner 3']}
-          selected={selectedOwner}
-          onSelectionChange={handleOwnerChange}
+          label="Item type"
+          options={itemTypeOptions}
+          selected={selectedItemType}
+          onSelectionChange={handleItemTypeChange}
         />
         }
 
@@ -117,4 +151,11 @@ UserTableToolbar.propTypes = {
   numSelected: PropTypes.number,
   filterName: PropTypes.string,
   onFilterName: PropTypes.func,
+  filterCatalog: PropTypes.string,
+  onFilterCatalog: PropTypes.func,
+  filterManufacturer: PropTypes.string,
+  onFilterManufacturer: PropTypes.func,
+  filterOwner: PropTypes.string,
+  onFilterOwner: PropTypes.func,
+  onFilterItemType: PropTypes.func,
 };
