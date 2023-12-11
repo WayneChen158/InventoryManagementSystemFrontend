@@ -29,7 +29,7 @@ export default function RecipeTableRow ({ row, isSubmitted, onAddSubComponent })
   
     const handleClick = () => {
         if (row.type === 'component') {
-            onAddSubComponent(row.id, row.itemName, row.vol);
+            onAddSubComponent(row.id, row.itemName, row.vol / row.volPerRxn);
         } else {
             console.log("Raw material request sent");
             console.log(row);
