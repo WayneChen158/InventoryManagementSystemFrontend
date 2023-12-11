@@ -390,7 +390,7 @@ export default function NewTaskForm({ handleCloseModal, handleRefreshData }) {
                                 <TableCell>Component Name</TableCell>
                                 <TableCell>Lot Number</TableCell>
                                 <TableCell>Manufacture Date</TableCell>
-                                <TableCell>Amount In Stock</TableCell>
+                                <TableCell>Amount In Stock (tubes)</TableCell>
                                 <TableCell>Actions</TableCell>
                             </TableRow>
                         </TableHead>
