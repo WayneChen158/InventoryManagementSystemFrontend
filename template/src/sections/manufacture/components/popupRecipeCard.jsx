@@ -9,8 +9,13 @@ export default function ExportDefaultToolbar({ data }) {
 
   const columns = [
     { field: 'itemName', headerName: 'Item Name', width: 300 },
-    { field: 'amountPerRxn', headerName: 'amountPerRxn', width: 150 },
-    { field: 'totalVol', headerName: 'totalVol', width: 150 },
+    { field: 'amountPerRxn', headerName: 'Amount Per Reaction', width: 150 },
+    { 
+      field: 'totalVol', 
+      headerName: 'Total Volume', 
+      width: 150,
+      valueFormatter: (params) => params.value != null ? Number(params.value).toFixed(2) : ''
+    },
   ];
 
   return (
