@@ -5,9 +5,11 @@ import {  Box, Card, Stack,  Modal, Button, TextField, Typography } from '@mui/m
 
 import { config } from '../../../config';
 
-export default function ScaleCheckBox({ handleCloseCheckModal, scale, manufactureRecordId, handleOperation }) {
+export default function ScaleCheckBox({ handleCloseCheckModal, name, scale, unit, lotNumber, manufactureRecordId, handleOperation }) {
+    const initialScale = unit === 'tube(s)' ? scale / 100 : scale;
+    const [updateScale, setUpdateScale] = useState(initialScale);
 
-    const [updateScale, setUpdateScale] = useState(scale);
+    const [updateLotNumber, setUpdateLotNumber] = useState(lotNumber);
 
     const [open, setOpen] = useState(false);
 
@@ -25,8 +27,13 @@ export default function ScaleCheckBox({ handleCloseCheckModal, scale, manufactur
         }
     };
 
+    const handleLotNumberChange = ({ target: { value } }) => {
+        // Ensure the input is a positive integer
+        setUpdateLotNumber(value);
+    };
+
     const handleSubmit = () => {
-        fetch(`http://${config.server_host}:${config.server_port}/api/manufacture/${manufactureRecordId}?updateScale=${updateScale}`, {
+        fetch(`http://${config.server_host}:${config.server_port}/api/manufacture/${manufactureRecordId}?updateScale=${updateScale}&updateLotNumber=${updateLotNumber}`, {
             method: 'PUT',
         }).then((response) => {
         if (!response.ok) {
@@ -45,22 +52,59 @@ export default function ScaleCheckBox({ handleCloseCheckModal, scale, manufactur
     return (
         <Card style={{ display: 'flex', justifyContent: 'center', width: '100%', height: '100%'}}>
             <Stack>
-            <Typography component="h2" sx={{ fontWeight: 'bold',fontSize: '25px' , padding: '10px 0 20px 0',}}>
-                Check your final Scale
+            <Typography component="h2" sx={{ fontWeight: 'bold',fontSize: '25px' , padding: '10px 0 10px 0',}}>
+                Check {name} final Scale
             </Typography>
                 <Box style={{padding: '10px 0 20px 0'}}>
-                    <TextField
-                        required
-                        label="Scale (tubes/kits)"
-                        type="number"
-                        value={updateScale}
-                        onChange={handleScaleChange}
-                    />
+                    <Stack direction="row" alignItems="center" spacing={2}>
+                        <Typography variant="subtitle1">Manufacture Scale: </Typography>
+                        <Typography variant="subtitle1" style={{ fontWeight: 'bold', fontSize: 'larger' }}> {scale} </Typography>
+                        <Typography variant="subtitle1">
+                            {unit === 'kit(s)' ? 'kit(s)' : 'tests'}
+                        </Typography>
+                    </Stack>
+                </Box>
+                <Box style={{padding: '10px 0 20px 0'}}>
+                    <Stack direction="row" alignItems="center" spacing={2}>
+                        <Typography variant="subtitle1">Production Yield: </Typography>
+                        <TextField
+                            required
+                            label="Scale"
+                            type="number"
+                            value={updateScale}
+                            onChange={handleScaleChange}
+                        />
+                        <Typography variant="subtitle1">{unit}</Typography>
+                    </Stack>
+                </Box>
+                <Box style={{padding: '10px 0 5px 0'}}>
+                    <Stack direction="row" alignItems="center" spacing={2}>
+                        <Typography variant="subtitle1">Lot Number: </Typography>
+                        <TextField
+                            required
+                            label="Lot Number"
+                            type="text"
+                            value={updateLotNumber}
+                            onChange={handleLotNumberChange}
+                        />
+                    </Stack>
                 </Box>
                 <Box>
-                    <Button onClick={handleOpen}>Confirm</Button>
+                    <Button 
+                        variant="contained" 
+                        onClick={handleOpen}
+                        style={{ margin: '10px 20px 0 0' }}
+                    >
+                        Confirm
+                    </Button>
 
-                    <Button onClick={handleCloseCheckModal}>Cancel</Button>
+                    <Button 
+                        variant="contained" 
+                        onClick={handleCloseCheckModal}
+                        style={{ margin: '10px 20px 0 10px' }}
+                    >
+                        Cancel
+                    </Button>
                 </Box>
                 <Modal
                     open={open}
@@ -77,9 +121,20 @@ export default function ScaleCheckBox({ handleCloseCheckModal, scale, manufactur
                         alignItems: 'center', 
                         justifyContent: 'center'
                     }}>
-                        <Typography component='h5'>
-                            Are you sure you have manufactured {updateScale} tubes/kits in stock?
-                        </Typography>
+                        <Box>
+                            <Typography component='h5' variant='h6' gutterBottom>
+                                Confirm Manufacturing Details
+                            </Typography>
+                            <Typography variant='body2' gutterBottom>
+                                Name: {name}
+                            </Typography>
+                            <Typography variant='body2' gutterBottom>
+                                Quantity: {updateScale} {unit} in stock?
+                            </Typography>
+                            <Typography variant='body2'>
+                                Lot Number: {lotNumber}
+                            </Typography>
+                        </Box>
                         <Button onClick={handleSubmit}>YES!</Button>
                         <Button onClick={handleClose}>NO</Button>
                     </Card>
@@ -91,7 +146,10 @@ export default function ScaleCheckBox({ handleCloseCheckModal, scale, manufactur
 
 ScaleCheckBox.propTypes = {
   handleCloseCheckModal: PropTypes.func.isRequired,
+  name: PropTypes.any,
   scale: PropTypes.number.isRequired,
+  unit: PropTypes.any,
+  lotNumber: PropTypes.any,
   manufactureRecordId: PropTypes.number.isRequired,
   handleOperation: PropTypes.any,
 };

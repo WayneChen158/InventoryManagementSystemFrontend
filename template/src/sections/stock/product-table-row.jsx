@@ -21,6 +21,7 @@ export default function ProductTableRow({
   date,
   lotNumber,
   amountInStock,
+  unit,
   handleClick,
 }) {
   const [open, setOpen] = useState(null);
@@ -56,7 +57,7 @@ export default function ProductTableRow({
 
         {/* <TableCell align="center">{location}</TableCell> */}
 
-        <TableCell align="center">{amountInStock}</TableCell>
+        <TableCell align="center">{amountInStock} {unit}</TableCell>
 
         {/* <TableCell>
           <Label color={LowInStock === 'Low' ? 'error' : 'info'}>{LowInStock}</Label>
@@ -101,5 +102,6 @@ ProductTableRow.propTypes = {
   date: PropTypes.any,
   lotNumber: PropTypes.any,
   amountInStock: PropTypes.any,
+  unit: PropTypes.any,
   selected: PropTypes.any,
 };

@@ -61,7 +61,7 @@ export default function ConsumableTableRow({
 
         <TableCell align="center">{location}</TableCell>
 
-        <TableCell align="center">{amountInStock}</TableCell>
+        <TableCell align="center">{amountInStock} {}</TableCell>
 
         <TableCell>
           <Label color={LowInStock === 'Low' ? 'error' : 'info'}>{LowInStock}</Label>

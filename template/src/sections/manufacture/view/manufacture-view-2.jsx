@@ -45,6 +45,7 @@ export default function ManufacturePageTwo({triggerFetch, refreshData}) {
       })
       .then((resdata) => {
         setManufacturingList(resdata);
+        console.log(resdata);
       })
       .catch((error) => {
         console.error('There was a problem with the fetch operation:', error);
