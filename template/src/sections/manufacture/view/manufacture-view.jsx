@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
@@ -12,10 +12,13 @@ import TabContext from '@mui/lab/TabContext';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
+import { getRequestsURL } from 'src/utils/url-provider';
+
 import Iconify from 'src/components/iconify';
 
+import RequestInternalPage from 'src/sections/request/view/request-view-internal';
+
 import NewTaskForm from '../components/NewTaskForm';
-import ManufacturePageOne from './manufacture-view-1';
 import ManufacturePageTwo from './manufacture-view-2';
 import ManufacturePageThree from './manufacture-view-3';
 
@@ -24,12 +27,11 @@ import ManufacturePageThree from './manufacture-view-3';
 export default function ManufacturePage() {
   const [value, setValue] = useState('1');
 
-  const [triggerFetch, setTriggerFetch] = useState(0);
+  const [refreshTrigger, setRefreshTrigger] = useState(1);
 
-  const refreshData = () => {
-    console.log(`triggered from ${triggerFetch}`)
-    setTriggerFetch(prev => prev + 1); // Toggle the state to trigger useEffect
-  };
+  const [requestData, setRequestData] = useState([]);
+
+  const requestsURL = useRef(getRequestsURL());
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -43,13 +45,26 @@ export default function ManufacturePage() {
   const handleCloseModal = () => {
     setOpenModal(false);
   };
+
+  const triggerRefresh = () => {
+    setRefreshTrigger(prev => prev * (-1));
+  }
+
+  useEffect(() => {
+    fetch(requestsURL.current)
+    .then(res => res.json())
+    .then(data => {
+        console.log("Request Fetch Invoked!");
+        console.log(data);
+        setRequestData(data);
+    })
+  }, [refreshTrigger]);
   
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">Manufacture</Typography>
 
-        {/* {button onClick need to be implemented} */}
         <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenModal}>
           New Task
         </Button> 
@@ -62,7 +77,7 @@ export default function ManufacturePage() {
             <Box style={{ display: 'flex', margin: 'auto', justifyContent: 'center', width: '70%', height: '100%'}}>
               <NewTaskForm 
                 handleCloseModal={handleCloseModal}
-                handleRefreshData={refreshData}
+                handleRefreshData={triggerRefresh}
               />
             </Box>
           </Modal>
@@ -77,8 +92,15 @@ export default function ManufacturePage() {
               <Tab label="Done" value="3" sx={{ minWidth: '120px' }}/>
             </TabList>
           </Box>
-          <TabPanel value="1"><ManufacturePageOne /></TabPanel>
-          <TabPanel value="2"><ManufacturePageTwo triggerFetch={triggerFetch} refreshData={refreshData}/></TabPanel>
+          <TabPanel value="1">
+            <RequestInternalPage 
+              allRequestData={requestData}
+              statusCode={1}
+              categoryCode={2} 
+              triggerRefresh={triggerRefresh}
+            />
+          </TabPanel>
+          <TabPanel value="2"><ManufacturePageTwo triggerFetch={refreshTrigger} refreshData={triggerRefresh}/></TabPanel>
           <TabPanel value="3"><ManufacturePageThree /></TabPanel>
         </TabContext>
       </Box>
