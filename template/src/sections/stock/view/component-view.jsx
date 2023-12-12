@@ -129,6 +129,7 @@ export default function ComponentPage({ componentList }) {
                         date={row.manufactureDate}
                         lotNumber={row.lotNumber}
                         amountInStock={row.amountInStock}
+                        unit = {row.unit}
                         selected={selected.indexOf(row.id) !== -1}
                         handleClick={(event) => handleClick(event, row.id)}
                       />

@@ -155,6 +155,9 @@ export default function UserTableRow({
             <ScaleCheckBox 
               handleCloseCheckModal={handleCloseCheckModal}
               scale={record && record.scale}
+              name = {record && record.componentName}
+              unit = {record && record.yieldUnit}
+              lotNumber={record.componentRecord ? record.componentRecord.lotNumber : record.productRecord.lotNumber}
               manufactureRecordId = {record.manufactureRecordId}
               handleOperation={handleOperation}
             />

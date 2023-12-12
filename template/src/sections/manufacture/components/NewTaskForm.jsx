@@ -340,7 +340,7 @@ export default function NewTaskForm({ handleCloseModal, handleRefreshData }) {
                 
                     <Box style={{padding: '10px 0 0 0'}}>
                         <TextField
-                            label="Scale"
+                            label={type === 'product' ? "Scale (kits)" : "Scale (tests)"}
                             type="number"
                             value={scale}
                             onChange={handleScaleChange}
