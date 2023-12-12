@@ -151,7 +151,7 @@ export default function UserTableRow({
           container={document.getElementById('root')}
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
-          <Box style={{ display: 'flex', margin: 'auto', justifyContent: 'center', width: '50%', height: '40%'}}>
+          <Box style={{ display: 'flex', margin: 'auto', justifyContent: 'center', width: '50%', height: '50%'}}>
             <ScaleCheckBox 
               handleCloseCheckModal={handleCloseCheckModal}
               scale={record && record.scale}
