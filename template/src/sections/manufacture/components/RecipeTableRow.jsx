@@ -29,7 +29,7 @@ export default function RecipeTableRow ({ row, isSubmitted, onAddSubComponent })
   
     const handleClick = () => {
         if (row.type === 'component') {
-            onAddSubComponent(row.id, row.itemName, row.vol);
+            onAddSubComponent(row.id, row.itemName, row.vol / row.volPerRxn);
         } else {
             console.log("Raw material request sent");
             console.log(row);
@@ -54,12 +54,12 @@ export default function RecipeTableRow ({ row, isSubmitted, onAddSubComponent })
     <>
     <TableRow>
         <TableCell>{row.itemName}</TableCell>
-        <TableCell>{row.volPerRxn}</TableCell>
-        <TableCell>{row.vol}</TableCell>
-        <TableCell>
+        <TableCell align="center">{row.volPerRxn}</TableCell>
+        <TableCell align="center">{row.vol != null ? Number(row.vol).toFixed(2) : ''}</TableCell>
+        <TableCell align="center">
             <Label color={row.hasEnoughInStock ? 'success' : 'error'}>{row.hasEnoughInStock ? 'YES' : 'NO'}</Label>
         </TableCell>
-        <TableCell>
+        <TableCell align="center">
             {/* Conditional rendering of button */}
             {(!row.hasEnoughInStock) && (
                 <Button 

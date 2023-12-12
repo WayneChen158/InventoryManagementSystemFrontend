@@ -105,7 +105,7 @@ export default function AddComponentForm ({
             </Typography>
             <TextField
                 fullWidth
-                label="Scale"
+                label="Scale (tests)"
                 type="number"
                 value={scale}
                 onChange={handleScaleChange}
@@ -122,10 +122,10 @@ export default function AddComponentForm ({
                         <TableHead>
                             <TableRow>
                                 <TableCell>Item Name</TableCell>
-                                <TableCell>Vol Per Rxn</TableCell>
-                                <TableCell>Required Amount</TableCell>
-                                <TableCell>Amount In Stock</TableCell>
-                                <TableCell>Actions</TableCell>
+                                <TableCell align="center">vol/(tests for i-component) Per Rxn</TableCell>
+                                <TableCell align="center">Required Amount</TableCell>
+                                <TableCell align="center">Amount In Stock</TableCell>
+                                <TableCell align="center">Actions</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>

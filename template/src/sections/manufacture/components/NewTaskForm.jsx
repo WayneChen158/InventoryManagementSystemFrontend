@@ -367,10 +367,10 @@ export default function NewTaskForm({ handleCloseModal, handleRefreshData }) {
                         <TableHead>
                             <TableRow>
                                 <TableCell>{type === 'component' ? 'Item Name' : 'Component Name'}</TableCell>
-                                <TableCell>Vol Per Rxn</TableCell>
-                                <TableCell>Required Amount</TableCell>
-                                <TableCell>Amount In Stock</TableCell>
-                                <TableCell>Actions</TableCell>
+                                <TableCell>Vol/Rxn (ul)</TableCell>
+                                <TableCell>Required Amount (ul)</TableCell>
+                                <TableCell>Enough In Stock</TableCell>
+                                <TableCell>Action</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -390,7 +390,7 @@ export default function NewTaskForm({ handleCloseModal, handleRefreshData }) {
                                 <TableCell>Component Name</TableCell>
                                 <TableCell>Lot Number</TableCell>
                                 <TableCell>Manufacture Date</TableCell>
-                                <TableCell>Amount In Stock</TableCell>
+                                <TableCell>Amount In Stock (tubes)</TableCell>
                                 <TableCell>Actions</TableCell>
                             </TableRow>
                         </TableHead>
@@ -400,7 +400,7 @@ export default function NewTaskForm({ handleCloseModal, handleRefreshData }) {
                                     key={row.componentId}
                                     row={row}
                                     onAddSubComponent={handleAddComponentClick}
-                                    scale={scale}
+                                    scale={scale*100}
                                     isSubmitted={submittedComponents.has(row.componentId)}
                                 />
                             ))}
