@@ -109,7 +109,9 @@ export default function UserTableRow({
             container={document.getElementById('root')}
           >
             <Box style={{ display: 'flex', margin: 'auto', justifyContent: 'center', width: '60%', height: '100%'}}>
-              <RecipeCard data={record.recordDetails} />
+              <RecipeCard 
+                data={record.recordDetails}
+              />
             </Box>
           </Modal>
         </TableCell>
@@ -129,7 +131,7 @@ export default function UserTableRow({
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
         <MenuItem onClick={handleOpenCheckModal} sx={{ color: 'success.main' }}>
-          <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
+          <Iconify icon="ph:check-bold" sx={{ mr: 2 }} />
           Done
         </MenuItem>
 

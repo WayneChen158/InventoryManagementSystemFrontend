@@ -77,8 +77,6 @@ export default function StockPage() {
     fetch(consumablesURL.current)
     .then(res => res.json())
     .then(data => {
-      console.log("Consumables Fetch Invoked!")
-      console.log(data)
       setInventoryData(data)
     })
   }, [refreshTrigger]);

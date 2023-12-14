@@ -34,6 +34,9 @@ export function cancelManufactureTaskURL() {
   return `http://${config.server_host}:${config.server_port}/api/manufacture/cancel`
 }
 
+export function updateRecipeRowURL() {
+  return `http://${config.server_host}:${config.server_port}/api/manufacture/update`
+}
 
 // ============================ Stock Page ============================
 
