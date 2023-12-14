@@ -132,7 +132,7 @@ export default function ScaleCheckBox({ handleCloseCheckModal, name, scale, unit
                                 Quantity: {updateScale} {unit} in stock?
                             </Typography>
                             <Typography variant='body2'>
-                                Lot Number: {lotNumber}
+                                Lot Number: {updateLotNumber}
                             </Typography>
                         </Box>
                         <Button onClick={handleSubmit}>YES!</Button>

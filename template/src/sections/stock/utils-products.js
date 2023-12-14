@@ -72,9 +72,11 @@ export function applyFilter({ inputData, comparator, filterName }) {
       const searchString = filterName.toLowerCase();
       const productName = item.productName ? item.productName.toLowerCase().includes(searchString) : false;
       const catalogNumber = item.catalogNumber ? item.catalogNumber.toLowerCase().includes(searchString) : false;
+      const componentName = item.componentName ? item.componentName.toLowerCase().includes(searchString) : false;
+      const componentCatalog = item.componentCatalog ? item.componentCatalog.toLowerCase().includes(searchString) : false;
       const lotNumber = item.lotNumber ? item.lotNumber.toLowerCase().includes(searchString) : false;
   
-      return productName || lotNumber || catalogNumber;
+      return productName || lotNumber || catalogNumber || componentName || componentCatalog;
     });
   }
   
