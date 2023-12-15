@@ -70,6 +70,10 @@ export function deleteRequestURL() {
   return `http://${config.server_host}:${config.server_port}/api/requests/delete`;
 }
 
+export function updateRequestURL() {
+  return `http://${config.server_host}:${config.server_port}/api/requests/update`;
+}
+
 export function markOrderedRequestURL() {
   return `http://${config.server_host}:${config.server_port}/api/requests/mark-ordered`;
 }
