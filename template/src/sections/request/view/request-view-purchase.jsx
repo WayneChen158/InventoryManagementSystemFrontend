@@ -196,8 +196,8 @@ export default function RequestPurchasePage({
                                                   })()
                                             }
                                             requestAmount={row.requestAmount}
-                                            fulfilledAmount={row.fulfilledAmount}
-                                            receivedAmount={row.receivedAmount}
+                                            fulfilledAmount={row.fulfilledAmount === null ? 0 : row.fulfilledAmount}
+                                            receivedAmount={row.receivedAmount === null ? 0 : row.receivedAmount}
                                             pricePerUnit={row.pricePerUnit}
                                             requestBy={row.requestBy}
                                             doneBy={row.doneBy}
