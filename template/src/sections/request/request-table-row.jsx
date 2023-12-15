@@ -9,6 +9,7 @@ import { config } from 'src/config';
 
 import Iconify from 'src/components/iconify';
 
+import UpdateRequestForm from './components/update-request-form';
 import MarkRequestOrderedForm from './components/mark-request-ordered-form';
 import MarkRequestReceivedForm from './components/mark-request-received-form';
 
@@ -36,6 +37,8 @@ export default function RequestTableRow({
 }) {
     const [open, setOpen] = useState(null);
 
+    const [openUpdateRequestForm, setOpenUpdateRequestForm] = useState(false);
+
     const [openMarkOrderedForm, setOpenMarkOrderedForm] = useState(false);
 
     const [openMarkReceivedForm, setOpenMarkReceivedForm] = useState(false);
@@ -51,6 +54,14 @@ export default function RequestTableRow({
     const handleCloseMenu = () => {
         setOpen(null);
     };
+
+    const handleOpenUpdateRequestModal = () => {
+        setOpenUpdateRequestForm(true);
+    }
+
+    const handleCloseUpdateRequestModal = () => {
+        setOpenUpdateRequestForm(false);
+    }
 
     const handleOpenMarkOrderedModal = () => {
         setOpenMarkOrderedForm(true);
@@ -113,6 +124,14 @@ export default function RequestTableRow({
         handleCloseMenu();
 
         handleOpenMarkReceivedModal();
+    }
+
+    const handleUpdateRequest = () => {
+        console.log(`Request to update: ${requestId}`);
+
+        handleCloseMenu();
+
+        handleOpenUpdateRequestModal();
     }
 
     return(
@@ -207,6 +226,13 @@ export default function RequestTableRow({
                 }}
                 container={document.getElementById('root')}
             >
+                {status !== 4 && (
+                    <MenuItem onClick={handleUpdateRequest}>
+                        <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
+                        Update Request
+                    </MenuItem>
+                )}
+                
                 {status === 1 && (
                     <MenuItem onClick={handleMarkRequestOrdered}>
                         <Iconify icon="eva:shopping-cart-outline" sx={{ mr: 2 }} />
@@ -264,6 +290,20 @@ export default function RequestTableRow({
                         requestBy={requestBy}
                         doneBy={doneBy}
                         handleCloseModal={handleCloseMarkReceivedModal}
+                        triggerRefresh={triggerRefresh}
+                    />
+                </Box>
+            </Modal>
+
+            <Modal
+                open={openUpdateRequestForm}
+                onClose={handleCloseUpdateRequestModal}
+                container={document.getElementById('root')}
+            >
+                <Box style={{ display: 'flex', margin: 'auto', justifyContent: 'center', width: '70%', height: '100%'}}>
+                    <UpdateRequestForm 
+                        requestId={requestId}
+                        handleCloseModal={handleCloseUpdateRequestModal}
                         triggerRefresh={triggerRefresh}
                     />
                 </Box>
