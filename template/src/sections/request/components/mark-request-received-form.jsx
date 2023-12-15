@@ -131,6 +131,7 @@ export default function MarkRequestReceivedForm({
                                 value={itemDescription}
                                 InputProps={{ readOnly: true }}
                                 multiline
+                                disabled
                             />
                         </Box>
 
@@ -140,6 +141,7 @@ export default function MarkRequestReceivedForm({
                                 type='text'
                                 value={itemCatalog}
                                 InputProps={{ readOnly: true }}
+                                disabled
                             />
                         </Box>
 
@@ -149,6 +151,7 @@ export default function MarkRequestReceivedForm({
                                 type='number'
                                 value={orderedAmount}
                                 InputProps={{ readOnly: true }}
+                                disabled
                             />
                         </Box>
 
@@ -159,6 +162,7 @@ export default function MarkRequestReceivedForm({
                                     type='number'
                                     value={prevReceivedAmount}
                                     InputProps={{ readOnly: true }}
+                                    disabled
                                 />
                             </Box>
                         )}
@@ -186,6 +190,7 @@ export default function MarkRequestReceivedForm({
                                     type='number'
                                     value={orderedAmount - prevReceivedAmount}
                                     InputProps={{ readOnly: true }}
+                                    disabled
                                 />
                             </Box>
                         )}
@@ -210,6 +215,7 @@ export default function MarkRequestReceivedForm({
                                 type='text'
                                 value={requestBy}
                                 InputProps={{ readOnly: true }}
+                                disabled
                             />
                         </Box>
 

@@ -159,6 +159,8 @@ export default function RequestTableRow({
                 
                 <TableCell align="center">{purpose}</TableCell>
 
+                <TableCell align="center">{pricePerUnit}</TableCell>
+
                 <TableCell align="center">{requestAmount}</TableCell>
 
                 {status !== 1 && (
@@ -169,10 +171,6 @@ export default function RequestTableRow({
                     <TableCell align="center">
                         {status === 2 ? (0) : (receivedAmount)}
                     </TableCell>
-                )}
-
-                {status === 1 && (
-                    <TableCell align="center">{pricePerUnit}</TableCell>
                 )}
 
                 <TableCell align="center">{requestBy}</TableCell>
@@ -266,6 +264,7 @@ export default function RequestTableRow({
                         targetRequestId={requestId}
                         itemDescription={itemDescription}
                         itemCatalog={itemCatalog}
+                        unitPrice={pricePerUnit}
                         requestAmount={requestAmount}
                         requestBy={requestBy}
                         handleCloseModal={handleCloseMarkOrderedModal}

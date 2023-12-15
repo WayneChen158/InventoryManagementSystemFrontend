@@ -3,7 +3,7 @@ import { useRef, useState, useEffect } from 'react';
 
 import { Box, Card, Grid, Stack, Select, Button, MenuItem, TextField, InputLabel, FormControl } from '@mui/material';
 
-import { getRequestsURL } from 'src/utils/url-provider';
+import { getRequestsURL, updateRequestURL } from 'src/utils/url-provider';
 
 import { config } from 'src/config';
 
@@ -13,6 +13,8 @@ export default function UpdateRequestForm({
     triggerRefresh,
 }) {
     const requestsURL = useRef(getRequestsURL());
+
+    const updateURL = useRef(updateRequestURL());
 
     const [targetRequestFetched, setTargetRequestFetched] = useState(false);
     
@@ -30,6 +32,8 @@ export default function UpdateRequestForm({
 
     const [requestAmount, setRequestAmount] = useState(0);
 
+    const [fulfilledAmount, setFulfilledAmount] = useState(0);
+
     const [pricePerUnit, setPricePerUnit] = useState(0);
 
     const handleItemURLChange = (e) => {
@@ -46,6 +50,10 @@ export default function UpdateRequestForm({
 
     const handleRequestAmountChange = (e) => {
         setRequestAmount(e.target.value);
+    };
+
+    const handleFulfilledAmountChange = (e) => {
+        setFulfilledAmount(e.target.value);
     };
 
     const handlePricePerUnitChange = (e) => {
@@ -67,13 +75,41 @@ export default function UpdateRequestForm({
                 setPurpose(request.purpose);
                 setProject(request.project);
                 setRequestAmount(request.requestAmount);
+                setFulfilledAmount(request.fulfilledAmount === null ? 0 : request.fulfilledAmount);
                 setPricePerUnit(request.pricePerUnit);
             }
         })
     }, [requestId]);
 
-    const handleUpdateRequest = () => {
+    const handleUpdateRequest = (e) => {
+        e.preventDefault();
+        
         handleCloseModal();
+
+        const formData = {
+            requestId,
+            itemURL,
+            purpose,
+            project,
+            requestAmount,
+            fulfilledAmount,
+            pricePerUnit,
+        }
+        console.log(`Update request ID ${requestId} as follows`);
+        console.log(formData);
+
+        fetch(updateURL.current, {
+            method: 'PATCH',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(formData),
+        })
+        .then((response) => {
+            if (response.ok) {
+                console.log(`Request ID ${requestId} was successfully updated`);
+            } else {
+                console.log(`Failed to update request ID ${requestId}...`);
+            }
+        });
 
         if (triggerRefresh !== undefined) {
             setTimeout(() => {
@@ -97,6 +133,7 @@ export default function UpdateRequestForm({
                                 type='text'
                                 value={itemDescription}
                                 InputProps={{ readOnly: true }}
+                                disabled
                             />
                         </Box>
 
@@ -106,6 +143,7 @@ export default function UpdateRequestForm({
                                 type='text'
                                 value={itemCatalog}
                                 InputProps={{ readOnly: true }}
+                                disabled
                             />
                         </Box>
 
@@ -158,10 +196,34 @@ export default function UpdateRequestForm({
                         {status !== 1 && (
                             <Box style={{padding: '10px 0 0 0'}}>
                                 <TextField 
-                                    label="Amount in stock"
+                                    label="Request amount"
                                     type='number'
                                     value={requestAmount}
                                     InputProps={{ readOnly: true }}
+                                    disabled
+                                />
+                            </Box>
+                        )}
+
+                        {status === 2 && (
+                            <Box style={{padding: '10px 0 0 0'}}>
+                                <TextField 
+                                    label="Ordered amount"
+                                    type='number'
+                                    value={fulfilledAmount}
+                                    onChange={handleFulfilledAmountChange}
+                                />
+                            </Box>
+                        )}
+
+                        {status === 3 && (
+                            <Box style={{padding: '10px 0 0 0'}}>
+                                <TextField 
+                                    label="Ordered amount"
+                                    type='number'
+                                    value={fulfilledAmount}
+                                    InputProps={{ readOnly: true }}
+                                    disabled
                                 />
                             </Box>
                         )}

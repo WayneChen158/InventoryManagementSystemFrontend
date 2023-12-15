@@ -13,6 +13,7 @@ export default function MarkRequestOrderedForm({
     targetRequestId,
     itemDescription,
     itemCatalog,
+    unitPrice,
     requestAmount,
     requestBy,
     handleCloseModal,
@@ -28,6 +29,8 @@ export default function MarkRequestOrderedForm({
     const [fulfilledAmountErrorMessage, setFulfilledAmountErrorMessage] = useState("");
 
     const [doneBy, setDoneBy] = useState('');
+
+    const [pricePerUnit, setPricePerUnit] = useState(unitPrice);
 
     const handleFulfilledAmountChange = (event) => {
         const inputValue = event.target.value;
@@ -48,6 +51,10 @@ export default function MarkRequestOrderedForm({
         setDoneBy(event.target.value);
     };
 
+    const handlePricePerUnitChange = (event) => {
+        setPricePerUnit(event.target.value);
+    }
+
     const isFormValid = () => (fulfilledAmount > 0 && doneBy !== '');
 
     const handleSubmit = (event) => {
@@ -59,6 +66,7 @@ export default function MarkRequestOrderedForm({
         const formData = {
             requestId,
             fulfilledAmount,
+            pricePerUnit,
             doneBy,
             fulfilledDate,
         };
@@ -103,6 +111,7 @@ export default function MarkRequestOrderedForm({
                                 value={itemDescription}
                                 InputProps={{ readOnly: true }}
                                 multiline
+                                disabled
                             />
                         </Box>
 
@@ -112,6 +121,7 @@ export default function MarkRequestOrderedForm({
                                 type='text'
                                 value={itemCatalog}
                                 InputProps={{ readOnly: true }}
+                                disabled
                             />
                         </Box>
 
@@ -121,6 +131,7 @@ export default function MarkRequestOrderedForm({
                                 type='text'
                                 value={requestAmount}
                                 InputProps={{ readOnly: true }}
+                                disabled
                             />
                         </Box>
 
@@ -137,11 +148,21 @@ export default function MarkRequestOrderedForm({
                         </Box>
 
                         <Box style={{padding: '10px 0 0 0'}}>
+                            <TextField
+                                label='Unit price'
+                                type='number'
+                                value={pricePerUnit}
+                                onChange={handlePricePerUnitChange}
+                            />
+                        </Box>
+
+                        <Box style={{padding: '10px 0 0 0'}}>
                             <TextField 
                                 label='Requested by'
                                 type='text'
                                 value={requestBy}
                                 InputProps={{ readOnly: true }}
+                                disabled
                             />
                         </Box>
 
@@ -176,6 +197,7 @@ MarkRequestOrderedForm.propTypes = {
     targetRequestId: PropTypes.number.isRequired,
     itemDescription: PropTypes.string,
     itemCatalog: PropTypes.string,
+    unitPrice: PropTypes.number,
     requestAmount: PropTypes.number,
     requestBy: PropTypes.string,
     handleCloseModal: PropTypes.func.isRequired,
