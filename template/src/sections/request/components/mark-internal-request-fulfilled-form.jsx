@@ -73,7 +73,7 @@ export default function MarkInternalRequestFulfilledForm({
     return (
         <Grid container spacing={0.5} justifyContent="center">
             <Grid item xs={6}>
-                <Card style={{ display: 'flex', justifyContent: 'center', width: '100%', height: '100%' }}>
+                <Card style={{ display: 'flex', justifyContent: 'center', width: '100%', height: '95vh', overflow: 'auto', margin: "20px auto" }}>
                     <Stack>
                         <Box>
                             <h2>Mark a Request as Ordered</h2>

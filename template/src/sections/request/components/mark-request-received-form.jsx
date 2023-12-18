@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useRef, useState } from 'react';
 
-import { Box, Card, Grid, Stack, Select, Button, MenuItem, TextField, InputLabel, FormControl } from '@mui/material';
+import { Box, Card, Grid, Stack, Select, Button, MenuItem, TextField, InputLabel, FormControl, InputAdornment } from '@mui/material';
 
 import { markReceivedRequestURL } from 'src/utils/url-provider';
 
@@ -14,9 +14,12 @@ export default function MarkRequestReceivedForm({
     requestStatus,
     itemDescription,
     itemCatalog,
+    vendor,
     orderedAmount,
     prevReceivedAmount,
+    unit,
     requestBy,
+    comment,
     handleCloseModal,
     triggerRefresh,
 }) {
@@ -118,7 +121,7 @@ export default function MarkRequestReceivedForm({
     return (
         <Grid container spacing={0.5} justifyContent="center">
             <Grid item xs={6}>
-                <Card style={{ display: 'flex', justifyContent: 'center', width: '100%', height: '100%' }}>
+                <Card style={{ display: 'flex', justifyContent: 'center', width: '100%', height: '95vh', overflow: 'auto', margin: "20px auto" }}>
                     <Stack>
                         <Box>
                             <h2>Mark a Request as Received</h2>
@@ -147,10 +150,23 @@ export default function MarkRequestReceivedForm({
 
                         <Box style={{padding: '10px 0 0 0'}}>
                             <TextField 
+                                label='Vendor'
+                                type='text'
+                                value={vendor}
+                                InputProps={{ readOnly: true }}
+                                disabled
+                            />
+                        </Box>
+
+                        <Box style={{padding: '10px 0 0 0'}}>
+                            <TextField 
                                 label='Ordered amount'
                                 type='number'
                                 value={orderedAmount}
-                                InputProps={{ readOnly: true }}
+                                InputProps={{ 
+                                    readOnly: true,
+                                    endAdornment: <InputAdornment position="end">{unit}</InputAdornment>,  
+                                }}
                                 disabled
                             />
                         </Box>
@@ -161,7 +177,10 @@ export default function MarkRequestReceivedForm({
                                     label='Previously received amount'
                                     type='number'
                                     value={prevReceivedAmount}
-                                    InputProps={{ readOnly: true }}
+                                    InputProps={{ 
+                                        readOnly: true,
+                                        endAdornment: <InputAdornment position="end">{unit}</InputAdornment>,
+                                    }}
                                     disabled
                                 />
                             </Box>
@@ -189,7 +208,10 @@ export default function MarkRequestReceivedForm({
                                     label='Received amount'
                                     type='number'
                                     value={orderedAmount - prevReceivedAmount}
-                                    InputProps={{ readOnly: true }}
+                                    InputProps={{ 
+                                        readOnly: true,
+                                        endAdornment: <InputAdornment position="end">{unit}</InputAdornment>,  
+                                    }}
                                     disabled
                                 />
                             </Box>
@@ -205,6 +227,9 @@ export default function MarkRequestReceivedForm({
                                     onChange={handleReceivedAmountChange}
                                     error={receivedAmountError}
                                     helperText={receivedAmountErrorMessage}
+                                    InputProps={{
+                                        endAdornment: <InputAdornment position="end">{unit}</InputAdornment>, 
+                                    }}
                                 />
                             </Box>
                         )}
@@ -251,9 +276,12 @@ MarkRequestReceivedForm.propTypes = {
     requestStatus: PropTypes.number.isRequired,
     itemDescription: PropTypes.string,
     itemCatalog: PropTypes.string,
+    vendor: PropTypes.string,
     orderedAmount: PropTypes.number.isRequired,
     prevReceivedAmount: PropTypes.number.isRequired,
+    unit: PropTypes.string,
     requestBy: PropTypes.string,
+    comment: PropTypes.string,
     handleCloseModal: PropTypes.func.isRequired,
     triggerRefresh: PropTypes.func,
 }

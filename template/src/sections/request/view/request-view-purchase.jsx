@@ -101,20 +101,25 @@ export default function RequestPurchasePage({
 
     if (statusCodes.includes(1)) {
         tableHeader = [
+            { id: 'actionButton', label: 'Action'},
             { id: 'itemDescription', label: 'Item Description'},
             { id: 'itemCatalog', label: 'Catalog Number'},
+            { id: 'vendor', label: 'Vendor'},
             { id: 'project', label: 'Project'},
             { id: 'purpose', label: 'Purpose'},
             { id: 'pricePerUnit', label: 'Unit Price'},
             { id: 'requestAmount', label: 'Requested Amount'},
             { id: 'requestBy', label: 'Requested By'},
             { id: 'requestDate', label: 'Request Date'},
-            { id: 'actionButton', label: ''},
+            { id: 'comment', label: 'Comment'},
         ];
     } else if (statusCodes.includes(2)) {
         tableHeader = [
+            { id: 'actionButton', label: 'Action'},
             { id: 'itemDescription', label: 'Item Description'},
             { id: 'itemCatalog', label: 'Catalog Number'},
+            { id: 'vendor', label: 'Vendor'},
+            { id: 'orderNumber', label: 'PO Number'},
             { id: 'purpose', label: 'Purpose'},
             { id: 'pricePerUnit', label: 'Unit Price'},
             { id: 'requestAmount', label: 'Requested Amount'},
@@ -127,12 +132,14 @@ export default function RequestPurchasePage({
             { id: 'fulfilledDate', label: 'Ordered Date'},
             { id: 'receivedDate', label: 'Partially Received Date'},
             { id: 'orderStatus', label: 'Order Status'},
-            { id: 'actionButton', label: ''},
+            { id: 'comment', label: 'Comment'},
         ];
     } else {
         tableHeader = [
             { id: 'itemDescription', label: 'Item Description'},
             { id: 'itemCatalog', label: 'Catalog Number'},
+            { id: 'vendor', label: 'Vendor'},
+            { id: 'orderNumber', label: 'PO Number'},
             { id: 'purpose', label: 'Purpose'},
             { id: 'pricePerUnit', label: 'Unit Price'},
             { id: 'requestAmount', label: 'Requested Amount'},
@@ -144,6 +151,7 @@ export default function RequestPurchasePage({
             { id: 'requestDate', label: 'Request Date'},
             { id: 'fulfilledDate', label: 'Ordered Date'},
             { id: 'receivedDate', label: 'Received Date'},
+            { id: 'comment', label: 'Comment'},
         ];
     }
 
@@ -181,6 +189,8 @@ export default function RequestPurchasePage({
                                             requestId={row.requestId}
                                             itemDescription={row.itemDescription}
                                             itemCatalog={row.itemCatalog}
+                                            vendor={row.vendor}
+                                            orderNumber={row.orderNumber}
                                             itemURL={row.itemURL}
                                             project={row.project}
                                             purpose={
@@ -200,6 +210,7 @@ export default function RequestPurchasePage({
                                             requestAmount={row.requestAmount}
                                             fulfilledAmount={row.fulfilledAmount === null ? 0 : row.fulfilledAmount}
                                             receivedAmount={row.receivedAmount === null ? 0 : row.receivedAmount}
+                                            unit={(row.unit === undefined || row.unit === '') ? 'EA' : row.unit}
                                             pricePerUnit={row.pricePerUnit}
                                             requestBy={row.requestBy}
                                             doneBy={row.doneBy}
@@ -207,6 +218,7 @@ export default function RequestPurchasePage({
                                             requestDate={dateParser(row.requestDate)}
                                             fulfilledDate={dateParser(row.fulfilledDate)}
                                             receivedDate={dateParser(row.receivedDate)}
+                                            comment={(row.comment === '') ? 'None' : row.comment}
                                             handleClick={(event) => handleClick(event, row.requestId)}
                                             triggerRefresh={triggerRefresh}
                                         />
