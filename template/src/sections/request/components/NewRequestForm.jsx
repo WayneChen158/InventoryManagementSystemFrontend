@@ -26,6 +26,8 @@ export default function NewRequestForm({
 
     const [catalogNumber, setCatalogNumber] = useState(candidateItemCatalog === undefined ? '' : candidateItemCatalog);
 
+    const [vendor, setVendor] = useState('');
+
     const [itemURL, setItemURL] = useState('');
 
     const [requestPurpose, setRequestPurpose] = useState(1);
@@ -38,9 +40,13 @@ export default function NewRequestForm({
 
     const [requestAmountMessage, setRequestAmountMessage] = useState("");
 
+    const [unit, setUnit] = useState('');
+
     const [pricePerUnit, setPricePerUnit] = useState(0.0);
 
     const [requestBy, setRequestBy] = useState('');
+
+    const [comment, setComment] = useState('');
 
     const [requestCategory, setRequestCategory] = useState((formType === undefined) || (formType === 'purchase') ? '1' : '2');
 
@@ -68,6 +74,10 @@ export default function NewRequestForm({
     
     const handleCatalogNumberChange = (event) => {
         setCatalogNumber(event.target.value);
+    };
+
+    const handleVendorChange = (e) => {
+        setVendor(e.target.value);
     };
 
     const handleItemURLChange = (event) => {
@@ -106,6 +116,10 @@ export default function NewRequestForm({
         setRequestAmount(event.target.value);
     };
 
+    const handleUnitChange = (e) => {
+        setUnit(e.target.value);
+    };
+
     const handlePricePerUnitChange = (event) => {
         setPricePerUnit(event.target.value);
     };
@@ -114,14 +128,22 @@ export default function NewRequestForm({
         setRequestBy(event.target.value);
     };
 
+    const handleCommentChange = (e) => {
+        setComment(e.target.value);
+    }
+
     const handleRequestCategoryChange = (event) => {
         setRequestCategory(event.target.value);
         setItemDescription('');
+        setVendor('');
         setCatalogNumber('');
         setItemURL('');
         setRequestPurpose(1);
         setProject('');
         setRequestAmount(0);
+        setUnit('');
+        setPricePerUnit(0);
+        setComment('');
         setMaterialId(null);
         setComponentRecordId(null);
         setProductRecordId(null);
@@ -177,30 +199,50 @@ export default function NewRequestForm({
         if (selectedItem) {
             if ('materialId' in selectedItem) {
                 setMaterialId(selectedItem.materialId);
-                if (selectedItem.catalogNumber !== null) {
+                if (selectedItem.manufacturer !== undefined) {
+                    setVendor(selectedItem.manufacturer);
+                }
+                if (selectedItem.catalogNumber !== undefined) {
                     setCatalogNumber(selectedItem.catalogNumber);
                 }
-                if (selectedItem.website !== null) {
+                if (selectedItem.website !== undefined) {
                     setItemURL(selectedItem.website);
                 }
-                if (selectedItem.threshold !== null) {
+                if (selectedItem.threshold !== undefined) {
                     setRequestAmount(selectedItem.threshold);
+                }
+                if (selectedItem.unit !== undefined) {
+                    setUnit(selectedItem.unit);
                 }
             } else if ('componentId' in selectedItem) {
                 setMadeInternalItemSelection(true);
                 setCatalogNumber(selectedItem.componentCatalog);
                 const componentRecordOptions = getInternalRecordOptions(selectedItem);
                 setInternalRecordOptions(componentRecordOptions);
+                if (selectedItem.unit !== undefined) {
+                    setUnit(selectedItem.unit);
+                } else {
+                    setUnit('EA');
+                }
             } else if ('productId' in selectedItem) {
                 setMadeInternalItemSelection(true);
                 setCatalogNumber(selectedItem.productCatalog);
                 const productRecordOptions = getInternalRecordOptions(selectedItem);
                 setInternalRecordOptions(productRecordOptions);
+                if (selectedItem.unit !== undefined) {
+                    setUnit(selectedItem.unit);
+                } else {
+                    setUnit('EA');
+                }
             }
         } else {
+            setVendor('');
             setCatalogNumber('');
             setItemURL('');
             setRequestAmount(0);
+            setUnit('');
+            setPricePerUnit(0);
+            setComment('');
             setMadeInternalItemSelection(false);
             setInternalRecordOptions([]);
             setInternalLotNumber("");
@@ -254,15 +296,18 @@ export default function NewRequestForm({
 
         const requestData = {
             itemDescription,
+            vendor,
             catalogNumber,
             itemURL,
             requestCategory,
             project,
             purpose,
             requestAmount,
+            unit,
             pricePerUnit,
             requestBy,
             requestDate,
+            comment,
             materialId,
             componentRecordId,
             productRecordId,
@@ -296,7 +341,7 @@ export default function NewRequestForm({
     return(
         <Grid container spacing={0.5} justifyContent="center">
             <Grid item xs={6}>
-                <Card style={{ display: 'flex', justifyContent: 'center', width: '100%', height: '100%' }}>
+                <Card style={{ display: 'flex', justifyContent: 'center', width: '100%', height: '95vh', overflow: 'auto', margin: "20px auto" }}>
                     <Stack>
                         <Box>
                             <h2>Add a New Request</h2>
@@ -362,6 +407,18 @@ export default function NewRequestForm({
                                 <TextField {...params} label="Item name" variant="outlined" fullWidth required />
                                 )}
                             />
+                        )}
+
+                        {requestCategory === '1' && (
+                            <Box style={{padding: '10px 0 0 0'}}>
+                                <TextField
+                                    required 
+                                    label='Vendor'
+                                    type='text'
+                                    value={vendor}
+                                    onChange={handleVendorChange}
+                                />
+                            </Box>
                         )}
     
                         <Box style={{padding: '10px 0 0 0'}}>
@@ -449,9 +506,22 @@ export default function NewRequestForm({
                                 onChange={handleRequestAmountChange}
                                 error={requestAmountError}
                                 helperText={requestAmountMessage}
+                                InputProps={{
+                                    endAdornment: <InputAdornment position="end">{unit}</InputAdornment>,
+                                }}
                             />
                         </Box>
 
+                        <Box style={{padding: '10px 0 0 0'}}>
+                            <TextField
+                                required
+                                label='Unit'
+                                type='text'
+                                value={unit}
+                                onChange={handleUnitChange}
+                            />
+                        </Box>
+                        
                         {requestCategory === '1' && (
                             <Box style={{padding: '10px 0 0 0'}}>
                                 <TextField 
@@ -477,6 +547,16 @@ export default function NewRequestForm({
                         </Box>
 
                         <Box style={{padding: '10px 0 0 0'}}>
+                            <TextField 
+                                label='Comment'
+                                type='text'
+                                value={comment}
+                                onChange={handleCommentChange}
+                                multiline
+                            />
+                        </Box>
+
+                        <Box style={{padding: '10px 0 40px 0'}}>
                             <Button 
                                 variant="contained" 
                                 onClick={handleSubmit} 

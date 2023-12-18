@@ -248,6 +248,7 @@ export default function InventoryPage() {
                       owner={row.owner}
                       location={row.location}
                       amountInStock={row.amountInStock}
+                      unit={row.unit}
                       LowInStock={row.amountInStock > row.threshold ? 'Enough' : 'Low'}
                       selected={selected.indexOf(row.materialId) !== -1}
                       handleClick={(event) => handleClick(event, row.materialId)}

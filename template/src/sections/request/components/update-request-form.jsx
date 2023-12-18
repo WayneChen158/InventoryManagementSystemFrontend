@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useRef, useState, useEffect } from 'react';
 
-import { Box, Card, Grid, Stack, Select, Button, MenuItem, TextField, InputLabel, FormControl } from '@mui/material';
+import { Box, Card, Grid, Stack, Select, Button, MenuItem, TextField, InputLabel, FormControl, InputAdornment } from '@mui/material';
 
 import { getRequestsURL, updateRequestURL } from 'src/utils/url-provider';
 
@@ -24,6 +24,8 @@ export default function UpdateRequestForm({
 
     const [itemCatalog, setItemCatalog] = useState("");
 
+    const [vendor, setVendor] = useState('');
+
     const [itemURL, setItemURL] = useState("");
 
     const [purpose, setPurpose] = useState(1);
@@ -36,6 +38,14 @@ export default function UpdateRequestForm({
 
     const [pricePerUnit, setPricePerUnit] = useState(0);
 
+    const [unit, setUnit] = useState('');
+
+    const [comment, setComment] = useState('');
+
+    const handleVendorChange = (e) => {
+        setVendor(e.target.value);
+    };
+    
     const handleItemURLChange = (e) => {
         setItemURL(e.target.value);
     };
@@ -60,6 +70,14 @@ export default function UpdateRequestForm({
         setPricePerUnit(e.target.value);
     };
 
+    const handleUnitChange = (e) => {
+        setUnit(e.target.value);
+    };
+
+    const handleCommentChange = (e) => {
+        setComment(e.target.value);
+    };
+
     useEffect(() => {
         fetch(`${requestsURL.current}/${requestId}`)
         .then(res => res.json())
@@ -71,12 +89,15 @@ export default function UpdateRequestForm({
                 setStatus(request.status);
                 setItemDescription(request.itemDescription);
                 setItemCatalog(request.itemCatalog);
+                setVendor(request.vendor);
                 setItemURL(request.itemURL);
                 setPurpose(request.purpose);
                 setProject(request.project);
                 setRequestAmount(request.requestAmount);
                 setFulfilledAmount(request.fulfilledAmount === null ? 0 : request.fulfilledAmount);
                 setPricePerUnit(request.pricePerUnit);
+                setUnit(request.unit);
+                setComment(request.comment);
             }
         })
     }, [requestId]);
@@ -88,12 +109,15 @@ export default function UpdateRequestForm({
 
         const formData = {
             requestId,
+            vendor,
             itemURL,
             purpose,
             project,
             requestAmount,
             fulfilledAmount,
             pricePerUnit,
+            unit,
+            comment,
         }
         console.log(`Update request ID ${requestId} as follows`);
         console.log(formData);
@@ -149,6 +173,15 @@ export default function UpdateRequestForm({
 
                         <Box style={{padding: '10px 0 0 0'}}>
                             <TextField
+                                label="Vendor"
+                                type='text'
+                                value={vendor}
+                                onChange={handleVendorChange}
+                            />
+                        </Box>
+
+                        <Box style={{padding: '10px 0 0 0'}}>
+                            <TextField
                                 label="Item URL"
                                 type='text'
                                 value={itemURL}
@@ -189,6 +222,9 @@ export default function UpdateRequestForm({
                                     type='number'
                                     value={requestAmount}
                                     onChange={handleRequestAmountChange}
+                                    InputProps={{
+                                        endAdornment: <InputAdornment position="end">{unit}</InputAdornment>,
+                                    }}
                                 />
                             </Box>
                         )}
@@ -234,6 +270,28 @@ export default function UpdateRequestForm({
                                 type='number'
                                 value={pricePerUnit}
                                 onChange={handlePricePerUnitChange}
+                                InputProps={{
+                                    startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                                }}
+                            />
+                        </Box>
+
+                        <Box style={{padding: '10px 0 0 0'}}>
+                            <TextField 
+                                label="Unit"
+                                type='text'
+                                value={unit}
+                                onChange={handleUnitChange}
+                            />
+                        </Box>
+
+                        <Box style={{padding: '10px 0 0 0'}}>
+                            <TextField 
+                                label="Comment"
+                                type='text'
+                                value={comment}
+                                onChange={handleCommentChange}
+                                multiline
                             />
                         </Box>
 

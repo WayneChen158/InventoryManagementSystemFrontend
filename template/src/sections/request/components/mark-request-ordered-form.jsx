@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useRef, useState } from 'react';
 
-import { Box, Card, Grid, Stack, Button, TextField } from '@mui/material';
+import { Box, Card, Grid, Stack, Button, TextField, InputAdornment } from '@mui/material';
 
 import { markOrderedRequestURL } from 'src/utils/url-provider';
 
@@ -15,6 +15,7 @@ export default function MarkRequestOrderedForm({
     itemCatalog,
     unitPrice,
     requestAmount,
+    unit,
     requestBy,
     handleCloseModal,
     triggerRefresh,
@@ -28,12 +29,14 @@ export default function MarkRequestOrderedForm({
 
     const [fulfilledAmountErrorMessage, setFulfilledAmountErrorMessage] = useState("");
 
+    const [orderNumber, setOrderNumber] = useState("");
+
     const [doneBy, setDoneBy] = useState('');
 
     const [pricePerUnit, setPricePerUnit] = useState(unitPrice);
 
     const handleFulfilledAmountChange = (event) => {
-        const inputValue = event.target.value;
+        const inputValue = parseFloat(event.target.value);
         if (inputValue <= 0) {
             setFulfilledAmountError(true);
             setFulfilledAmountErrorMessage("Ordered amount must be positive");
@@ -45,6 +48,10 @@ export default function MarkRequestOrderedForm({
             setFulfilledAmountErrorMessage("");
         }
         setFulfilledAmount(event.target.value);
+    };
+
+    const handleOrderNumberChange = (e) => {
+        setOrderNumber(e.target.value);
     };
 
     const handleDoneByChange = (event) => {
@@ -68,6 +75,7 @@ export default function MarkRequestOrderedForm({
             fulfilledAmount,
             pricePerUnit,
             doneBy,
+            orderNumber,
             fulfilledDate,
         };
         console.log('Mark ordered with following info');
@@ -98,7 +106,7 @@ export default function MarkRequestOrderedForm({
     return (
         <Grid container spacing={0.5} justifyContent="center">
             <Grid item xs={6}>
-                <Card style={{ display: 'flex', justifyContent: 'center', width: '100%', height: '100%' }}>
+                <Card style={{ display: 'flex', justifyContent: 'center', width: '100%', height: '95vh', overflow: 'auto', margin: "20px auto" }}>
                     <Stack>
                         <Box>
                             <h2>Mark a Request as Ordered</h2>
@@ -130,7 +138,10 @@ export default function MarkRequestOrderedForm({
                                 label='Requested amount'
                                 type='text'
                                 value={requestAmount}
-                                InputProps={{ readOnly: true }}
+                                InputProps={{ 
+                                    readOnly: true,
+                                    endAdornment: <InputAdornment position="end">{unit}</InputAdornment>, 
+                                }}
                                 disabled
                             />
                         </Box>
@@ -144,6 +155,9 @@ export default function MarkRequestOrderedForm({
                                 onChange={handleFulfilledAmountChange}
                                 error={fulfilledAmountError}
                                 helperText={fulfilledAmountErrorMessage}
+                                InputProps={{ 
+                                    endAdornment: <InputAdornment position="end">{unit}</InputAdornment>, 
+                                }}
                             />
                         </Box>
 
@@ -153,6 +167,9 @@ export default function MarkRequestOrderedForm({
                                 type='number'
                                 value={pricePerUnit}
                                 onChange={handlePricePerUnitChange}
+                                InputProps={{
+                                    startAdornment: <InputAdornment position='start'>$</InputAdornment>
+                                }}
                             />
                         </Box>
 
@@ -163,6 +180,15 @@ export default function MarkRequestOrderedForm({
                                 value={requestBy}
                                 InputProps={{ readOnly: true }}
                                 disabled
+                            />
+                        </Box>
+
+                        <Box style={{padding: '10px 0 0 0'}}>
+                            <TextField
+                                label='PO number'
+                                type='text'
+                                value={orderNumber}
+                                onChange={handleOrderNumberChange}
                             />
                         </Box>
 
@@ -199,6 +225,7 @@ MarkRequestOrderedForm.propTypes = {
     itemCatalog: PropTypes.string,
     unitPrice: PropTypes.number,
     requestAmount: PropTypes.number,
+    unit: PropTypes.string,
     requestBy: PropTypes.string,
     handleCloseModal: PropTypes.func.isRequired,
     triggerRefresh: PropTypes.func,

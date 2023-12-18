@@ -28,6 +28,7 @@ export default function UserTableRow({
   owner,
   location,
   amountInStock,
+  unit,
   LowInStock,
   handleClick,
   triggerRefresh,
@@ -128,7 +129,7 @@ export default function UserTableRow({
 
         <TableCell align="center">{location}</TableCell>
 
-        <TableCell align="center">{amountInStock}</TableCell>
+        <TableCell align="center">{amountInStock} {(unit === undefined || unit === "") ? "EA" : unit}</TableCell>
 
         <TableCell>
           <Label color={LowInStock === 'Low' ? 'error' : 'info'}>{LowInStock}</Label>
@@ -244,6 +245,7 @@ UserTableRow.propTypes = {
   type: PropTypes.any,
   location: PropTypes.any,
   amountInStock: PropTypes.any,
+  unit: PropTypes.string,
   LowInStock: PropTypes.any,
   selected: PropTypes.any,
   triggerRefresh: PropTypes.func,

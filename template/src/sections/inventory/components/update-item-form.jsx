@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useRef, useState, useEffect } from 'react';
 
-import { Box, Card, Grid, Stack, Select, Button, MenuItem, TextField, InputLabel, FormControl } from '@mui/material';
+import { Box, Card, Grid, Stack, Select, Button, MenuItem, TextField, InputLabel, FormControl, InputAdornment } from '@mui/material';
 
 import { getRawMaterialsURL, updateRawMaterialsURL } from 'src/utils/url-provider';
 
@@ -31,6 +31,8 @@ export default function UpdateItemForm({
     const [concentration, setConcentration] = useState('');
 
     const [amountInStock, setAmountInStock] = useState(0);
+
+    const [unit, setUnit] = useState('');
 
     const [threshold, setThreshold] = useState(0);
 
@@ -76,6 +78,10 @@ export default function UpdateItemForm({
         setAmountInStock(e.target.value);
     };
 
+    const handleUnitChange = (e) => {
+        setUnit(e.target.value);
+    }
+
     const handleThresholdChange = (e) => {
         setThreshold(e.target.value);
     };
@@ -108,6 +114,7 @@ export default function UpdateItemForm({
                 setCategory(material.category === null ? 0 : material.category);
                 setConcentration(material.concentration === null ? '' : material.concentration);
                 setAmountInStock(material.amountInStock);
+                setUnit(material.unit === null ? '' : material.unit)
                 setThreshold(material.threshold);
                 setLocation(material.location === null ? '' : material.location);
                 setOwner(material.owner === null ? '' : material.owner);
@@ -135,6 +142,7 @@ export default function UpdateItemForm({
             website,
             threshold,
             amountInStock,
+            unit,
         }
         console.log(`Update material ID ${materialId} as follows`);
         console.log(updateFormData);
@@ -208,6 +216,15 @@ export default function UpdateItemForm({
                         </Box>
 
                         <Box style={{padding: '10px 0 0 0'}}>
+                            <TextField 
+                                label="Item unit"
+                                type='text'
+                                value={unit}
+                                onChange={handleUnitChange}
+                            />
+                        </Box>
+
+                        <Box style={{padding: '10px 0 0 0'}}>
                             <FormControl 
                                 fullWidth
                             >
@@ -255,6 +272,9 @@ export default function UpdateItemForm({
                                 type='number'
                                 value={amountInStock}
                                 onChange={handleAmountInStockChange}
+                                InputProps={{
+                                    endAdornment: <InputAdornment position="end">{unit}</InputAdornment>,
+                                }}
                             />
                         </Box>
 
@@ -264,6 +284,9 @@ export default function UpdateItemForm({
                                 type='number'
                                 value={threshold}
                                 onChange={handleThresholdChange}
+                                InputProps={{
+                                    endAdornment: <InputAdornment position="end">{unit}</InputAdornment>,
+                                }}
                             />
                         </Box>
 

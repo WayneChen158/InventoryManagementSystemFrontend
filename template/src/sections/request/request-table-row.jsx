@@ -19,12 +19,15 @@ export default function RequestTableRow({
     requestId,
     itemDescription,
     itemCatalog,
+    vendor,
+    orderNumber,
     itemURL,
     project,
     purpose,
     requestAmount,
     fulfilledAmount,
     receivedAmount,
+    unit,
     pricePerUnit,
     requestBy,
     doneBy,
@@ -32,6 +35,7 @@ export default function RequestTableRow({
     requestDate,
     fulfilledDate,
     receivedDate,
+    comment,
     handleClick,
     triggerRefresh,
 }) {
@@ -141,6 +145,14 @@ export default function RequestTableRow({
                     <Checkbox disableRipple checked={selected} onChange={handleClick} />
                 </TableCell>
 
+                {status !== 4 && (
+                    <TableCell align="right">
+                        <IconButton onClick={handleOpenMenu}>
+                            <Iconify icon="eva:more-vertical-fill" />
+                        </IconButton>
+                    </TableCell>
+                )}
+
                 <TableCell component="th" scope="row" padding="none" align="center">
                     <Typography variant="subtitle2" wrap = "true" width='1/4'>
                         {(itemURL === null || itemURL === "") ? (
@@ -153,23 +165,29 @@ export default function RequestTableRow({
 
                 <TableCell align="center">{itemCatalog}</TableCell>
 
+                <TableCell align="center">{vendor}</TableCell>
+
+                {status !== 1 && (
+                    <TableCell align="center">{orderNumber}</TableCell>
+                )}
+
                 {status === 1 && (
                     <TableCell align="center">{project}</TableCell>
                 )}
                 
                 <TableCell align="center">{purpose}</TableCell>
 
-                <TableCell align="center">{pricePerUnit}</TableCell>
+                <TableCell align="center">$ {pricePerUnit}</TableCell>
 
-                <TableCell align="center">{requestAmount}</TableCell>
+                <TableCell align="center">{requestAmount} {unit}</TableCell>
 
                 {status !== 1 && (
-                    <TableCell align="center">{fulfilledAmount}</TableCell>
+                    <TableCell align="center">{fulfilledAmount} {unit}</TableCell>
                 )}
 
                 {status !== 1 && (
                     <TableCell align="center">
-                        {status === 2 ? (0) : (receivedAmount)}
+                        {status === 2 ? (`0 ${unit}`) : (`${receivedAmount} ${unit}`)}
                     </TableCell>
                 )}
 
@@ -203,13 +221,7 @@ export default function RequestTableRow({
                     </TableCell>
                 )}
 
-                {status !== 4 && (
-                    <TableCell align="right">
-                        <IconButton onClick={handleOpenMenu}>
-                            <Iconify icon="eva:more-vertical-fill" />
-                        </IconButton>
-                    </TableCell>
-                )}
+                <TableCell align="center">{comment}</TableCell>
 
             </TableRow>
 
@@ -266,6 +278,7 @@ export default function RequestTableRow({
                         itemCatalog={itemCatalog}
                         unitPrice={pricePerUnit}
                         requestAmount={requestAmount}
+                        unit={unit}
                         requestBy={requestBy}
                         handleCloseModal={handleCloseMarkOrderedModal}
                         triggerRefresh={triggerRefresh}
@@ -284,10 +297,13 @@ export default function RequestTableRow({
                         requestStatus={status}
                         itemDescription={itemDescription}
                         itemCatalog={itemCatalog}
+                        vendor={vendor}
                         orderedAmount={fulfilledAmount}
                         prevReceivedAmount={status === 2 ? 0 : receivedAmount}
+                        unit={unit}
                         requestBy={requestBy}
                         doneBy={doneBy}
+                        comment={comment}
                         handleCloseModal={handleCloseMarkReceivedModal}
                         triggerRefresh={triggerRefresh}
                     />
@@ -347,12 +363,15 @@ RequestTableRow.propTypes = {
     requestId: PropTypes.number.isRequired,
     itemDescription: PropTypes.string.isRequired,
     itemCatalog: PropTypes.any,
+    vendor: PropTypes.string,
+    orderNumber: PropTypes.string,
     itemURL: PropTypes.any,
     project: PropTypes.any,
     purpose: PropTypes.any,
     requestAmount: PropTypes.any,
     fulfilledAmount: PropTypes.any,
     receivedAmount: PropTypes.number,
+    unit: PropTypes.string,
     pricePerUnit: PropTypes.any,
     requestBy: PropTypes.any,
     doneBy: PropTypes.any,
@@ -360,6 +379,7 @@ RequestTableRow.propTypes = {
     requestDate: PropTypes.any,
     fulfilledDate: PropTypes.any,
     receivedDate: PropTypes.string,
+    comment: PropTypes.string,
     handleClick: PropTypes.func,
     triggerRefresh: PropTypes.func.isRequired,
 }
