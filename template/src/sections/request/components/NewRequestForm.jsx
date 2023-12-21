@@ -14,8 +14,10 @@ export default function NewRequestForm({
     formType,
     inventoryItems,
     candidateItemDescription,
+    candidateItemVendor,
     candidateItemCatalog,
     candidateItemAmount,
+    candidateItemUnit,
     candidateMaterialId,
     internalComponents,
     internalComponentRecords,
@@ -26,7 +28,7 @@ export default function NewRequestForm({
 
     const [catalogNumber, setCatalogNumber] = useState(candidateItemCatalog === undefined ? '' : candidateItemCatalog);
 
-    const [vendor, setVendor] = useState('');
+    const [vendor, setVendor] = useState(candidateItemVendor === undefined ? '' : candidateItemVendor);
 
     const [itemURL, setItemURL] = useState('');
 
@@ -40,7 +42,7 @@ export default function NewRequestForm({
 
     const [requestAmountMessage, setRequestAmountMessage] = useState("");
 
-    const [unit, setUnit] = useState('');
+    const [unit, setUnit] = useState(candidateItemUnit === undefined ? '' : candidateItemUnit);
 
     const [pricePerUnit, setPricePerUnit] = useState(0.0);
 
@@ -580,8 +582,10 @@ NewRequestForm.propTypes = {
     formType: PropTypes.string,
     inventoryItems: PropTypes.array,
     candidateItemDescription: PropTypes.string,
+    candidateItemVendor: PropTypes.string,
     candidateItemCatalog: PropTypes.string,
     candidateItemAmount: PropTypes.number,
+    candidateItemUnit: PropTypes.string,
     candidateMaterialId: PropTypes.number,
     internalComponents: PropTypes.array,
     internalComponentRecords: PropTypes.array,

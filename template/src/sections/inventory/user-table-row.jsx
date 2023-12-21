@@ -181,7 +181,9 @@ export default function UserTableRow({
             handleCloseModal={handleCloseRequestModal}
             inventoryItems={[]}
             candidateItemDescription={name}
+            candidateVendor={vendor}
             candidateItemCatalog={catalog}
+            candidateItemUnit={unit}
             candidateMaterialId={materialId}
           />
         </Box>

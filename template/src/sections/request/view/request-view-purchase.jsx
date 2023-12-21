@@ -31,6 +31,10 @@ export default function RequestPurchasePage({
 
     const [filterName, setFilterName] = useState('');
 
+    const [filterPO, setFilterPO] = useState('');
+
+    const [filterVendor, setFilterVendor] = useState('');
+
     const requestData = allRequestData.filter((request) => ((statusCodes.includes(request.status)) && (request.requestCategory === categoryCode)));
 
     const handleSort = (event, id) => {
@@ -83,6 +87,16 @@ export default function RequestPurchasePage({
         setFilterName(event.target.value);
     }
 
+    const handleFilterByPO = (e) => {
+        setPage(0);
+        setFilterPO(e.target.value);
+    }
+
+    const handleFilterByVendor = (e) => {
+        setPage(0);
+        setFilterVendor(e.target.value);
+    }
+
     const dateParser = (mysqlDateStr) => {
         if (mysqlDateStr === null) {
             return 'Unknown';
@@ -95,6 +109,8 @@ export default function RequestPurchasePage({
         inputData: requestData,
         comparator: getComparator(order, orderBy),
         filterName,
+        filterPO,
+        filterVendor,
     });
 
     let tableHeader = [];
@@ -164,6 +180,10 @@ export default function RequestPurchasePage({
                     numSelected={selected.length}
                     filterName={filterName}
                     onFilterName={handleFilterByName}
+                    filterPO={filterPO}
+                    onFilterPO={handleFilterByPO}
+                    filterVendor={filterVendor}
+                    onFilterVendor={handleFilterByVendor}
                 />
 
                 <Scrollbar>
@@ -187,6 +207,7 @@ export default function RequestPurchasePage({
                                             key={row.requestId}
                                             selected={selected.indexOf(row.requestId) !== -1}
                                             requestId={row.requestId}
+                                            materialId={row.materialId}
                                             itemDescription={row.itemDescription}
                                             itemCatalog={row.itemCatalog}
                                             vendor={row.vendor}

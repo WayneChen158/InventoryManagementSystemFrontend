@@ -40,7 +40,7 @@ export function getComparator(order, orderBy) {
         : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-export function applyFilter({ inputData, comparator, filterName }) {
+export function applyFilter({ inputData, comparator, filterName, filterPO, filterVendor }) {
     if (inputData === null) {
       return null
     }
@@ -57,7 +57,19 @@ export function applyFilter({ inputData, comparator, filterName }) {
   
     if (filterName) {
       inputData = inputData.filter(
-        (item) => item.itemDescription.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        (request) => request.itemDescription.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+      );
+    }
+
+    if (filterPO) {
+      inputData = inputData.filter(
+        (request) => request.orderNumber !== null && request.orderNumber.toLowerCase().indexOf(filterPO.toLowerCase()) !== -1
+      );
+    }
+
+    if (filterVendor) {
+      inputData = inputData.filter(
+        (request) => request.vendor.toLowerCase().indexOf(filterVendor.toLowerCase()) !== -1
       );
     }
   
