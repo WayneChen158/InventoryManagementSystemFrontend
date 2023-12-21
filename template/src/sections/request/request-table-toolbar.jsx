@@ -7,7 +7,11 @@ import Iconify from 'src/components/iconify';
 export default function RequestTableToolbar({
     numSelected,
     filterName,
-    onFilterName
+    onFilterName,
+    filterPO,
+    onFilterPO,
+    filterVendor,
+    onFilterVendor,
 }) {
     return (
     <Toolbar
@@ -42,6 +46,38 @@ export default function RequestTableToolbar({
             />
         )}
 
+        {numSelected === 0 && (
+            <OutlinedInput 
+                value={filterVendor}
+                onChange={onFilterVendor}
+                placeholder="Search Vendor..."
+                startAdornment={
+                    <InputAdornment position="start">
+                        <Iconify 
+                            icon="eva:search-fill"
+                            sx={{ color: 'text.disabled', width: 20, height: 20 }}
+                        />
+                    </InputAdornment>
+                }
+            />
+        )}
+
+        {numSelected === 0 && (
+            <OutlinedInput 
+                value={filterPO}
+                onChange={onFilterPO}
+                placeholder="Search PO..."
+                startAdornment={
+                    <InputAdornment position="start">
+                        <Iconify 
+                            icon="eva:search-fill"
+                            sx={{ color: 'text.disabled', width: 20, height: 20 }}
+                        />
+                    </InputAdornment>
+                }
+            />
+        )}
+
     </Toolbar>);
 }
 
@@ -49,4 +85,8 @@ RequestTableToolbar.propTypes = {
     numSelected: PropTypes.number,
     filterName: PropTypes.string,
     onFilterName: PropTypes.func,
+    filterPO: PropTypes.string,
+    onFilterPO: PropTypes.func,
+    filterVendor: PropTypes.string,
+    onFilterVendor: PropTypes.func,
 }
