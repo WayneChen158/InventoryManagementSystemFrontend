@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 import { Box, Card, Grid, Stack, Select, Button, MenuItem, TextField, InputLabel, FormControl, InputAdornment } from '@mui/material';
 
-import { markReceivedRequestURL } from 'src/utils/url-provider';
+import { getRawMaterialsURL, markReceivedRequestURL } from 'src/utils/url-provider';
 
 import { config } from 'src/config';
 
@@ -11,6 +11,7 @@ import { convertDateFormat } from '../utils';
 
 export default function MarkRequestReceivedForm({
     targetRequestId,
+    targetMaterialId,
     requestStatus,
     itemDescription,
     itemCatalog,
@@ -25,6 +26,8 @@ export default function MarkRequestReceivedForm({
 }) {
     const markReceivedURL = useRef(markReceivedRequestURL());
 
+    const rawMaterialURL = useRef(getRawMaterialsURL());
+
     // 1: fully received, 2: partially received
     const [receivingCondition, setReceivingCondition] = useState(1);
 
@@ -35,6 +38,10 @@ export default function MarkRequestReceivedForm({
     const [receivedAmountErrorMessage, setReceivedAmountErrorMessage] = useState('');
 
     const [receivedBy, setReceivedBy] = useState('');
+
+    const [inventoryUnit, setInventoryUnit] = useState('');
+
+    const [inboundFactor, setInboundFactor] = useState(1);
 
     const handelReceivingConditionChange = (event) => {
         const prevState = receivingCondition;
@@ -71,8 +78,33 @@ export default function MarkRequestReceivedForm({
         setReceivedBy(event.target.value);
     };
 
+    const handleInboundFactorChange = (e) => {
+        setInboundFactor(e.target.value);
+    };
+
     const isFormValid = () => (!receivedAmountError && receivedAmount !== 0 && receivedBy !== '');
 
+    // Fetch target raw material info
+    useEffect(() => {
+        if (targetMaterialId !== null && targetMaterialId !== undefined) {
+            fetch(`${rawMaterialURL.current}/${targetMaterialId}`)
+            .then(res => res.json())
+            .then(rawMaterial => {
+                console.log(`Fetch for raw material ${targetMaterialId} invoked!`);
+                console.log(rawMaterial);
+                if (rawMaterial) {
+                    if (rawMaterial.unit) {
+                        console.log(rawMaterial.unit);
+                        setInventoryUnit(rawMaterial.unit);
+                    } else {
+                        console.log('EA');
+                        setInventoryUnit('EA');
+                    }
+                }
+            });
+        }
+    }, [targetMaterialId]);
+    
     const handleSubmit = (event) => {
         event.preventDefault();
 
@@ -85,6 +117,8 @@ export default function MarkRequestReceivedForm({
             requestId,
             fulfilledAmount,
             receivedAmount,
+            unit,
+            inboundFactor,
             receivedBy,
             receivedDate,
             isFullyReceived,
@@ -234,6 +268,23 @@ export default function MarkRequestReceivedForm({
                             </Box>
                         )}
 
+                        {(targetMaterialId !== null && targetMaterialId !== undefined && unit !== inventoryUnit) && (
+                            <Box style={{padding: '10px 0 0 0'}}>
+                                <TextField 
+                                    required
+                                    label='Inbound convention factor'
+                                    type='number'
+                                    value={inboundFactor}
+                                    onChange={handleInboundFactorChange}
+                                    helperText={`The request unit "${unit}" is different from the inventory unit "${inventoryUnit}"`}
+                                    InputProps={{
+                                        startAdornment: <InputAdornment position='start'>{`1 ${unit} = `}</InputAdornment>,
+                                        endAdornment: <InputAdornment position='end'>{inventoryUnit}</InputAdornment>,
+                                    }}
+                                />
+                            </Box>
+                        )}
+
                         <Box style={{padding: '10px 0 0 0'}}>
                             <TextField 
                                 label='Requested by'
@@ -273,6 +324,7 @@ export default function MarkRequestReceivedForm({
 
 MarkRequestReceivedForm.propTypes = {
     targetRequestId: PropTypes.number.isRequired,
+    targetMaterialId: PropTypes.number,
     requestStatus: PropTypes.number.isRequired,
     itemDescription: PropTypes.string,
     itemCatalog: PropTypes.string,

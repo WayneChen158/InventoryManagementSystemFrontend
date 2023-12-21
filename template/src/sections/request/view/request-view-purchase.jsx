@@ -187,6 +187,7 @@ export default function RequestPurchasePage({
                                             key={row.requestId}
                                             selected={selected.indexOf(row.requestId) !== -1}
                                             requestId={row.requestId}
+                                            materialId={row.materialId}
                                             itemDescription={row.itemDescription}
                                             itemCatalog={row.itemCatalog}
                                             vendor={row.vendor}

@@ -17,6 +17,7 @@ export default function RequestTableRow({
     status,
     selected,
     requestId,
+    materialId,
     itemDescription,
     itemCatalog,
     vendor,
@@ -294,6 +295,7 @@ export default function RequestTableRow({
                 <Box style={{ display: 'flex', margin: 'auto', justifyContent: 'center', width: '70%', height: '100%'}}>
                     <MarkRequestReceivedForm 
                         targetRequestId={requestId}
+                        targetMaterialId={materialId}
                         requestStatus={status}
                         itemDescription={itemDescription}
                         itemCatalog={itemCatalog}
@@ -361,6 +363,7 @@ RequestTableRow.propTypes = {
     status: PropTypes.number.isRequired,
     selected: PropTypes.any,
     requestId: PropTypes.number.isRequired,
+    materialId: PropTypes.number,
     itemDescription: PropTypes.string.isRequired,
     itemCatalog: PropTypes.any,
     vendor: PropTypes.string,
