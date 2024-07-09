@@ -269,7 +269,7 @@ export default function InventoryPage() {
         <TablePagination
           page={page}
           component="div"
-          count={inventoryData.length}
+          count={dataFiltered.length}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
           rowsPerPageOptions={[10, 25, 50]}

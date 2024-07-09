@@ -251,8 +251,8 @@ export default function UpdateItemForm({
                                     onChange={handleCategoryChange}
                                 >
                                     <MenuItem value={0}>Not specified</MenuItem>
-                                    <MenuItem value={2}>For re-sale</MenuItem>
-                                    <MenuItem value={1}>Not for re-sale</MenuItem>
+                                    <MenuItem value={1}>For re-sale</MenuItem>
+                                    <MenuItem value={2}>Not for re-sale</MenuItem>
                                 </Select>
                             </FormControl>
                         </Box>

@@ -99,7 +99,7 @@ export function applyFilter({
   }
 
   if (filterItemType !== undefined && filterItemType.length !== 0) {
-    inputData = inputData.filter(item => filterItemType.includes(item.groupName));
+    inputData = inputData.filter(item => filterItemType.includes(item.groupName)|| (filterItemType.includes(3) && item.category === 1));
   }
 
   return inputData;
