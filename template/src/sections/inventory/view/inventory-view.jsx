@@ -1,3 +1,4 @@
+import { saveAs } from 'file-saver';
 import { useRef, useState, useEffect } from 'react';
 
 import Card from '@mui/material/Card';
@@ -11,7 +12,7 @@ import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-import { getRawMaterialsURL } from 'src/utils/url-provider';
+import { checkInventoryURL, getRawMaterialsURL } from 'src/utils/url-provider';
 
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
@@ -23,6 +24,7 @@ import TableEmptyRows from '../table-empty-rows';
 import NewItemForm from '../components/NewItemForm';
 import UserTableToolbar from '../user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
+
 
 // ----------------------------------------------------------------------
 
@@ -54,6 +56,8 @@ export default function InventoryPage() {
   const [refreshTrigger, setRefreshTrigger] = useState(1);
 
   const rawMaterialsURL = useRef(getRawMaterialsURL());
+
+  const getInventoryURL = useRef(checkInventoryURL());
   
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -83,6 +87,37 @@ export default function InventoryPage() {
       setOrder(isAsc ? 'desc' : 'asc');
       setOrderBy(id);
     }
+  };
+
+  const handleCheckInventory = () => {
+    fetch(getInventoryURL.current)
+      .then(res => res.json())
+      .then(data => {
+        generateCSV(data);
+      })
+      .catch(error => console.error('Error fetching inventory:', error));
+  };
+
+  const generateCSV = (data) => {
+    if (!data || data.length === 0) {
+      console.error('No data to save');
+      return;
+    }
+  
+    const headers = ['catalogNum', 'description', 'value'];
+    const csvRows = data.map(item => {
+      const { catalogNum, description, value } = item;
+      const sanitizedCatalogNum = catalogNum.replace(/,/g, ' ');
+      const sanitizedDescription = description.replace(/,/g, ' ');
+      const sanitizedValue = value.toString().replace(/,/g, ' '); // Ensure value is a string before replacing commas
+      return [sanitizedCatalogNum, sanitizedDescription, sanitizedValue].join(',');
+    });
+  
+    csvRows.unshift(headers.join(','));
+  
+    const csvContent = csvRows.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    saveAs(blob, 'inventory_data.csv');
   };
 
   const handleSelectAllClick = (event) => {
@@ -175,7 +210,16 @@ export default function InventoryPage() {
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4">Inventory</Typography>
+        <Box display="flex" alignItems="center">
+          <Typography variant="h4" mr={2}>Inventory</Typography>
+          <Button 
+            variant="contained" 
+            startIcon={<Iconify icon="material-symbols:search" />}
+            onClick={handleCheckInventory}
+          >
+            Check Inventory
+          </Button>
+        </Box>
 
         <Button 
           variant="contained" 
@@ -196,6 +240,7 @@ export default function InventoryPage() {
             />
           </Box>
         </Modal> 
+
       </Stack>
 
       <Card>

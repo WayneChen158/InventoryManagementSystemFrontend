@@ -18,6 +18,10 @@ export function updateRawMaterialsURL() {
   return `http://${config.server_host}:${config.server_port}/api/rawMaterials/update`;
 };
 
+export function checkInventoryURL() {
+  return `http://${config.server_host}:${config.server_port}/api/rawMaterials/gen-inventory-report`;
+};
+
 // ============================ Manufacture Page ============================
 
 // Add Component Form
