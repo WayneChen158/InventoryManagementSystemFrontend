@@ -101,3 +101,21 @@ export function getComponentsURL() {
 export function getProductsURL() {
   return `http://${config.server_host}:${config.server_port}/api/products`;
 }
+
+// =========================================== Customer Page =================================================
+
+export function getCustomersURL() {
+  return `http://${config.server_host}:${config.server_port}/api/customers`;
+}
+
+export function addCustomerURL() {
+  return `http://${config.server_host}:${config.server_port}/api/customer-create`;
+}
+
+export function updateCustomerURL() {
+  return `http://${config.server_host}:${config.server_port}/api/customer-update`;
+}
+
+export function deleteCustomerURL() {
+  return `http://${config.server_host}:${config.server_port}/api/customer-delete`;
+}

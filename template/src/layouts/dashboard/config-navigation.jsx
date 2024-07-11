@@ -13,11 +13,11 @@ const navConfig = [
   //   path: '/',
   //   icon: icon('ic_analytics'),
   // },
-  {
-    title: 'user',
-    path: '/user',
-    icon: icon('ic_user'),
-  },
+  // {
+  //   title: 'user',
+  //   path: '/user',
+  //   icon: icon('ic_user'),
+  // },
   {
     title: 'Request',
     path: '/request',
@@ -37,6 +37,16 @@ const navConfig = [
     title: 'Stock',
     path: '/stock',
     icon: icon('ic_cart'),
+  },
+  {
+    title: 'Customer',
+    path: '/customer',
+    icon: icon('ic_user'),
+  },
+  {
+    title: 'Invoice',
+    path: '/invoice',
+    icon: <Iconify icon="iconamoon:invoice" />,
   },
   // {
   //   title: 'product',
