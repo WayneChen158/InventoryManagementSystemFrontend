@@ -111,7 +111,6 @@ export default function CustomerPage() {
 
         <Button 
           variant="contained" 
-          color="inherit" 
           startIcon={<Iconify icon="eva:plus-fill" />}
           onClick={handleOpenModal}
         >

@@ -119,3 +119,12 @@ export function updateCustomerURL() {
 export function deleteCustomerURL() {
   return `http://${config.server_host}:${config.server_port}/api/customer-delete`;
 }
+
+// =========================================== Invoice Page =================================================
+export function getUnshippedInvoicesURL() {
+  return `http://${config.server_host}:${config.server_port}/api/invoices-unshipped`;
+}
+
+export function getShippedInvoicesURL() {
+  return `http://${config.server_host}:${config.server_port}/api/invoices-shipped`;
+}

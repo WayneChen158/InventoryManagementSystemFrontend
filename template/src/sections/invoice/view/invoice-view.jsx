@@ -12,15 +12,12 @@ import TabContext from '@mui/lab/TabContext';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
-import { getRequestsURL } from 'src/utils/url-provider';
-
 import Iconify from 'src/components/iconify';
 
-import RequestInternalPage from 'src/sections/request/view/request-view-internal';
 
 import NewTaskForm from '../components/NewTaskForm';
-import ManufacturePageTwo from './manufacture-view-2';
-import ManufacturePageThree from './manufacture-view-3';
+import UnshippedInvoicePage from './unshipped-invoice-view';
+import ShippedInvoicePage from './shipped-invoice-view';
 
 // ----------------------------------------------------------------------
 
@@ -28,10 +25,6 @@ export default function InvoicePage() {
   const [value, setValue] = useState('1');
 
   const [refreshTrigger, setRefreshTrigger] = useState(1);
-
-  const [requestData, setRequestData] = useState([]);
-
-  const requestsURL = useRef(getRequestsURL());
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -49,24 +42,14 @@ export default function InvoicePage() {
   const triggerRefresh = () => {
     setRefreshTrigger(prev => prev * (-1));
   }
-
-  useEffect(() => {
-    fetch(requestsURL.current)
-    .then(res => res.json())
-    .then(data => {
-        console.log("Request Fetch Invoked!");
-        console.log(data);
-        setRequestData(data);
-    })
-  }, [refreshTrigger]);
   
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4">Manufacture</Typography>
+        <Typography variant="h4">Invoices</Typography>
 
         <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenModal}>
-          New Task
+          New Invoice
         </Button> 
 
         <Modal
@@ -87,21 +70,12 @@ export default function InvoicePage() {
         <TabContext value={value}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <TabList onChange={handleChange} aria-label="manufacture tabs">
-              <Tab label="Request" value="1" sx={{ minWidth: '120px' }}/>
-              <Tab label="On Going" value="2" sx={{ minWidth: '120px' }}/>
-              <Tab label="Done" value="3" sx={{ minWidth: '120px' }}/>
+              <Tab label="Unshipped" value="1" sx={{ minWidth: '120px' }}/>
+              <Tab label="Shipped" value="2" sx={{ minWidth: '120px' }}/>
             </TabList>
           </Box>
-          <TabPanel value="1">
-            <RequestInternalPage 
-              allRequestData={requestData}
-              statusCode={1}
-              categoryCode={2} 
-              triggerRefresh={triggerRefresh}
-            />
-          </TabPanel>
-          <TabPanel value="2"><ManufacturePageTwo triggerFetch={refreshTrigger} refreshData={triggerRefresh}/></TabPanel>
-          <TabPanel value="3"><ManufacturePageThree /></TabPanel>
+          <TabPanel value="1"><UnshippedInvoicePage triggerFetch={refreshTrigger} refreshData={triggerRefresh}/></TabPanel>
+          <TabPanel value="2"><ShippedInvoicePage /></TabPanel>
         </TabContext>
       </Box>
     </Container>
