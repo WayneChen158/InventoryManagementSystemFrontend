@@ -93,11 +93,17 @@ export default function InvoiceTableRow({
       <TableRow>
 
         <TableCell align="left">
-          <Link href={invoice.url} underline="none" target="_blank" rel="noopener noreferrer">
+          {invoice.url ? (
+            <Link href={invoice.url} underline="none" target="_blank" rel="noopener noreferrer">
               <Typography variant="subtitle2" noWrap>
-                  {invoice.invoiceNumber}
+                {invoice.invoiceNumber}
               </Typography>
-          </Link>
+            </Link>
+          ) : (
+            <Typography variant="subtitle2" noWrap>
+              {invoice.invoiceNumber}
+            </Typography>
+          )}
         </TableCell>
 
         <TableCell align="left">{formatDate(invoice.invoiceDate)}</TableCell>

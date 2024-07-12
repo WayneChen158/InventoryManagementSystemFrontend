@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import { useState, useRef, useEffect } from 'react';
 import {
-  Box, Modal, Card, Typography, IconButton, Table, TableHead,
-  TableRow, TableCell, TableBody, TableContainer, TextField, Autocomplete, InputAdornment
+    Box, Modal, Card, Typography, IconButton, Table, TableHead,
+    TableRow, TableCell, TableBody, TableContainer, TextField, Autocomplete, InputAdornment, Button, Checkbox
 } from '@mui/material';
 
 import { getInvoiceDetailsURL, getConsumablesURL, getProductsInStockURL, getComponentsInStockURL,
-    addInvoiceContentURL, updateInvoiceContentURL, deleteInvoiceContentURL } from 'src/utils/url-provider';
+    addInvoiceContentURL, updateInvoiceContentURL, deleteInvoiceContentURL, shipInvoiceURL } from 'src/utils/url-provider';
 
 import Iconify from 'src/components/iconify';
 
@@ -21,6 +21,7 @@ export default function InvoiceDetailsModal({ open, handleClose, invoice, page }
   const [editMode, setEditMode] = useState({});
   const [contents, setContents] = useState([]);
   const [newContent, setNewContent] = useState({ sku: '', description: '', amount: '', category: '', uniqueID: '' });
+  const [checkedItems, setCheckedItems] = useState({});
   const [searchResults, setSearchResults] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -38,6 +39,7 @@ export default function InvoiceDetailsModal({ open, handleClose, invoice, page }
   const addInvoiceContentPOSTURL = useRef(addInvoiceContentURL());
   const updateInvoiceContentPUTURL = useRef(updateInvoiceContentURL());
   const deleteInvoiceContentDELETEURL = useRef(deleteInvoiceContentURL());
+  const shipInvoicePUTURL = useRef(shipInvoiceURL());
 
   const [refreshTrigger, setRefreshTrigger] = useState(1);
   const triggerRefresh = () => {
@@ -177,6 +179,29 @@ export default function InvoiceDetailsModal({ open, handleClose, invoice, page }
     setSearchResults([]);
   };
 
+  const handleShipInvoice = () => {
+    // Make PUT request to ship the invoice
+    fetch(`${shipInvoicePUTURL.current}/${invoice.invoiceId}`, {
+      method: 'PUT',
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to ship invoice');
+      }
+      console.log('Invoice shipped successfully');
+      triggerRefresh();
+      handleClose();
+    })
+    .catch(error => console.error('Error shipping invoice:', error));
+  };
+
+  const handleCheckboxChange = (id, checked) => {
+    setCheckedItems(prev => ({ ...prev, [id]: checked }));
+  };
+
+  const allChecked = contents.every(content => checkedItems[content.invoiceContentID]);
+
+
   return (
     <Modal open={open} onClose={handleClose}>
       <Box 
@@ -203,6 +228,7 @@ export default function InvoiceDetailsModal({ open, handleClose, invoice, page }
             <Table>
               <TableHead>
                 <TableRow>
+                  {page === 'unshipped' && <TableCell />}
                   <TableCell>SKU</TableCell>
                   <TableCell>Description (Lot Number)</TableCell>
                   <TableCell>Qty</TableCell>
@@ -212,6 +238,14 @@ export default function InvoiceDetailsModal({ open, handleClose, invoice, page }
               <TableBody>
                 {contents.map((content) => (
                   <TableRow key={`${content.invoiceContentID}`}>
+                    {page === 'unshipped' && (
+                        <TableCell>
+                          <Checkbox
+                            checked={checkedItems[content.invoiceContentID] || false}
+                            onChange={(e) => handleCheckboxChange(content.invoiceContentID, e.target.checked)}
+                          />
+                        </TableCell>
+                      )}
                     {editMode[content.invoiceContentID] ? (
                       <>
                         <TableCell>
@@ -263,6 +297,7 @@ export default function InvoiceDetailsModal({ open, handleClose, invoice, page }
                 ))}
                 {page === 'unshipped' && (
                   <TableRow>
+                    <TableCell/>
                     <TableCell>
                     <Autocomplete
                         options={[...productList, ...componentList, ...inventoryData]}
@@ -319,8 +354,18 @@ export default function InvoiceDetailsModal({ open, handleClose, invoice, page }
               </TableBody>
             </Table>
           </TableContainer>
+          {page === 'unshipped' && (<Button
+            variant="contained"
+            color="primary"
+            disabled={!allChecked}
+            onClick={handleShipInvoice}
+            sx={{ marginTop: 2 }}
+          >
+            Ship this Invoice
+          </Button>)}
         </Card>
       </Box>
+
     </Modal>
   );
 }

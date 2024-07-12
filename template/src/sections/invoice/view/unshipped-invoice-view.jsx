@@ -55,7 +55,7 @@ export default function UnshippedInvoicePage({triggerFetch, refreshData}) {
       .catch((error) => {
         console.error('There was a problem with the fetch operation:', error);
       });
-  }, [refreshTrigger]);
+  }, [refreshTrigger, triggerFetch]);
 
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -67,6 +67,7 @@ export default function UnshippedInvoicePage({triggerFetch, refreshData}) {
 
   const triggerRefresh = () => {
     setRefreshTrigger(prev => prev * (-1));
+    refreshData();
   }
 
   const handleSort = (event, id) => {

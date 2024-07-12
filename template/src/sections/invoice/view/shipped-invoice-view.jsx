@@ -128,8 +128,8 @@ export default function ShippedInvoicePage({triggerFetch, refreshData}) {
                     <InvoiceTableRow
                       key={row.invoiceId}
                       invoice={row}
-                      page='unshipped'
-                      handleOperation={refreshData}
+                      page='shipped'
+                      handleOperation={triggerRefresh}
                     />
                   ))}
 

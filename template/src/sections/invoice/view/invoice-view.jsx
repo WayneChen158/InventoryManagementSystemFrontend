@@ -14,6 +14,8 @@ import Typography from '@mui/material/Typography';
 
 import Iconify from 'src/components/iconify';
 
+import CreateNewInvoiceForm from '../components/Create-new-invoice'
+
 import UnshippedInvoicePage from './unshipped-invoice-view';
 import ShippedInvoicePage from './shipped-invoice-view';
 
@@ -49,16 +51,11 @@ export default function InvoicePage() {
         <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenModal}>
           New Invoice
         </Button> 
-
-        <Modal
-            open={openModal}
-            onClose={handleCloseModal}
-            container={document.getElementById('root')}
-          >
-            <Box style={{ display: 'flex', margin: 'auto', justifyContent: 'center', width: '70%', height: '100%'}}>
-
-            </Box>
-          </Modal>
+        <CreateNewInvoiceForm
+          open={openModal}
+          handleClose={handleCloseModal}
+          triggerRefresh={triggerRefresh}
+        />
       </Stack>
 
         <Box sx={{ width: '100%', typography: 'body1' }}>
