@@ -23,7 +23,7 @@ export default function InvoiceTableToolbar({ filterName, onFilterName }) {
       <OutlinedInput
         value={filterName}
         onChange={onFilterName}
-        placeholder="Search user..."
+        placeholder="Search invoice..."
         startAdornment={
           <InputAdornment position="start">
             <Iconify

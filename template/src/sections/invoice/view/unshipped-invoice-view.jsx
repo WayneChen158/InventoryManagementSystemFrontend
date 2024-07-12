@@ -21,7 +21,7 @@ import InvoiceTableRow from '../invoice-table-row';
 
 // ----------------------------------------------------------------------
 
-export default function ManufacturePageTwo({triggerFetch, refreshData}) {
+export default function UnshippedInvoicePage({triggerFetch, refreshData}) {
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -116,7 +116,6 @@ export default function ManufacturePageTwo({triggerFetch, refreshData}) {
                 onRequestSort={handleSort}
                 headLabel={[
                   { id: 'invoiceNumber', label: 'Invoice#' },
-                  { id: 'company', label: 'Company' },
                   { id: 'invoiceDate', label: 'Invoice Date' },
                   { id: 'shipDate', label: 'Ship Date' },
                   { id: 'trackingNumber', label: 'Tracking' },
@@ -128,9 +127,9 @@ export default function ManufacturePageTwo({triggerFetch, refreshData}) {
                   .map((row) => (
                     <InvoiceTableRow
                       key={row.invoiceId}
-                      record={row}
-                      status={1}
-                      handleOperation={refreshData}
+                      invoice={row}
+                      page='unshipped'
+                      handleOperation={triggerRefresh}
                     />
                   ))}
 
@@ -158,7 +157,7 @@ export default function ManufacturePageTwo({triggerFetch, refreshData}) {
   );
 }
 
-ManufacturePageTwo.propTypes = {
+UnshippedInvoicePage.propTypes = {
   triggerFetch: PropTypes.any,
   refreshData: PropTypes.func,
 };

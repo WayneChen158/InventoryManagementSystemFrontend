@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useRef, useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
@@ -14,8 +14,6 @@ import Typography from '@mui/material/Typography';
 
 import Iconify from 'src/components/iconify';
 
-
-import NewTaskForm from '../components/NewTaskForm';
 import UnshippedInvoicePage from './unshipped-invoice-view';
 import ShippedInvoicePage from './shipped-invoice-view';
 
@@ -58,10 +56,7 @@ export default function InvoicePage() {
             container={document.getElementById('root')}
           >
             <Box style={{ display: 'flex', margin: 'auto', justifyContent: 'center', width: '70%', height: '100%'}}>
-              <NewTaskForm 
-                handleCloseModal={handleCloseModal}
-                handleRefreshData={triggerRefresh}
-              />
+
             </Box>
           </Modal>
       </Stack>

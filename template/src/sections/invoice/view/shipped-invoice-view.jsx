@@ -1,45 +1,47 @@
-import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { useState, useEffect, useRef } from 'react';
 
 import Card from '@mui/material/Card';
-// import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
-// import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
-// import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-import { users } from 'src/_mock/user';
+import { getShippedInvoicesURL } from 'src/utils/url-provider';
 
 import Scrollbar from 'src/components/scrollbar';
 
 import { config } from '../../../config';
-import UserTableHead from '../invoice-table-head';
+import InvoiceTableHead from '../invoice-table-head';
 import TableEmptyRows from '../table-empty-rows';
 import { emptyRows, applyFilter, getComparator } from '../utils';
-import ManufactureTableRow from '../components/manufacture-table-row';
+import InvoiceTableToolbar from '../invoice-table-toolbar';
+import InvoiceTableRow from '../invoice-table-row';
 
 // ----------------------------------------------------------------------
 
-export default function ManufacturePageThree() {
+export default function ShippedInvoicePage({triggerFetch, refreshData}) {
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
 
-  const [selected, setSelected] = useState([]);
+  const [orderBy, setOrderBy] = useState('name');
 
-  const [orderBy, setOrderBy] = useState('date');
+  const [filterName, setFilterName] = useState('');
 
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [refreshTrigger, setRefreshTrigger] = useState(1);
 
-  const [manufacturingList, setManufacturingList] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
 
-  
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const [unshippedInvoiceList, setUnshippedInvoiceList] = useState([]);
+
+  const getShippedInvoicesRequestURL = useRef(getShippedInvoicesURL());
+
   useEffect(() => {
-    fetch(`http://${config.server_host}:${config.server_port}/api/manufacture/manufactureRecords?status=2`, {
-      method: 'GET',
-    })
+    fetch(getShippedInvoicesRequestURL.current, { method: 'GET' })
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -47,13 +49,25 @@ export default function ManufacturePageThree() {
         return response.json();
       })
       .then((resdata) => {
-        setManufacturingList(resdata);
+        console.log(resdata)
+        setUnshippedInvoiceList(resdata);
       })
       .catch((error) => {
         console.error('There was a problem with the fetch operation:', error);
       });
-  }, []);
-  
+  }, [refreshTrigger]);
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+  const triggerRefresh = () => {
+    setRefreshTrigger(prev => prev * (-1));
+  }
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -61,33 +75,6 @@ export default function ManufacturePageThree() {
       setOrder(isAsc ? 'desc' : 'asc');
       setOrderBy(id);
     }
-  };
-
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = manufacturingList.map((n) => n.manufactureRecordId);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-    setSelected(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -99,49 +86,56 @@ export default function ManufacturePageThree() {
     setRowsPerPage(parseInt(event.target.value, 10));
   };
 
+  const handleFilterByName = (event) => {
+    setPage(0);
+    setFilterName(event.target.value);
+  };
+
   const dataFiltered = applyFilter({
-    inputData: manufacturingList,
+    inputData: unshippedInvoiceList,
     comparator: getComparator(order, orderBy),
+    filterName,
   });
+
+  const notFound = !dataFiltered.length && !!filterName;
 
   return (
     <Container>
 
       <Card>
-
+        <InvoiceTableToolbar
+          filterName={filterName}
+          onFilterName={handleFilterByName}
+        />
         <Scrollbar>
           <TableContainer sx={{ overflow: 'unset' }}>
             <Table sx={{ minWidth: 800 }}>
-              <UserTableHead
+              <InvoiceTableHead
                 order={order}
                 orderBy={orderBy}
-                rowCount={manufacturingList.length}
-                numSelected={selected.length}
                 onRequestSort={handleSort}
-                onSelectAllClick={handleSelectAllClick}
                 headLabel={[
-                  { id: 'manufactureRecordId', label: 'ID' },
-                  { id: 'componentName', label: 'Description' },
-                  { id: 'manufactureDate', label: 'Date' },
-                  { id: 'owner', label: 'Owner' },
-                  { id: 'scale', label: 'Scale' },
+                  { id: 'invoiceNumber', label: 'Invoice#' },
+                  { id: 'invoiceDate', label: 'Invoice Date' },
+                  { id: 'shipDate', label: 'Ship Date' },
+                  { id: 'trackingNumber', label: 'Tracking' },
                 ]}
               />
               <TableBody>
                 {dataFiltered
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
-                    <ManufactureTableRow
-                      key={row.manufactureRecordId}
-                      record={row}
-                      selected={selected.indexOf(row.manufactureRecordId) !== -1}
-                      handleClick={(event) => handleClick(event, row.manufactureRecordId)}
+                    <InvoiceTableRow
+                      key={row.invoiceId}
+                      invoice={row}
+                      page='unshipped'
+                      handleOperation={refreshData}
                     />
                   ))}
 
                 <TableEmptyRows
                   height={77}
-                  emptyRows={emptyRows(page, rowsPerPage, users.length)}
+                  emptyRows={emptyRows(page, rowsPerPage, dataFiltered.length)}
                 />
 
               </TableBody>
@@ -152,7 +146,7 @@ export default function ManufacturePageThree() {
         <TablePagination
           page={page}
           component="div"
-          count={manufacturingList.length}
+          count={dataFiltered.length}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
           rowsPerPageOptions={[10, 25, 50]}
@@ -162,3 +156,8 @@ export default function ManufacturePageThree() {
     </Container>
   );
 }
+
+ShippedInvoicePage.propTypes = {
+  triggerFetch: PropTypes.any,
+  refreshData: PropTypes.func,
+};

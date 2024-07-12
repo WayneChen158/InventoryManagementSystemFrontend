@@ -128,3 +128,15 @@ export function getUnshippedInvoicesURL() {
 export function getShippedInvoicesURL() {
   return `http://${config.server_host}:${config.server_port}/api/invoices-shipped`;
 }
+
+export function getInvoiceDetailsURL() {
+  return `http://${config.server_host}:${config.server_port}/api/invoices-detail`;
+}
+
+export function updateInvoiceURL() {
+  return `http://${config.server_host}:${config.server_port}/api/invoices-update`;
+}
+
+export function deleteInvoiceURL() {
+  return `http://${config.server_host}:${config.server_port}/api/invoice-delete`;
+}

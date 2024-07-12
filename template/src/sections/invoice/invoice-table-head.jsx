@@ -23,7 +23,6 @@ export default function CustomerTableHead({
   return (
     <TableHead>
       <TableRow>
-        <TableCell />
 
         {headLabel.map((headCell) => (
           <TableCell
@@ -47,6 +46,7 @@ export default function CustomerTableHead({
             </TableSortLabel>
           </TableCell>
         ))}
+        <TableCell />
         <TableCell />
       </TableRow>
     </TableHead>
