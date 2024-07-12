@@ -8,7 +8,7 @@ import Popover from '@mui/material/Popover';
 import MenuItem from '@mui/material/MenuItem';
 import { TableCell, Button, Typography, IconButton, TableRow } from '@mui/material';
 
-import { getInvoiceDetailsURL, deleteInvoiceURL } from 'src/utils/url-provider';
+import { deleteInvoiceURL } from 'src/utils/url-provider';
 
 import Iconify from 'src/components/iconify';
 
@@ -29,9 +29,6 @@ export default function InvoiceTableRow({
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
-  const [invoiceContents, setInvoiceContents] = useState([]);
-
-  const getInvoiceDetailsRequestURL = useRef(getInvoiceDetailsURL());
   const deleteInvoiceRequestURL = useRef(deleteInvoiceURL());
 
   const handleOpenMenu = (event) => {
@@ -68,15 +65,6 @@ export default function InvoiceTableRow({
   const handleCloseDeleteModal = () => {
     setOpenDeleteModal(false);
   };
-
-  useEffect(() => {
-    if (openModal) {
-      fetch(`${getInvoiceDetailsRequestURL.current}/${invoice.invoiceId}`)
-        .then(response => response.json())
-        .then(data => setInvoiceContents(data))
-        .catch(error => console.error('Error fetching invoice details:', error));
-    }
-  }, [openModal, invoice.invoiceId]);
 
   const formatDate = (date) => {
     if (!date) return '';
@@ -127,8 +115,7 @@ export default function InvoiceTableRow({
         <InvoiceDetailModal
           open={openModal}
           handleClose={handleCloseModal}
-          invoiceNumber={invoice.invoiceNumber}
-          invoiceContents={invoiceContents}
+          invoice={invoice}
           page={page}
         />
 

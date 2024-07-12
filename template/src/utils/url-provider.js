@@ -140,3 +140,15 @@ export function updateInvoiceURL() {
 export function deleteInvoiceURL() {
   return `http://${config.server_host}:${config.server_port}/api/invoice-delete`;
 }
+
+export function addInvoiceContentURL() {
+  return `http://${config.server_host}:${config.server_port}/api/Invoices-detail-add`;
+}
+
+export function updateInvoiceContentURL() {
+  return `http://${config.server_host}:${config.server_port}/api/Invoices-detail-update`;
+}
+
+export function deleteInvoiceContentURL() {
+  return `http://${config.server_host}:${config.server_port}/api/Invoices-detail-delete`;
+}
