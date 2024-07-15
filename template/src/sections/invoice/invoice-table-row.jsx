@@ -108,7 +108,28 @@ export default function InvoiceTableRow({
 
         <TableCell align="left">{formatDate(invoice.shipDate)}</TableCell>
 
-        <TableCell align="left">{invoice.trackingNumber}</TableCell>
+        <TableCell align="left">
+          {invoice.trackingNumber ? (
+            <Link
+              href={
+                invoice.trackingNumber.match(/[A-Za-z]/)
+                  ? `https://www.ups.com/track?track=yes&trackNums=${invoice.trackingNumber}&loc=en_US&requester=ST/`
+                  : `https://www.fedex.com/fedextrack/?trknbr=${invoice.trackingNumber}&trkqual=2460501000~${invoice.trackingNumber}~FX`
+              }
+              underline="none"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Typography noWrap>
+                {invoice.trackingNumber}
+              </Typography>
+            </Link>
+          ) : (
+            <Typography noWrap>
+              {invoice.trackingNumber}
+            </Typography>
+          )}
+        </TableCell>
 
         <TableCell align="right">
           <Button variant="text" onClick={handleOpenModal}>

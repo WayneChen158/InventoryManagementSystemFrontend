@@ -39,7 +39,7 @@ export default function CustomerPage() {
 
   const [openModal, setOpenModal] = useState(false);
 
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const [customerData, setCustomerData] = useState([]);
 
