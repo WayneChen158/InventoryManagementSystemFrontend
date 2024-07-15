@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState, useEffect, useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
@@ -12,12 +12,11 @@ import { getShippedInvoicesURL } from 'src/utils/url-provider';
 
 import Scrollbar from 'src/components/scrollbar';
 
-import { config } from '../../../config';
-import InvoiceTableHead from '../invoice-table-head';
 import TableEmptyRows from '../table-empty-rows';
-import { emptyRows, applyFilter, getComparator } from '../utils';
-import InvoiceTableToolbar from '../invoice-table-toolbar';
 import InvoiceTableRow from '../invoice-table-row';
+import InvoiceTableHead from '../invoice-table-head';
+import InvoiceTableToolbar from '../invoice-table-toolbar';
+import { emptyRows, applyFilter, getComparator } from '../utils';
 
 // ----------------------------------------------------------------------
 

@@ -1,8 +1,8 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import {
-  Box, Modal, Card, Button, Typography, IconButton
+  Box, Card, Modal, Button, Typography, IconButton
 } from '@mui/material';
 
 import Iconify from 'src/components/iconify';

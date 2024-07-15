@@ -1,12 +1,14 @@
 import PropTypes from 'prop-types';
-import { useState, useRef, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
+
 import {
-    Box, Modal, Card, Typography, IconButton, Table, TableHead,
-    TableRow, TableCell, TableBody, TableContainer, TextField, Autocomplete, InputAdornment, Button, Checkbox
+    Box, Card, Modal, Table, Button, TableRow, Checkbox, TableHead,
+    TableCell, TextField, TableBody, Typography, IconButton, Autocomplete, TableContainer, InputAdornment
 } from '@mui/material';
 
-import { getInvoiceDetailsURL, getConsumablesURL, getProductsInStockURL, getComponentsInStockURL,
-    addInvoiceContentURL, updateInvoiceContentURL, deleteInvoiceContentURL, shipInvoiceURL } from 'src/utils/url-provider';
+import { shipInvoiceURL, getConsumablesURL, getInvoiceDetailsURL,  
+  addInvoiceContentURL, getProductsInStockURL, getComponentsInStockURL, 
+  updateInvoiceContentURL, deleteInvoiceContentURL} from 'src/utils/url-provider';
 
 import Iconify from 'src/components/iconify';
 
@@ -174,6 +176,8 @@ export default function InvoiceDetailsModal({ open, handleClose, invoice, page }
     } else if (inventoryData.includes(item)) {
       selectedContent = { category: 'r', uniqueID: item.materialId, sku: item.catalogNumber, description: item.description, amount: '' };
     }
+    console.log(searchQuery);
+    console.log(searchResults);
     setNewContent(selectedContent);
     setSearchQuery('');
     setSearchResults([]);
