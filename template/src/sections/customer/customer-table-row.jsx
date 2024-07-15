@@ -1,23 +1,15 @@
-import { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { Box, Modal, Button } from '@mui/material';
-import Card from '@mui/material/Card';
+import { useRef, useState } from 'react';
 
-import Stack from '@mui/material/Stack';
-import Popover from '@mui/material/Popover';
-import TableRow from '@mui/material/TableRow';
-import MenuItem from '@mui/material/MenuItem';
-import Table from '@mui/material/Table';
-import TableCell from '@mui/material/TableCell';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import Collapse from '@mui/material/Collapse';
-import TableBody from '@mui/material/TableBody';
-import TableHead from '@mui/material/TableHead';
+import { Box, Card, Stack, Modal, Table, Button, Popover, Collapse, TableRow,
+  MenuItem, TableCell, TableBody, Typography, IconButton } from '@mui/material';
+
+import { deleteCustomerURL } from 'src/utils/url-provider';
 
 import Iconify from 'src/components/iconify';
 
-import { deleteCustomerURL } from 'src/utils/url-provider';
+import InvoiceTableRow from 'src/sections/invoice/invoice-table-row'
+import InvoiceTableHead from 'src/sections/invoice/invoice-table-head'
 
 import CustomerForm from './components/customer-form';
 
@@ -132,26 +124,25 @@ export default function CustomerTableRow({
                 Order History
               </Typography>
               <Table size="small" aria-label="purchases">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Invoice#</TableCell>
-                    <TableCell>Ship Date</TableCell>
-                    <TableCell align="left">Tracking</TableCell>
-                    <TableCell />
-                  </TableRow>
-                </TableHead>
+                <InvoiceTableHead
+                  order={null}
+                  orderBy={null}
+                  onRequestSort={null}
+                  headLabel={[
+                    { id: 'invoiceNumber', label: 'Invoice#' },
+                    { id: 'invoiceDate', label: 'Invoice Date' },
+                    { id: 'shipDate', label: 'Ship Date' },
+                    { id: 'trackingNumber', label: 'Tracking' },
+                  ]}
+                />
                 <TableBody>
                   {customer.invoices.map((historyRow) => (
-                    <TableRow key={historyRow.invoiceId}>
-                      <TableCell component="th" scope="row">
-                        {historyRow.invoiceNumber}
-                      </TableCell>
-                      <TableCell>{historyRow.shipDate}</TableCell>
-                      <TableCell align="left">{historyRow.trackingNumber}</TableCell>
-                      <TableCell align="left">
-                        show details
-                      </TableCell>
-                    </TableRow>
+                    <InvoiceTableRow
+                      key={historyRow.invoiceId}
+                      invoice={historyRow}
+                      page='customerEnd'
+                      handleOperation={triggerRefresh}
+                    />
                   ))}
                 </TableBody>
               </Table>

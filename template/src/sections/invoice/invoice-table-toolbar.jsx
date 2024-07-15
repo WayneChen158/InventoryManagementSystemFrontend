@@ -10,7 +10,7 @@ import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function CustomerTableToolbar({ filterName, onFilterName }) {
+export default function InvoiceTableToolbar({ filterName, onFilterName }) {
   return (
     <Toolbar
       sx={{
@@ -23,7 +23,7 @@ export default function CustomerTableToolbar({ filterName, onFilterName }) {
       <OutlinedInput
         value={filterName}
         onChange={onFilterName}
-        placeholder="Search user..."
+        placeholder="Search invoice..."
         startAdornment={
           <InputAdornment position="start">
             <Iconify
@@ -43,7 +43,7 @@ export default function CustomerTableToolbar({ filterName, onFilterName }) {
   );
 }
 
-CustomerTableToolbar.propTypes = {
+InvoiceTableToolbar.propTypes = {
   filterName: PropTypes.string,
   onFilterName: PropTypes.func,
 };

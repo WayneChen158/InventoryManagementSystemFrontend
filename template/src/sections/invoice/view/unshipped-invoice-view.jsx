@@ -1,32 +1,26 @@
+import PropTypes from 'prop-types';
 import { useRef, useState, useEffect } from 'react';
 
 import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
-import Button from '@mui/material/Button';
-import { Box, Modal } from '@mui/material';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
-import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-import { getCustomersURL  } from 'src/utils/url-provider';
+import { getUnshippedInvoicesURL } from 'src/utils/url-provider';
 
-import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 
-import TableNoData from '../table-no-data';
 import TableEmptyRows from '../table-empty-rows';
-import CustomerTableRow from '../customer-table-row';
-import CustomerTableHead from '../customer-table-head';
-import CustomerForm from '../components/customer-form';
-import CustomerTableToolbar from '../customer-table-toolbar';
+import InvoiceTableRow from '../invoice-table-row';
+import InvoiceTableHead from '../invoice-table-head';
+import InvoiceTableToolbar from '../invoice-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 
 // ----------------------------------------------------------------------
 
-export default function CustomerPage() {
+export default function UnshippedInvoicePage({triggerFetch, refreshData}) {
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -37,16 +31,16 @@ export default function CustomerPage() {
 
   const [refreshTrigger, setRefreshTrigger] = useState(1);
 
-  const [openModal, setOpenModal] = useState(false);
+  // const [openModal, setOpenModal] = useState(false);
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [customerData, setCustomerData] = useState([]);
+  const [unshippedInvoiceList, setUnshippedInvoiceList] = useState([]);
 
-  const customerListURL = useRef(getCustomersURL());
+  const getUnshippedInvoicesRequestURL = useRef(getUnshippedInvoicesURL());
 
   useEffect(() => {
-    fetch(customerListURL.current, { method: 'GET' })
+    fetch(getUnshippedInvoicesRequestURL.current, { method: 'GET' })
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -55,23 +49,24 @@ export default function CustomerPage() {
       })
       .then((resdata) => {
         console.log(resdata)
-        setCustomerData(resdata);
+        setUnshippedInvoiceList(resdata);
       })
       .catch((error) => {
         console.error('There was a problem with the fetch operation:', error);
       });
-  }, [refreshTrigger]);
+  }, [refreshTrigger, triggerFetch]);
 
-  const handleOpenModal = () => {
-    setOpenModal(true);
-  };
+  // const handleOpenModal = () => {
+  //   setOpenModal(true);
+  // };
 
-  const handleCloseModal = () => {
-    setOpenModal(false);
-  };
+  // const handleCloseModal = () => {
+  //   setOpenModal(false);
+  // };
 
   const triggerRefresh = () => {
     setRefreshTrigger(prev => prev * (-1));
+    refreshData();
   }
 
   const handleSort = (event, id) => {
@@ -97,79 +92,42 @@ export default function CustomerPage() {
   };
 
   const dataFiltered = applyFilter({
-    inputData: customerData,
+    inputData: unshippedInvoiceList,
     comparator: getComparator(order, orderBy),
     filterName,
   });
 
-  const notFound = !dataFiltered.length && !!filterName;
-
   return (
     <Container>
-      <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4">Customers</Typography>
-
-        <Button 
-          variant="contained" 
-          startIcon={<Iconify icon="eva:plus-fill" />}
-          onClick={handleOpenModal}
-        >
-          New Customer
-        </Button>
-
-        <Modal
-          open={openModal}
-          onClose={handleCloseModal}
-        >
-          <Box 
-            style={{ 
-              display: 'flex', 
-              justifyContent: 'center', 
-              alignItems: 'center', 
-              height: '100vh'
-            }}
-          >
-            <Card style={{ width: '70%', padding: '20px' }}>
-              <CustomerForm 
-                currentInfo={null}
-                handleCloseModal={handleCloseModal}
-                triggerRefresh={triggerRefresh}
-              />
-            </Card>
-          </Box>
-        </Modal> 
-
-      </Stack>
 
       <Card>
-        <CustomerTableToolbar
+        <InvoiceTableToolbar
           filterName={filterName}
           onFilterName={handleFilterByName}
         />
-
         <Scrollbar>
           <TableContainer sx={{ overflow: 'unset' }}>
             <Table sx={{ minWidth: 800 }}>
-              <CustomerTableHead
+              <InvoiceTableHead
                 order={order}
                 orderBy={orderBy}
                 onRequestSort={handleSort}
                 headLabel={[
-                  { id: 'customerName', label: 'Name' },
-                  { id: 'company', label: 'Company' },
-                  { id: 'phoneNumber', label: 'Phone' },
-                  { id: 'emailAddress', label: 'Email' },
-                  { id: 'shippingAddress', label: 'Shipping' },
+                  { id: 'invoiceNumber', label: 'Invoice#' },
+                  { id: 'invoiceDate', label: 'Invoice Date' },
+                  { id: 'shipDate', label: 'Ship Date' },
+                  { id: 'trackingNumber', label: 'Tracking' },
                 ]}
               />
               <TableBody>
                 {dataFiltered
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
-                    <CustomerTableRow
-                      key={row.customerId}
-                      customer={row}
-                      triggerRefresh={triggerRefresh}
+                    <InvoiceTableRow
+                      key={row.invoiceId}
+                      invoice={row}
+                      page='unshipped'
+                      handleOperation={triggerRefresh}
                     />
                   ))}
 
@@ -178,7 +136,6 @@ export default function CustomerPage() {
                   emptyRows={emptyRows(page, rowsPerPage, dataFiltered.length)}
                 />
 
-                {notFound && <TableNoData query={filterName} />}
               </TableBody>
             </Table>
           </TableContainer>
@@ -190,7 +147,7 @@ export default function CustomerPage() {
           count={dataFiltered.length}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[10, 25, 50]}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Card>
@@ -198,3 +155,7 @@ export default function CustomerPage() {
   );
 }
 
+UnshippedInvoicePage.propTypes = {
+  triggerFetch: PropTypes.any,
+  refreshData: PropTypes.func,
+};

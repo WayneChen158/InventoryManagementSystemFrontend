@@ -36,20 +36,29 @@ export function getComparator(order, orderBy) {
 }
 
 export function applyFilter({ inputData, comparator, filterName }) {
+  // Stabilize the array for sorting
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
+  // Sort the array using the comparator
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;
     return a[1] - b[1];
   });
 
+  // Extract sorted elements
   inputData = stabilizedThis.map((el) => el[0]);
 
+  // Apply filter if filterName is provided
   if (filterName) {
-    inputData = inputData.filter(
-      (user) => user.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
-    );
+    const searchValue = filterName.toLowerCase();
+    inputData = inputData.filter((invoice) => {
+      const invoiceNumber = invoice.invoiceNumber ? invoice.invoiceNumber.toLowerCase() : '';
+      
+      return (
+        invoiceNumber.indexOf(searchValue) !== -1
+      );
+    });
   }
 
   return inputData;

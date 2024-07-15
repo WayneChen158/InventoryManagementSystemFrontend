@@ -119,3 +119,44 @@ export function updateCustomerURL() {
 export function deleteCustomerURL() {
   return `http://${config.server_host}:${config.server_port}/api/customer-delete`;
 }
+
+// =========================================== Invoice Page =================================================
+export function getUnshippedInvoicesURL() {
+  return `http://${config.server_host}:${config.server_port}/api/invoices-unshipped`;
+}
+
+export function getShippedInvoicesURL() {
+  return `http://${config.server_host}:${config.server_port}/api/invoices-shipped`;
+}
+
+export function getInvoiceDetailsURL() {
+  return `http://${config.server_host}:${config.server_port}/api/invoices-detail`;
+}
+
+export function updateInvoiceURL() {
+  return `http://${config.server_host}:${config.server_port}/api/invoices-update`;
+}
+
+export function deleteInvoiceURL() {
+  return `http://${config.server_host}:${config.server_port}/api/invoice-delete`;
+}
+
+export function addInvoiceContentURL() {
+  return `http://${config.server_host}:${config.server_port}/api/Invoices-detail-add`;
+}
+
+export function updateInvoiceContentURL() {
+  return `http://${config.server_host}:${config.server_port}/api/Invoices-detail-update`;
+}
+
+export function deleteInvoiceContentURL() {
+  return `http://${config.server_host}:${config.server_port}/api/Invoices-detail-delete`;
+}
+
+export function shipInvoiceURL() {
+  return `http://${config.server_host}:${config.server_port}/api/invoices-ship`;
+}
+
+export function createInvoiceURL() {
+  return `http://${config.server_host}:${config.server_port}/api/invoices-create`;
+}
