@@ -53,7 +53,7 @@ export function applyFilter({ inputData, comparator, filterName }) {
   if (filterName) {
     const searchValue = filterName.toLowerCase();
     inputData = inputData.filter((customer) => {
-      const name = customer.name ? customer.name.toLowerCase() : '';
+      const name = customer.customerName ? customer.customerName.toLowerCase() : '';
       const phoneNumber = customer.phoneNumber ? customer.phoneNumber.toLowerCase() : '';
       const emailAddress = customer.emailAddress ? customer.emailAddress.toLowerCase() : '';
       

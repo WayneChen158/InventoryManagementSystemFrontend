@@ -213,14 +213,15 @@ export default function InvoiceDetailsModal({ open, handleClose, invoice, page }
           display: 'flex', 
           justifyContent: 'center', 
           alignItems: 'center', 
-          height: '100vh' 
+          height: '100vh',
+          overflow: 'auto'
         }}
       >
         <Card sx={{ width: '70%', padding: '20px', position: 'relative' }}>
           <IconButton
               aria-label="close"
               onClick={handleClose}
-              style={{ position: 'absolute', top: 0, left: 0 }}
+              style={{ position: 'relative', top: 0, left: 0 }}
               sx={{ padding: 2 }}
           >
               <Iconify icon="material-symbols:close" />
@@ -228,8 +229,8 @@ export default function InvoiceDetailsModal({ open, handleClose, invoice, page }
           <Typography variant="h6" component="div" sx={{ marginTop: 4, marginBottom: 4 }}>
             Invoice Details: {invoice.invoiceNumber}
           </Typography>
-          <TableContainer>
-            <Table>
+          <TableContainer sx={{ maxHeight: '70vh', overflow: 'auto' }}>
+            <Table stickyHeader>
               <TableHead>
                 <TableRow>
                   {page === 'unshipped' && <TableCell />}
