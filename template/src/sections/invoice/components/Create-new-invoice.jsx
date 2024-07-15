@@ -11,6 +11,17 @@ import { getCustomersURL, createInvoiceURL, getConsumablesURL, getProductsInStoc
 
 import Iconify from 'src/components/iconify';
 
+// Function to format date as YYYY-MM-DD in local time
+const formatDate = (dateString) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) return ''; // Check for invalid date
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 export default function InvoiceCreateForm({ open, handleClose, triggerRefresh }) {
   const [invoiceNumber, setInvoiceNumber] = useState('');
   const [url, setUrl] = useState('');
@@ -181,7 +192,7 @@ export default function InvoiceCreateForm({ open, handleClose, triggerRefresh })
                 label="Invoice Date"
                 type="date"
                 value={invoiceDate}
-                onChange={(e) => setInvoiceDate(e.target.value)}
+                onChange={(e) => setInvoiceDate(formatDate(e.target.value))}
                 sx={{ marginBottom: 2 }}
                 InputLabelProps={{
                   shrink: true,
