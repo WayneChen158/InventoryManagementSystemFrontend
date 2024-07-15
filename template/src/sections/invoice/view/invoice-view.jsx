@@ -4,7 +4,6 @@ import { useState } from 'react';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import TabList from '@mui/lab/TabList';
-import Modal from '@mui/material/Modal';
 import Stack from '@mui/material/Stack';
 import TabPanel from '@mui/lab/TabPanel';
 import Button from '@mui/material/Button';
@@ -14,10 +13,9 @@ import Typography from '@mui/material/Typography';
 
 import Iconify from 'src/components/iconify';
 
-import CreateNewInvoiceForm from '../components/Create-new-invoice'
-
-import UnshippedInvoicePage from './unshipped-invoice-view';
 import ShippedInvoicePage from './shipped-invoice-view';
+import UnshippedInvoicePage from './unshipped-invoice-view';
+import CreateNewInvoiceForm from '../components/Create-new-invoice'
 
 // ----------------------------------------------------------------------
 

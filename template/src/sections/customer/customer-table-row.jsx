@@ -1,23 +1,12 @@
-import { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { Box, Modal, Button } from '@mui/material';
-import Card from '@mui/material/Card';
+import { useRef, useState } from 'react';
 
-import Stack from '@mui/material/Stack';
-import Popover from '@mui/material/Popover';
-import TableRow from '@mui/material/TableRow';
-import MenuItem from '@mui/material/MenuItem';
-import Table from '@mui/material/Table';
-import TableCell from '@mui/material/TableCell';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import Collapse from '@mui/material/Collapse';
-import TableBody from '@mui/material/TableBody';
-import TableHead from '@mui/material/TableHead';
-
-import Iconify from 'src/components/iconify';
+import { Box, Card, Stack, Modal, Table, Button, Popover, Collapse, TableRow,
+  MenuItem, TableCell, TableBody, Typography, IconButton } from '@mui/material';
 
 import { deleteCustomerURL } from 'src/utils/url-provider';
+
+import Iconify from 'src/components/iconify';
 
 import InvoiceTableRow from 'src/sections/invoice/invoice-table-row'
 import InvoiceTableHead from 'src/sections/invoice/invoice-table-head'

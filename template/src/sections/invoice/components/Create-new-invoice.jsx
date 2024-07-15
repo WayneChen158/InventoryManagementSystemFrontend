@@ -1,24 +1,15 @@
-import { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useRef, useState, useEffect } from 'react';
+
 import {
-  Box, Modal, Card, Typography, IconButton, TextField, Button, Autocomplete, Grid, Table, TableHead, TableRow, TableCell, TableBody, TableContainer, InputAdornment
+  Box, Card, Grid, Modal, Table, Button, TableRow, TableHead, TableCell, 
+  TextField, TableBody, Typography, IconButton, Autocomplete, TableContainer, InputAdornment
 } from '@mui/material';
 
-import { getCustomersURL, getProductsInStockURL, getComponentsInStockURL, getConsumablesURL, 
-    createInvoiceURL } from 'src/utils/url-provider';
+import { getCustomersURL, createInvoiceURL, getConsumablesURL, getProductsInStockURL, getComponentsInStockURL, 
+   } from 'src/utils/url-provider';
 
 import Iconify from 'src/components/iconify';
-
-// Function to format date as YYYY-MM-DD in local time
-const formatDate = (dateString) => {
-  if (!dateString) return '';
-  const date = new Date(dateString);
-  if (Number.isNaN(date.getTime())) return ''; // Check for invalid date
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-};
 
 export default function InvoiceCreateForm({ open, handleClose, triggerRefresh }) {
   const [invoiceNumber, setInvoiceNumber] = useState('');
@@ -74,6 +65,10 @@ export default function InvoiceCreateForm({ open, handleClose, triggerRefresh })
     setNewContent({ sku: '', description: '', amount: '', category: '', uniqueID: '' });
   };
 
+  const handleDeleteRow = (id) => {
+    setContents(contents.filter(content => content.invoiceContentID !== id));
+  };
+
   const handleSearch = (query) => {
     setSearchQuery(query);
     const results = [
@@ -82,6 +77,8 @@ export default function InvoiceCreateForm({ open, handleClose, triggerRefresh })
       ...inventoryData.filter(item => item.catalogNumber.includes(query))
     ];
     setSearchResults(results);
+    console.log(searchQuery);
+    console.log(searchResults);
   };
 
   const handleSelectSearchResult = (item) => {
@@ -237,6 +234,11 @@ export default function InvoiceCreateForm({ open, handleClose, triggerRefresh })
                     <TableCell>{content.sku}</TableCell>
                     <TableCell>{content.description}</TableCell>
                     <TableCell>{content.amount}</TableCell>
+                    <TableCell>
+                      <IconButton onClick={() => handleDeleteRow(content.invoiceContentID)}>
+                        <Iconify icon="eva:trash-2-outline" />
+                      </IconButton>
+                    </TableCell>
                   </TableRow>
                 ))}
                 <TableRow>

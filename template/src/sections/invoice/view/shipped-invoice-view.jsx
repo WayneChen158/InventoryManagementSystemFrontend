@@ -32,8 +32,6 @@ export default function ShippedInvoicePage({triggerFetch, refreshData}) {
 
   const [refreshTrigger, setRefreshTrigger] = useState(1);
 
-  const [openModal, setOpenModal] = useState(false);
-
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const [unshippedInvoiceList, setUnshippedInvoiceList] = useState([]);
@@ -56,14 +54,6 @@ export default function ShippedInvoicePage({triggerFetch, refreshData}) {
         console.error('There was a problem with the fetch operation:', error);
       });
   }, [refreshTrigger]);
-
-  const handleOpenModal = () => {
-    setOpenModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setOpenModal(false);
-  };
 
   const triggerRefresh = () => {
     setRefreshTrigger(prev => prev * (-1));
@@ -96,8 +86,6 @@ export default function ShippedInvoicePage({triggerFetch, refreshData}) {
     comparator: getComparator(order, orderBy),
     filterName,
   });
-
-  const notFound = !dataFiltered.length && !!filterName;
 
   return (
     <Container>

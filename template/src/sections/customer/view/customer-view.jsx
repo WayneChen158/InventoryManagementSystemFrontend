@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -17,9 +17,9 @@ import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 
 import TableNoData from '../table-no-data';
+import TableEmptyRows from '../table-empty-rows';
 import CustomerTableRow from '../customer-table-row';
 import CustomerTableHead from '../customer-table-head';
-import TableEmptyRows from '../table-empty-rows';
 import CustomerForm from '../components/customer-form';
 import CustomerTableToolbar from '../customer-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';

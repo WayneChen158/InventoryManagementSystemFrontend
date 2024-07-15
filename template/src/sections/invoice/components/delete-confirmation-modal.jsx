@@ -1,8 +1,10 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+
 import {
-  Modal, Box, Typography, Button, Card, IconButton
+  Box, Modal, Card, Button, Typography, IconButton
 } from '@mui/material';
+
 import Iconify from 'src/components/iconify';
 
 export default function ConfirmationModal({ open, handleClose, handleConfirm, title, description }) {

@@ -1,12 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
+import { useRef, useState } from 'react';
 
-// import Stack from '@mui/material/Stack';
-// import Avatar from '@mui/material/Avatar';
 import Link from '@mui/material/Link';
 import Popover from '@mui/material/Popover';
 import MenuItem from '@mui/material/MenuItem';
-import { TableCell, Button, Typography, IconButton, TableRow } from '@mui/material';
+import { Button, TableRow, TableCell, Typography, IconButton } from '@mui/material';
 
 import { deleteInvoiceURL } from 'src/utils/url-provider';
 

@@ -25,7 +25,7 @@ export default function InvoiceDetailsModal({ open, handleClose, invoice, page }
   const [searchResults, setSearchResults] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const [invoiceContents, setInvoiceContents] = useState([]);
+  // const [invoiceContents, setInvoiceContents] = useState([]);
   const getInvoiceDetailsRequestURL = useRef(getInvoiceDetailsURL());
 
   const [productList, setProductList] = useState([]);
@@ -51,7 +51,7 @@ export default function InvoiceDetailsModal({ open, handleClose, invoice, page }
       fetch(`${getInvoiceDetailsRequestURL.current}/${invoice.invoiceId}`)
         .then(response => response.json())
         .then(data => {
-            setInvoiceContents(data);
+            // setInvoiceContents(data);
             setContents(data);
         })
         .catch(error => console.error('Error fetching invoice details:', error));

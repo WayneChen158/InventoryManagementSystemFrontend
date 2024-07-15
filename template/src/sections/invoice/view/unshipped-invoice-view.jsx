@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState, useEffect, useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
@@ -12,12 +12,11 @@ import { getUnshippedInvoicesURL } from 'src/utils/url-provider';
 
 import Scrollbar from 'src/components/scrollbar';
 
-import { config } from '../../../config';
-import InvoiceTableHead from '../invoice-table-head';
 import TableEmptyRows from '../table-empty-rows';
-import { emptyRows, applyFilter, getComparator } from '../utils';
-import InvoiceTableToolbar from '../invoice-table-toolbar';
 import InvoiceTableRow from '../invoice-table-row';
+import InvoiceTableHead from '../invoice-table-head';
+import InvoiceTableToolbar from '../invoice-table-toolbar';
+import { emptyRows, applyFilter, getComparator } from '../utils';
 
 // ----------------------------------------------------------------------
 
@@ -32,7 +31,7 @@ export default function UnshippedInvoicePage({triggerFetch, refreshData}) {
 
   const [refreshTrigger, setRefreshTrigger] = useState(1);
 
-  const [openModal, setOpenModal] = useState(false);
+  // const [openModal, setOpenModal] = useState(false);
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -57,13 +56,13 @@ export default function UnshippedInvoicePage({triggerFetch, refreshData}) {
       });
   }, [refreshTrigger, triggerFetch]);
 
-  const handleOpenModal = () => {
-    setOpenModal(true);
-  };
+  // const handleOpenModal = () => {
+  //   setOpenModal(true);
+  // };
 
-  const handleCloseModal = () => {
-    setOpenModal(false);
-  };
+  // const handleCloseModal = () => {
+  //   setOpenModal(false);
+  // };
 
   const triggerRefresh = () => {
     setRefreshTrigger(prev => prev * (-1));
@@ -97,8 +96,6 @@ export default function UnshippedInvoicePage({triggerFetch, refreshData}) {
     comparator: getComparator(order, orderBy),
     filterName,
   });
-
-  const notFound = !dataFiltered.length && !!filterName;
 
   return (
     <Container>
