@@ -114,7 +114,7 @@ export default function InvoiceTableRow({
               href={
                 invoice.trackingNumber.match(/[A-Za-z]/)
                   ? `https://www.ups.com/track?track=yes&trackNums=${invoice.trackingNumber}&loc=en_US&requester=ST/`
-                  : `https://www.fedex.com/fedextrack/?trknbr=${invoice.trackingNumber}&trkqual=2460501000~${invoice.trackingNumber}~FX`
+                  : `https://www.fedex.com/fedextrack/?tracknumbers=${invoice.trackingNumber}`
               }
               underline="none"
               target="_blank"
