@@ -54,13 +54,15 @@ export function applyFilter({ inputData, comparator, filterName }) {
     const searchValue = filterName.toLowerCase();
     inputData = inputData.filter((customer) => {
       const name = customer.customerName ? customer.customerName.toLowerCase() : '';
+      const company = customer.company ? customer.company.toLowerCase() : '';
       const phoneNumber = customer.phoneNumber ? customer.phoneNumber.toLowerCase() : '';
       const emailAddress = customer.emailAddress ? customer.emailAddress.toLowerCase() : '';
       
       return (
         name.indexOf(searchValue) !== -1 ||
         phoneNumber.indexOf(searchValue) !== -1 ||
-        emailAddress.indexOf(searchValue) !== -1
+        emailAddress.indexOf(searchValue) !== -1 ||
+        company.indexOf(searchValue) !== -1
       );
     });
   }

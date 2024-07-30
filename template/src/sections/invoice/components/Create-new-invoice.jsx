@@ -137,6 +137,13 @@ export default function InvoiceCreateForm({ open, handleClose, triggerRefresh })
       .catch(error => console.error('Error creating invoice:', error));
   };
 
+// Custom filter function to search by name or company
+  const filterOptions = (options, { inputValue }) =>
+    options.filter(option =>
+      option.customerName.toLowerCase().includes(inputValue.toLowerCase()) ||
+      option.company.toLowerCase().includes(inputValue.toLowerCase())
+    );
+
   return (
     <Modal open={open} onClose={handleClose}>
       <Box 
@@ -198,11 +205,12 @@ export default function InvoiceCreateForm({ open, handleClose, triggerRefresh })
             <Grid item xs={12} md={6}>
               <Autocomplete
                 options={customers}
-                getOptionLabel={(option) => `${option.customerName} (${option.phoneNumber} ${option.emailAddress})`}
+                getOptionLabel={(option) => `${option.company} (${option.phoneNumber} ${option.emailAddress})`}
                 onChange={(event, value) => setSelectedCustomer(value)}
                 renderInput={(params) => (
                   <TextField {...params} label="Search Customer" variant="outlined" />
                 )}
+                filterOptions={filterOptions} // Apply custom filter function
                 sx={{ marginBottom: 2 }}
               />
               {selectedCustomer && (
