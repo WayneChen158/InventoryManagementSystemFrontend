@@ -6,28 +6,20 @@ import Box from '@mui/material/Box';
 import TabList from '@mui/lab/TabList';
 import Stack from '@mui/material/Stack';
 import TabPanel from '@mui/lab/TabPanel';
-import Button from '@mui/material/Button';
 import TabContext from '@mui/lab/TabContext';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
-import { getConsumablesURL, getProductsInStockURL, getComponentsInStockURL  } from 'src/utils/url-provider';
-
-import Iconify from 'src/components/iconify';
+import { getConsumablesURL, getProductsListURL, getComponentsInStockURL  } from 'src/utils/url-provider';
 
 import ProductPage from './product-view';
 import ComponentPage from './component-view';
 import ConsumablePage from './consumable-view';
-import ShipOrderModal from '../components/ShipOrderModal';
 
 // ----------------------------------------------------------------------
 
 export default function StockPage() {
   const [value, setValue] = useState('1');
-
-  const [refreshTrigger, setRefreshTrigger] = useState(1);
-
-  const [openModal, setOpenModal] = useState(false);
 
   const [productList, setProductList] = useState([]);
 
@@ -35,7 +27,7 @@ export default function StockPage() {
 
   const [inventoryData, setInventoryData] = useState([]); 
 
-  const productsInStockURL = useRef(getProductsInStockURL());
+  const productsInStockURL = useRef(getProductsListURL());
 
   const componentsInStockURL = useRef(getComponentsInStockURL());
 
@@ -55,7 +47,7 @@ export default function StockPage() {
       .catch((error) => {
         console.error('There was a problem with the fetch operation:', error);
       });
-  }, [refreshTrigger]);
+  }, []);
 
   useEffect(() => {
     fetch(componentsInStockURL.current, { method: 'GET' })
@@ -71,7 +63,7 @@ export default function StockPage() {
       .catch((error) => {
         console.error('There was a problem with the fetch operation:', error);
       });
-  }, [refreshTrigger]);
+  }, []);
   
   useEffect(() => {
     fetch(consumablesURL.current)
@@ -79,40 +71,16 @@ export default function StockPage() {
     .then(data => {
       setInventoryData(data)
     })
-  }, [refreshTrigger]);
+  }, []);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
-  };
-
-  const triggerRefresh = () => {
-      setRefreshTrigger(prev => prev * (-1));
-    }
-  
-  const handleOpenModal = () => {
-    setOpenModal(true);
-  };
-  const handleCloseModal = () => {
-    setOpenModal(false);
   };
   
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">Stock</Typography>
-
-        <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenModal}>
-          Ship Order
-        </Button>
-
-        <ShipOrderModal
-          open={openModal}
-          handleClose={handleCloseModal}
-          triggerRefresh = {triggerRefresh}
-          productList={productList}
-          componentList={componentList}
-          inventoryData={inventoryData}
-        />
 
       </Stack>
 

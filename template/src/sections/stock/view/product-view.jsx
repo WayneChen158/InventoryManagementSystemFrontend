@@ -49,24 +49,6 @@ export default function ProductPage({ productList }) {
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-    setSelected(newSelected);
-  };
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -112,8 +94,8 @@ export default function ProductPage({ productList }) {
                 headLabel={[
                   { id: 'productCatalog', label: 'Catalog' },
                   { id: 'productName', label: 'Product Name' },
-                  { id: 'manufactureDate', label: 'Date' },
-                  { id: 'lotNumber', label: 'Lot#' },
+                  // { id: 'manufactureDate', label: 'Date' },
+                  // { id: 'lotNumber', label: 'Lot#' },
                   { id: 'amountInStock', label: 'In Stock' },
                 ]}
               />
@@ -123,15 +105,12 @@ export default function ProductPage({ productList }) {
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => (
                       <ProductTableRow
-                        key={row.productRecordId}
+                        key={row.productId}
+                        id = {row.productId}
                         catalog = {row.productCatalog}
                         name={row.productName}
-                        date={row.manufactureDate}
-                        lotNumber={row.lotNumber}
                         amountInStock={row.amountInStock}
                         unit={" "}
-                        selected={selected.indexOf(row.id) !== -1}
-                        handleClick={(event) => handleClick(event, row.id)}
                       />
                     ))}
                   <TableEmptyRows

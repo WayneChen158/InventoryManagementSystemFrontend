@@ -1,5 +1,5 @@
 export const config ={
-    server_host: "192.168.1.188",
+    server_host: "localhost",
     server_port: "8080",
     username: "wayne",
     password: "fun123",

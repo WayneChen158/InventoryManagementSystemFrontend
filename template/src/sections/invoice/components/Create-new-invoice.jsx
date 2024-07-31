@@ -6,8 +6,7 @@ import {
   TextField, TableBody, Typography, IconButton, Autocomplete, TableContainer, InputAdornment
 } from '@mui/material';
 
-import { getCustomersURL, createInvoiceURL, getConsumablesURL, getProductsInStockURL, getComponentsInStockURL, 
-   } from 'src/utils/url-provider';
+import { getCustomersURL, createInvoiceURL, getConsumablesURL, getProductsInStockURL, getComponentsInStockURL } from 'src/utils/url-provider';
 
 import Iconify from 'src/components/iconify';
 
@@ -19,7 +18,7 @@ export default function InvoiceCreateForm({ open, handleClose, triggerRefresh })
   const [customers, setCustomers] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [contents, setContents] = useState([]);
-  const [newContent, setNewContent] = useState({ sku: '', description: '', amount: '', category: '', uniqueID: '' });
+  const [newContent, setNewContent] = useState({ sku: '', description: '', amount: '', category: '', uniqueID: '', stock: '' });
   const [searchResults, setSearchResults] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -62,7 +61,7 @@ export default function InvoiceCreateForm({ open, handleClose, triggerRefresh })
 
   const handleAddNewRow = () => {
     setContents([...contents, { ...newContent, invoiceContentID: Date.now() }]);
-    setNewContent({ sku: '', description: '', amount: '', category: '', uniqueID: '' });
+    setNewContent({ sku: '', description: '', amount: '', category: '', uniqueID: '', stock: '' });
   };
 
   const handleDeleteRow = (id) => {
@@ -84,11 +83,11 @@ export default function InvoiceCreateForm({ open, handleClose, triggerRefresh })
   const handleSelectSearchResult = (item) => {
     let selectedContent = {};
     if (productList.includes(item)) {
-      selectedContent = { category: 'p', uniqueID: item.productRecordId, sku: item.productCatalog, description: item.lotNumber, amount: '' };
+      selectedContent = { category: 'p', uniqueID: item.productRecordId, sku: item.productCatalog, description: item.lotNumber, amount: '', stock: item.amountInStock };
     } else if (componentList.includes(item)) {
-      selectedContent = { category: 'c', uniqueID: item.componentRecordId, sku: item.componentCatalog, description: item.lotNumber, amount: '' };
+      selectedContent = { category: 'c', uniqueID: item.componentRecordId, sku: item.componentCatalog, description: item.lotNumber, amount: '', stock: item.amountInStock };
     } else if (inventoryData.includes(item)) {
-      selectedContent = { category: 'r', uniqueID: item.materialId, sku: item.catalogNumber, description: item.description, amount: '' };
+      selectedContent = { category: 'r', uniqueID: item.materialId, sku: item.catalogNumber, description: item.description, amount: '', stock: item.amountInStock };
     }
     setNewContent(selectedContent);
     setSearchQuery('');
@@ -116,9 +115,6 @@ export default function InvoiceCreateForm({ open, handleClose, triggerRefresh })
       invoiceDAO: newInvoice,
       invoiceItemDAOs: invoiceItems
     };
-
-    console.log(createInvoiceForm);
-    console.log(selectedCustomer.customerId);
 
     fetch(`${createInvoicePOSTURL.current}/${selectedCustomer.customerId}`, {
       method: 'POST',
@@ -233,7 +229,8 @@ export default function InvoiceCreateForm({ open, handleClose, triggerRefresh })
                   <TableCell>SKU</TableCell>
                   <TableCell>Description</TableCell>
                   <TableCell>Qty</TableCell>
-                  <TableCell>Add</TableCell>
+                  <TableCell>Stock</TableCell> {/* Add Stock column */}
+                  <TableCell>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -242,6 +239,7 @@ export default function InvoiceCreateForm({ open, handleClose, triggerRefresh })
                     <TableCell>{content.sku}</TableCell>
                     <TableCell>{content.description}</TableCell>
                     <TableCell>{content.amount}</TableCell>
+                    <TableCell>{content.stock}</TableCell> {/* Display stock */}
                     <TableCell>
                       <IconButton onClick={() => handleDeleteRow(content.invoiceContentID)}>
                         <Iconify icon="eva:trash-2-outline" />
@@ -295,6 +293,13 @@ export default function InvoiceCreateForm({ open, handleClose, triggerRefresh })
                     />
                   </TableCell>
                   <TableCell>
+                    <TextField
+                      value={newContent.stock}
+                      placeholder="Stock"
+                      disabled
+                    />
+                  </TableCell>
+                  <TableCell>
                     <IconButton onClick={handleAddNewRow}>
                       <Iconify icon="eva:plus-circle-outline" />
                     </IconButton>
@@ -319,6 +324,7 @@ InvoiceCreateForm.propTypes = {
   handleClose: PropTypes.func.isRequired,
   triggerRefresh: PropTypes.func,
 };
+
 
 
 

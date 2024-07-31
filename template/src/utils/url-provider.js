@@ -48,8 +48,17 @@ export function getConsumablesURL() {
   return `http://${config.server_host}:${config.server_port}/api/consumables`;
 }
 
+export function getProductsListURL() {
+  return `http://${config.server_host}:${config.server_port}/api/products/list`;
+}
+
 export function getProductsInStockURL() {
   return `http://${config.server_host}:${config.server_port}/api/products/inStock`;
+}
+
+
+export function getProductRecordsInStockURL() {
+  return `http://${config.server_host}:${config.server_port}/api/products/productRecords`;
 }
 
 export function getComponentsInStockURL() {

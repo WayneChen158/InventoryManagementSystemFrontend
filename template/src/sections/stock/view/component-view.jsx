@@ -13,7 +13,7 @@ import Scrollbar from 'src/components/scrollbar';
 import TableNoData from '../table-no-data';
 import StockTableHead from '../stock-table-head';
 import TableEmptyRows from '../table-empty-rows';
-import ProductTableRow from '../product-table-row';
+import ComponentTableRow from '../component-table-row';
 import StockTableToolbar from '../stock-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils-products';
 
@@ -47,24 +47,6 @@ export default function ComponentPage({ componentList }) {
       return;
     }
     setSelected([]);
-  };
-
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-    setSelected(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -112,7 +94,6 @@ export default function ComponentPage({ componentList }) {
                 headLabel={[
                   { id: 'componentCatalog', label: 'Catalog' },
                   { id: 'componentName', label: 'Component Name' },
-                  { id: 'manufactureDate', label: 'Date' },
                   { id: 'lotNumber', label: 'Lot#' },
                   { id: 'amountInStock', label: 'In Stock' },
                 ]}
@@ -122,16 +103,13 @@ export default function ComponentPage({ componentList }) {
                 {dataFiltered
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => (
-                      <ProductTableRow
+                      <ComponentTableRow
                         key={row.componentRecordId}
                         catalog = {row.componentCatalog}
                         name={row.componentName}
-                        date={row.manufactureDate}
                         lotNumber={row.lotNumber}
                         amountInStock={row.amountInStock}
                         unit = {row.unit}
-                        selected={selected.indexOf(row.id) !== -1}
-                        handleClick={(event) => handleClick(event, row.id)}
                       />
                     ))}
                   <TableEmptyRows

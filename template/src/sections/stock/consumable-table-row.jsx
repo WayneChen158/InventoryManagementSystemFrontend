@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 // import Avatar from '@mui/material/Avatar';
 import Popover from '@mui/material/Popover';
 import TableRow from '@mui/material/TableRow';
-import Checkbox from '@mui/material/Checkbox';
 import MenuItem from '@mui/material/MenuItem';
 import TableCell from '@mui/material/TableCell';
 import Typography from '@mui/material/Typography';
@@ -41,9 +40,7 @@ export default function ConsumableTableRow({
   return (
     <>
       <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
-        <TableCell padding="checkbox">
-          <Checkbox disableRipple checked={selected} onChange={handleClick} />
-        </TableCell>
+        <TableCell />
 
         <TableCell align="center" component="th" scope="row" padding="none">
             <Typography variant="subtitle2" wrap = "true" width='1/4'>
